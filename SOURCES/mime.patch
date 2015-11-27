@@ -1,0 +1,20 @@
+diff -urN mime-orig/conf/mime.types mime/conf/mime.types
+--- mime-orig/conf/mime.types	2014-10-28 16:04:47.000000000 +0100
++++ mime/conf/mime.types	2014-10-30 22:41:49.000000000 +0100
+@@ -21,7 +21,7 @@
+     image/x-icon                          ico;
+     image/x-jng                           jng;
+     image/x-ms-bmp                        bmp;
+-    image/svg+xml                         svg svgz;
++    image/svg+xml                         svg svgz xng;
+     image/webp                            webp;
+ 
+     application/font-woff                 woff;
+@@ -86,4 +86,7 @@
+     video/x-ms-asf                        asx asf;
+     video/x-ms-wmv                        wmv;
+     video/x-msvideo                       avi;
++
++    application/x-font-ttf                ttf;
++    application/vnd.ms-opentype           otf;
+ }

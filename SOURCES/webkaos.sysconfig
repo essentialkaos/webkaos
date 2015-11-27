@@ -1,0 +1,7 @@
+# Sysconfig file for webkaos
+
+BINARY=""
+CONF_FILE=""
+CACHE_DIR=""
+LOG_DIR=""
+PAGESPEED_CACHE=""

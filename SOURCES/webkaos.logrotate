@@ -1,0 +1,13 @@
+/var/log/webkaos/*.log {
+    daily
+    missingok
+    rotate 62
+    compress
+    delaycompress
+    notifempty
+    create 640 webkaos root
+    sharedscripts
+    postrotate
+        [ -f /var/run/webkaos.pid ] && kill -USR1 `cat /var/run/webkaos.pid`
+    endscript
+}

@@ -1,0 +1,377 @@
+#!/bin/bash
+
+# webkaos        Startup script for webkaos
+
+# chkconfig: - 85 15
+# processname: webkaos
+# config: /etc/webkaos/webkaos.conf
+# config: /etc/sysconfig/webkaos
+# pidfile: /var/run/webkaos.pid
+# description: webkaos is an HTTP and reverse proxy server
+
+### BEGIN INIT INFO
+# Provides: webkaos
+# Required-Start: $local_fs $remote_fs $network
+# Required-Stop: $local_fs $remote_fs $network
+# Default-Start: 2 3 4 5
+# Default-Stop: 0 1 6
+# Short-Description: start and stop webkaos
+### END INIT INFO
+
+###############################################################################
+
+source /etc/init.d/kaosv
+
+kv.require "2.6"
+
+###############################################################################
+
+DHP_SIZE=2048
+
+###############################################################################
+
+kv[prog_name]="webkaos"
+kv[search_pattern]="webkaos: master process"
+
+kv.readSysconfig
+
+binary=${BINARY:-/usr/sbin/webkaos}
+conf_file=${CONF_FILE:-/etc/webkaos/webkaos.conf}
+cache_dir=${CACHE_DIR:-/var/cache/webkaos}
+log_dir=${LOG_DIR:-/var/log/webkaos}
+pagespeed_cache=${PAGESPEED_CACHE:-/var/cache/webkaos/pagespeed}
+dh_param=${DH_PARAM:-/etc/webkaos/ssl/dhparam.pem}
+
+delay_upgrade=30
+
+kv[oom_adj]="$OOM_DISABLE"
+
+###############################################################################
+
+kv.addCommand "start"        "Start ${kv[prog_name]} webserver"
+kv.addCommand "stop"         "Stop ${kv[prog_name]} webserver"
+kv.addCommand "restart"      "Restart (stop+start) ${kv[prog_name]} webserver"        "restart"
+kv.addCommand "soft-restart" "Safely restart (stop+start) ${kv[prog_name]} webserver" "softRestart"
+kv.addCommand "status"       "Show current status of ${kv[prog_name]}"
+kv.addCommand "upgrade"      "Gracefully shutdown working instance and start new" "upgrade"
+kv.addCommand "reload"       "Reload and apply config"                            "reload"
+kv.addCommand "check"        "Validate config"                                    "check"
+kv.addCommand "config"       "Show full (merged) config"                          "showConfig"
+
+if [[ `grep 'ssl_dhparam' $conf_file` ]] ; then
+  if [[ ! -e $dh_param ]] ; then
+    kv.addCommand "gendhp" "Generate Diffie-Hellman parameter for EDH ciphers" "gendhp"
+    kv.addCommandVars "gendhp" "size"
+  fi
+fi
+
+kv.addCommandAlias "check"   "configtest"
+kv.addCommandAlias "restart" "condrestart"
+kv.addCommandAlias "config"  "conf"
+
+[[ $pagespeed_cache ]] && kv.addCommand "clean" "Clean pagespeed cache" "clean"
+
+kv.addHandler "start"   "startServiceHandler"
+kv.addHandler "start"   "preStartServiceHandler" "pre"
+kv.addHandler "stop"    "stopServiceHandler"
+
+if [[ -x ${binary}.debug ]] ; then
+  kv.addCommandVars "start" "debug"
+fi
+
+kv.disableOutputRedirect "start" "pre"
+
+###############################################################################
+
+prepare() {
+  local has_errors=""
+
+  [[ ! -x $binary ]] && has_errors=true && kv.error "<BINARY> must be executable file."
+  [[ ! -r $conf_file ]] && has_errors=true && kv.error "<CONF_FILE> must be readable file."
+  [[ ! -s $conf_file ]] && has_errors=true && kv.error "<CONF_FILE> can't be empty."
+
+  if kv.isRoot ; then
+    [[ ! -w $cache_dir ]] && has_errors=true && kv.error "<CACHE_DIR> must be writable directory."
+    [[ ! -w $pagespeed_cache ]] && has_errors=true && kv.error "<PAGESPEED_CACHE> must be writable directory."
+  fi
+
+  [[ $has_errors ]] && kv.exit $ACTION_ERROR
+}
+
+###############################################################################
+
+check() {
+  kv.showProcessMessage "Checking ${kv[prog_name]} config"
+
+  testServiceConfig true
+
+  local status=$?
+
+  kv.showStatusMessage "$status"
+
+  if [[ $status -ne 0 ]] ; then
+    kv.show "-------------------------------------------------------------------------------" $GREY
+    testServiceConfig
+    kv.show "-------------------------------------------------------------------------------" $GREY
+    return $ACTION_ERROR
+  fi
+
+  return $ACTION_OK
+}
+
+showConfig() {
+  if testServiceConfig true ; then
+    $binary -T -c $conf_file 2>/dev/null
+    return $ACTION_OK
+  fi
+
+  return $ACTION_ERROR
+}
+
+gendhp() {
+  kv.show ""
+  kv.show "For better SSL security we generate Diffie-Hellman parameter for EDH ciphers." $GREY
+  kv.show "This is going to take a long time. Please be patient." $GREY
+  kv.show ""
+
+  kv.showProcessMessage "Generating parameter"
+
+  local size="${1:-$DHP_SIZE}"
+
+  openssl dhparam -out $dh_param $size &> /dev/null
+
+  local retcode=$?
+  kv.showStatusMessage "$retcode"
+
+  return $retcode
+}
+
+restart() {
+  if check ; then
+    kv.restart
+  fi
+
+  return $?
+}
+
+softRestart() {
+  if ! kv.statusIs "$STATUS_WORKS" ; then
+    kv.show "You must start service before this command usage." $BROWN
+    return $ACTION_ERROR
+  fi
+
+  if ! check ; then
+    return $ACTION_ERROR
+  fi
+
+  kv.showProcessMessage "Restarting ${kv[prog_name]}"
+
+  upgradeService
+
+  local status=$?
+
+  kv.showStatusMessage "$status"
+
+  return $status
+}
+
+upgrade() {
+  if ! kv.statusIs "$STATUS_WORKS" ; then
+    kv.show "You must start service before this command usage." $BROWN
+    return $ACTION_ERROR
+  fi
+
+  if ! check ; then
+    return $ACTION_ERROR
+  fi
+
+  kv.showProcessMessage "Upgrading ${kv[prog_name]}"
+
+  upgradeService
+
+  local status=$?
+
+  kv.showStatusMessage "$status"
+
+  [[ $status -eq $ACTION_OK ]] && kv.log "service upgraded by ${kv[real_user]}."
+
+  return $status
+}
+
+reload() {
+  if ! kv.statusIs "$STATUS_WORKS" ; then
+    kv.show "You must start service before this command usage." $BROWN
+    return $ACTION_ERROR
+  fi
+
+  check
+
+  [[ $? -ne $ACTION_OK ]] && return $ACTION_ERROR
+
+  kv.showProcessMessage "Reloading config for ${kv[prog_name]}"
+
+  reloadServiceConfig
+
+  local status=$?
+
+  kv.showStatusMessage "$status"
+
+  [[ $status -eq $ACTION_OK ]] && kv.log "service config reloaded by ${kv[real_user]}."
+
+  return $status
+}
+
+clean() {
+  kv.showProcessMessage "Cleaning pagespeed cache"
+
+  cleanPagespeedCache
+
+  local status=$?
+
+  kv.showStatusMessage "$status"
+
+  [[ $status -eq $ACTION_OK ]] && kv.log "pagespeed cache cleaned by ${kv[real_user]}."
+
+  return $status
+}
+
+###############################################################################
+
+preStartServiceHandler() {
+  if isDHPGenRequired ; then
+    gendhp
+  fi
+
+  if ! testServiceConfig true ; then
+    kv.show "-------------------------------------------------------------------------------" $GREY
+    testServiceConfig
+    kv.show "-------------------------------------------------------------------------------" $GREY
+    return $ACTION_ERROR
+  fi
+}
+
+startServiceHandler() {
+  updateOwner
+
+  if [[ "$1" == "debug" || "$1" == "true" ]] ; then
+    if [[ -x ${binary}.debug ]] ; then
+      kv.run "${binary}.debug -c $conf_file"
+      [[ $? -ne $ACTION_OK ]] && return $ACTION_ERROR
+    else
+      kv.log "Can't find binary for debug version."
+      return 1
+    fi
+  else
+    kv.run "$binary -c $conf_file"
+    [[ $? -ne $ACTION_OK ]] && return $ACTION_ERROR
+  fi
+
+  if kv.getStartStatus ; then
+    kv.log "service started by ${kv[real_user]}."
+    return $ACTION_OK 
+  fi
+
+  return $ACTION_ERROR
+}
+
+stopServiceHandler() {
+  kv.sendSignal "$SIGNAL_TERM"
+
+  if kv.getStopStatus ; then
+    kv.log "service stopped by ${kv[real_user]}."
+    return $ACTION_OK
+  fi
+
+  return $ACTION_ERROR
+}
+
+upgradeService() {
+  updateOwner
+
+  kv.sendSignal "$SIGNAL_USR2"
+
+  local old_pid_file="${kv[pid_file]}.oldbin"
+
+  for i in $(seq 1 $delay_upgrade) ; do
+    if [[ -f ${kv[pid_file]} && -f $old_pid_file ]] ; then
+      local old_pid=`cat $old_pid_file`
+      kv.sendSignal "${SIGNAL_QUIT}" "$old_pid"
+      return $ACTION_OK
+    fi
+
+    sleep 1
+  done
+
+  return $ACTION_ERROR
+}
+
+reloadServiceConfig() {
+  kv.sendSignal "$SIGNAL_HUP"
+  return $ACTION_OK
+}
+
+testServiceConfig() {
+  local quiet="$1"
+
+  if [[ $quiet ]] ; then
+    $binary -t -c $conf_file -q &> /dev/null
+  else
+    $binary -t -c $conf_file -q
+  fi
+
+  local status=$?
+
+  [[ -f ${kv[pid_file]} && ! -s ${kv[pid_file]} ]] && kv.removePid
+
+  [[ $status -eq $ACTION_OK ]] && return $ACTION_OK || return $ACTION_ERROR
+}
+
+cleanPagespeedCache() {
+  if [[ -d $pagespeed_cache ]] ; then
+    if kv.statusIs "$STATUS_WORKS" ; then
+      touch $pagespeed_cache/cache.flush
+    else
+      rm -rf $pagespeed_cache/* &> /dev/null
+    fi
+
+    [[ $? -eq $ACTION_OK ]] && return $ACTION_OK || $ACTION_ERROR
+  fi
+
+  return $ACTION_ERROR
+}
+
+updateOwner() {
+  local user=`getUserFromConfig`
+
+  [[ -z "$user" ]] && return
+
+  if [[ $cache_dir && -d $cache_dir ]] ; then
+    chown -R $user: $cache_dir -R
+  fi
+
+  if [[ $pagespeed_cache && -d $pagespeed_cache ]] ; then
+    chown -R $user: $pagespeed_cache -R
+  fi
+
+  if [[ $log_dir && -d $log_dir ]] ; then
+    chown -R $user: $log_dir -R
+  fi
+}
+
+getUserFromConfig() {
+  cat $conf_file | egrep "^[ ]{0,}user" | tr -s " " | cut -f2 -d" " | tr -d ";"
+}
+
+isDHPGenRequired() {
+  if [[ `grep 'ssl_dhparam' $conf_file` ]] ; then
+    [[ ! -e $dh_param ]] && return 0 || return 1
+  fi
+
+  return 1
+}
+
+###############################################################################
+
+prepare
+
+kv.go $@

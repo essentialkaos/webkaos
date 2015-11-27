@@ -1,0 +1,655 @@
+diff -urN nginx-1.9.7-orig/auto/lib/openssl/make nginx-1.9.7/auto/lib/openssl/make
+--- nginx-1.9.7-orig/auto/lib/openssl/make	2015-11-22 00:24:20.997487767 +0100
++++ nginx-1.9.7/auto/lib/openssl/make	2014-10-11 13:11:31.000000000 +0200
+@@ -41,22 +41,28 @@
+     ;;
+ 
+     *)
++        case $USE_THREADS in
++            NO) OPENSSL_OPT="$OPENSSL_OPT no-threads" ;;
++            *)  OPENSSL_OPT="$OPENSSL_OPT threads" ;;
++        esac
++
+         case $OPENSSL in
+             /*) ngx_prefix="$OPENSSL/.openssl" ;;
+             *)  ngx_prefix="$PWD/$OPENSSL/.openssl" ;;
+         esac
+ 
++        if [ ! -d "$ngx_prefix" ]; then
+         cat << END                                            >> $NGX_MAKEFILE
+ 
+ $OPENSSL/.openssl/include/openssl/ssl.h:	$NGX_MAKEFILE
+ 	cd $OPENSSL \\
+ 	&& if [ -f Makefile ]; then \$(MAKE) clean; fi \\
+ 	&& ./config --prefix=$ngx_prefix no-shared $OPENSSL_OPT \\
+-	&& \$(MAKE) \\
+-	&& \$(MAKE) install LIBDIR=lib
++	&& \$(MAKE) -j1 \\
++	&& \$(MAKE) -j1 install LIBDIR=lib
+ 
+ END
+-
++		fi
+     ;;
+ 
+ esac
+diff -urN nginx-1.9.7-orig/src/core/nginx.c nginx-1.9.7/src/core/nginx.c
+--- nginx-1.9.7-orig/src/core/nginx.c	2015-11-22 00:24:20.994487692 +0100
++++ nginx-1.9.7/src/core/nginx.c	2015-11-22 00:42:04.000000000 +0100
+@@ -366,13 +366,13 @@
+ static void
+ ngx_show_version_info()
+ {
+-    ngx_write_stderr("nginx version: " NGINX_VER_BUILD NGX_LINEFEED);
++    ngx_write_stderr("webkaos version: " NGINX_VER_BUILD NGX_LINEFEED);
+ 
+     if (ngx_show_help) {
+         ngx_write_stderr(
+-            "Usage: nginx [-?hvVtTq] [-s signal] [-c filename] "
+-                         "[-p prefix] [-g directives]" NGX_LINEFEED
+-                         NGX_LINEFEED
++            "Usage: webkaos [-?hvVtTq] [-s signal] [-c filename] "
++                           "[-p prefix] [-g directives]" NGX_LINEFEED
++                                                         NGX_LINEFEED
+             "Options:" NGX_LINEFEED
+             "  -?,-h         : this help" NGX_LINEFEED
+             "  -v            : show version and exit" NGX_LINEFEED
+diff -urN nginx-1.9.7-orig/src/core/nginx.h nginx-1.9.7/src/core/nginx.h
+--- nginx-1.9.7-orig/src/core/nginx.h	2015-11-22 00:24:20.994487692 +0100
++++ nginx-1.9.7/src/core/nginx.h	2015-11-22 00:41:01.000000000 +0100
+@@ -11,7 +11,7 @@
+ 
+ #define nginx_version      1009007
+ #define NGINX_VERSION      "1.9.7"
+-#define NGINX_VER          "nginx/" NGINX_VERSION
++#define NGINX_VER          "webkaos/" NGINX_VERSION
+ 
+ #ifdef NGX_BUILD
+ #define NGINX_VER_BUILD    NGINX_VER " (" NGX_BUILD ")"
+@@ -19,7 +19,7 @@
+ #define NGINX_VER_BUILD    NGINX_VER
+ #endif
+ 
+-#define NGINX_VAR          "NGINX"
++#define NGINX_VAR          "WEBKAOS"
+ #define NGX_OLDPID_EXT     ".oldbin"
+ 
+ 
+diff -urN nginx-1.9.7-orig/src/core/ngx_log.c nginx-1.9.7/src/core/ngx_log.c
+--- nginx-1.9.7-orig/src/core/ngx_log.c	2015-11-22 00:24:20.994487692 +0100
++++ nginx-1.9.7/src/core/ngx_log.c	2015-11-22 00:44:07.000000000 +0100
+@@ -202,9 +202,9 @@
+         return;
+     }
+ 
+-    msg -= (7 + err_levels[level].len + 3);
++    msg -= (9 + err_levels[level].len + 3);
+ 
+-    (void) ngx_sprintf(msg, "nginx: [%V] ", &err_levels[level]);
++    (void) ngx_sprintf(msg, "webkaos: [%V] ", &err_levels[level]);
+ 
+     (void) ngx_write_console(ngx_stderr, msg, p - msg);
+ }
+@@ -264,7 +264,7 @@
+ 
+     last = errstr + NGX_MAX_ERROR_STR;
+ 
+-    p = ngx_cpymem(errstr, "nginx: ", 7);
++    p = ngx_cpymem(errstr, "webkaos: ", 9);
+ 
+     va_start(args, fmt);
+     p = ngx_vslprintf(p, last, fmt, args);
+@@ -640,7 +640,7 @@
+ 
+ #else
+         ngx_conf_log_error(NGX_LOG_EMERG, cf, 0,
+-                           "nginx was built without debug support");
++                           "webkaos was built without debug support");
+         return NGX_CONF_ERROR;
+ #endif
+ 
+diff -urN nginx-1.9.7-orig/src/event/ngx_event_openssl.c nginx-1.9.7/src/event/ngx_event_openssl.c
+--- nginx-1.9.7-orig/src/event/ngx_event_openssl.c	2015-11-22 00:24:20.989487510 +0100
++++ nginx-1.9.7/src/event/ngx_event_openssl.c	2015-11-22 00:45:54.000000000 +0100
+@@ -729,7 +729,7 @@
+             wbio = SSL_get_wbio((ngx_ssl_conn_t *) ssl_conn);
+ 
+             if (rbio != wbio) {
+-                (void) BIO_set_write_buffer_size(wbio, NGX_SSL_BUFSIZE);
++                (void) BIO_set_write_buffer_size(wbio, NGX_SSL_WRITE_BUFSIZE);
+                 c->ssl->handshake_buffer_set = 1;
+             }
+         }
+diff -urN nginx-1.9.7-orig/src/event/ngx_event_openssl.h nginx-1.9.7/src/event/ngx_event_openssl.h
+--- nginx-1.9.7-orig/src/event/ngx_event_openssl.h	2015-11-22 00:24:20.989487510 +0100
++++ nginx-1.9.7/src/event/ngx_event_openssl.h	2015-11-22 00:45:04.000000000 +0100
+@@ -118,8 +118,8 @@
+ #define NGX_SSL_BUFFER   1
+ #define NGX_SSL_CLIENT   2
+ 
+-#define NGX_SSL_BUFSIZE  16384
+-
++#define NGX_SSL_BUFSIZE       1400
++#define NGX_SSL_WRITE_BUFSIZE 16384
+ 
+ ngx_int_t ngx_ssl_init(ngx_log_t *log);
+ ngx_int_t ngx_ssl_create(ngx_ssl_t *ssl, ngx_uint_t protocols, void *data);
+diff -urN nginx-1.9.7-orig/src/http/modules/ngx_http_autoindex_module.c nginx-1.9.7/src/http/modules/ngx_http_autoindex_module.c
+--- nginx-1.9.7-orig/src/http/modules/ngx_http_autoindex_module.c	2015-11-22 00:24:20.984487370 +0100
++++ nginx-1.9.7/src/http/modules/ngx_http_autoindex_module.c	2014-12-29 14:19:39.000000000 +0100
+@@ -445,9 +445,11 @@
+     ;
+ 
+     static u_char  header[] =
+-        "</title></head>" CRLF
++        "</title>" CRLF
++        "<style>html,body{background-color:#FFF;color:#666;font-family:'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Sawasdee,Helvetica,Trebuchet,sans-serif;margin:12px}pre{font:300 .9em/1.4em 'Consolas','Droid Sans Mono','Menlo','Courier New',Courier,monospace}hr{border:none;background-color:#CCC;height:1px}h1{font-weight:100;color:#888;font-size:2.2em}a{color:#333}a:hover{color:#666}#dir{font-weight:bold}h1 span{color:#444}</style>" CRLF
++        "</head>" CRLF
+         "<body bgcolor=\"white\">" CRLF
+-        "<h1>Index of "
++        "<h1>Index of <span>"
+     ;
+ 
+     static u_char  tail[] =
+@@ -474,7 +476,7 @@
+           + r->uri.len + escape_html
+           + sizeof(header) - 1
+           + r->uri.len + escape_html
+-          + sizeof("</h1>") - 1
++          + sizeof("</span></h1>") - 1
+           + sizeof("<hr><pre><a href=\"../\">../</a>" CRLF) - 1
+           + sizeof("</pre><hr>") - 1
+           + sizeof(tail) - 1;
+@@ -495,7 +497,7 @@
+             entry[i].utf_len = entry[i].name.len;
+         }
+ 
+-        len += sizeof("<a href=\"") - 1
++        len += sizeof("<a id=\"dir\" href=\"") - 1
+             + entry[i].name.len + entry[i].escape
+             + 1                                          /* 1 is for "/" */
+             + sizeof("\">") - 1
+@@ -503,7 +505,7 @@
+             + entry[i].escape_html
+             + NGX_HTTP_AUTOINDEX_NAME_LEN + sizeof("&gt;") - 2
+             + sizeof("</a>") - 1
+-            + sizeof(" 28-Sep-1970 12:00 ") - 1
++            + sizeof(" 28/Sep/1970 12:00 ") - 1
+             + 20                                         /* the file size */
+             + 2;
+     }
+@@ -526,16 +528,20 @@
+         b->last = ngx_cpymem(b->last, r->uri.data, r->uri.len);
+     }
+ 
+-    b->last = ngx_cpymem(b->last, "</h1>", sizeof("</h1>") - 1);
++    b->last = ngx_cpymem(b->last, "</span></h1>", sizeof("</span></h1>") - 1);
+ 
+-    b->last = ngx_cpymem(b->last, "<hr><pre><a href=\"../\">../</a>" CRLF,
+-                         sizeof("<hr><pre><a href=\"../\">../</a>" CRLF) - 1);
++    b->last = ngx_cpymem(b->last, "<hr><pre><a id=\"dir\" href=\"../\">../</a>" CRLF,
++                         sizeof("<hr><pre><a id=\"dir\" href=\"../\">../</a>" CRLF) - 1);
+ 
+     alcf = ngx_http_get_module_loc_conf(r, ngx_http_autoindex_module);
+     tp = ngx_timeofday();
+ 
+     for (i = 0; i < entries->nelts; i++) {
+-        b->last = ngx_cpymem(b->last, "<a href=\"", sizeof("<a href=\"") - 1);
++        if (entry[i].dir) {
++          b->last = ngx_cpymem(b->last, "<a id=\"dir\" href=\"", sizeof("<a id=\"dir\" href=\"") - 1);
++        } else {
++          b->last = ngx_cpymem(b->last, "<a href=\"", sizeof("<a href=\"") - 1);
++        }
+ 
+         if (entry[i].escape) {
+             ngx_escape_uri(b->last, entry[i].name.data, entry[i].name.len,
+@@ -617,7 +623,7 @@
+ 
+         ngx_gmtime(entry[i].mtime + tp->gmtoff * 60 * alcf->localtime, &tm);
+ 
+-        b->last = ngx_sprintf(b->last, "%02d-%s-%d %02d:%02d ",
++        b->last = ngx_sprintf(b->last, "%02d/%s/%d %02d:%02d ",
+                               tm.ngx_tm_mday,
+                               months[tm.ngx_tm_mon - 1],
+                               tm.ngx_tm_year,
+diff -urN nginx-1.9.7-orig/src/http/ngx_http_header_filter_module.c nginx-1.9.7/src/http/ngx_http_header_filter_module.c
+--- nginx-1.9.7-orig/src/http/ngx_http_header_filter_module.c	2015-11-22 00:24:20.985487391 +0100
++++ nginx-1.9.7/src/http/ngx_http_header_filter_module.c	2015-11-22 00:49:18.000000000 +0100
+@@ -46,7 +46,7 @@
+ };
+ 
+ 
+-static char ngx_http_server_string[] = "Server: nginx" CRLF;
++static char ngx_http_server_string[] = "Server: webkaos" CRLF;
+ static char ngx_http_server_full_string[] = "Server: " NGINX_VER CRLF;
+ 
+ 
+diff -urN nginx-1.9.7-orig/src/http/ngx_http_special_response.c nginx-1.9.7/src/http/ngx_http_special_response.c
+--- nginx-1.9.7-orig/src/http/ngx_http_special_response.c	2015-11-22 00:24:20.987487428 +0100
++++ nginx-1.9.7/src/http/ngx_http_special_response.c	2015-04-17 00:59:47.000000000 +0200
+@@ -19,14 +19,14 @@
+ 
+ 
+ static u_char ngx_http_error_full_tail[] =
+-"<hr><center>" NGINX_VER "</center>" CRLF
++NGINX_VER "</div>" CRLF
+ "</body>" CRLF
+ "</html>" CRLF
+ ;
+ 
+ 
+ static u_char ngx_http_error_tail[] =
+-"<hr><center>nginx</center>" CRLF
++"webkaos</div>" CRLF
+ "</body>" CRLF
+ "</html>" CRLF
+ ;
+@@ -52,249 +52,275 @@
+ 
+ static char ngx_http_error_301_page[] =
+ "<html>" CRLF
+-"<head><title>301 Moved Permanently</title></head>" CRLF
+-"<body bgcolor=\"white\">" CRLF
+-"<center><h1>301 Moved Permanently</h1></center>" CRLF
++"<head><title>301 Moved Permanently</title>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<body>" CRLF
++"<div><h1>301 Moved Permanently</h1>" CRLF
+ ;
+ 
+ 
+ static char ngx_http_error_302_page[] =
+ "<html>" CRLF
+-"<head><title>302 Found</title></head>" CRLF
+-"<body bgcolor=\"white\">" CRLF
+-"<center><h1>302 Found</h1></center>" CRLF
++"<head><title>302 Found</title>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<body>" CRLF
++"<div><h1>302 Found</h1>" CRLF
+ ;
+ 
+ 
+ static char ngx_http_error_303_page[] =
+ "<html>" CRLF
+-"<head><title>303 See Other</title></head>" CRLF
+-"<body bgcolor=\"white\">" CRLF
+-"<center><h1>303 See Other</h1></center>" CRLF
++"<head><title>303 See Other</title>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<body>" CRLF
++"<div><h1>303 See Other</h1>" CRLF
+ ;
+ 
+ 
+ static char ngx_http_error_307_page[] =
+ "<html>" CRLF
+-"<head><title>307 Temporary Redirect</title></head>" CRLF
+-"<body bgcolor=\"white\">" CRLF
+-"<center><h1>307 Temporary Redirect</h1></center>" CRLF
++"<head><title>307 Temporary Redirect</title>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<body>" CRLF
++"<div><h1>307 Temporary Redirect</h1>" CRLF
+ ;
+ 
+ 
+ static char ngx_http_error_400_page[] =
+ "<html>" CRLF
+-"<head><title>400 Bad Request</title></head>" CRLF
+-"<body bgcolor=\"white\">" CRLF
+-"<center><h1>400 Bad Request</h1></center>" CRLF
++"<head><title>400 Bad Request</title>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<body>" CRLF
++"<div><h1>400 Bad Request</h1>" CRLF
+ ;
+ 
+ 
+ static char ngx_http_error_401_page[] =
+ "<html>" CRLF
+-"<head><title>401 Authorization Required</title></head>" CRLF
+-"<body bgcolor=\"white\">" CRLF
+-"<center><h1>401 Authorization Required</h1></center>" CRLF
++"<head><title>401 Authorization Required</title>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<body>" CRLF
++"<div><h1>401 Authorization Required</h1>" CRLF
+ ;
+ 
+ 
+ static char ngx_http_error_402_page[] =
+ "<html>" CRLF
+-"<head><title>402 Payment Required</title></head>" CRLF
+-"<body bgcolor=\"white\">" CRLF
+-"<center><h1>402 Payment Required</h1></center>" CRLF
++"<head><title>402 Payment Required</title>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<body>" CRLF
++"<div><h1>402 Payment Required</h1>" CRLF
+ ;
+ 
+ 
+ static char ngx_http_error_403_page[] =
+ "<html>" CRLF
+-"<head><title>403 Forbidden</title></head>" CRLF
+-"<body bgcolor=\"white\">" CRLF
+-"<center><h1>403 Forbidden</h1></center>" CRLF
++"<head><title>403 Forbidden</title>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<body>" CRLF
++"<div><h1>403 Forbidden</h1>" CRLF
+ ;
+ 
+ 
+ static char ngx_http_error_404_page[] =
+ "<html>" CRLF
+-"<head><title>404 Not Found</title></head>" CRLF
+-"<body bgcolor=\"white\">" CRLF
+-"<center><h1>404 Not Found</h1></center>" CRLF
++"<head><title>404 Not Found</title>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<body>" CRLF
++"<div><h1>404 Not Found</h1>" CRLF
+ ;
+ 
+ 
+ static char ngx_http_error_405_page[] =
+ "<html>" CRLF
+-"<head><title>405 Not Allowed</title></head>" CRLF
+-"<body bgcolor=\"white\">" CRLF
+-"<center><h1>405 Not Allowed</h1></center>" CRLF
++"<head><title>405 Not Allowed</title>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<body>" CRLF
++"<div><h1>405 Not Allowed</h1>" CRLF
+ ;
+ 
+ 
+ static char ngx_http_error_406_page[] =
+ "<html>" CRLF
+-"<head><title>406 Not Acceptable</title></head>" CRLF
+-"<body bgcolor=\"white\">" CRLF
+-"<center><h1>406 Not Acceptable</h1></center>" CRLF
++"<head><title>406 Not Acceptable</title>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<body>" CRLF
++"<div><h1>406 Not Acceptable</h1>" CRLF
+ ;
+ 
+ 
+ static char ngx_http_error_408_page[] =
+ "<html>" CRLF
+-"<head><title>408 Request Time-out</title></head>" CRLF
+-"<body bgcolor=\"white\">" CRLF
+-"<center><h1>408 Request Time-out</h1></center>" CRLF
++"<head><title>408 Request Time-out</title>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<body>" CRLF
++"<div><h1>408 Request Time-out</h1>" CRLF
+ ;
+ 
+ 
+ static char ngx_http_error_409_page[] =
+ "<html>" CRLF
+-"<head><title>409 Conflict</title></head>" CRLF
+-"<body bgcolor=\"white\">" CRLF
+-"<center><h1>409 Conflict</h1></center>" CRLF
++"<head><title>409 Conflict</title>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<body>" CRLF
++"<div><h1>409 Conflict</h1>" CRLF
+ ;
+ 
+ 
+ static char ngx_http_error_410_page[] =
+ "<html>" CRLF
+-"<head><title>410 Gone</title></head>" CRLF
+-"<body bgcolor=\"white\">" CRLF
+-"<center><h1>410 Gone</h1></center>" CRLF
++"<head><title>410 Gone</title>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<body>" CRLF
++"<div><h1>410 Gone</h1>" CRLF
+ ;
+ 
+ 
+ static char ngx_http_error_411_page[] =
+ "<html>" CRLF
+-"<head><title>411 Length Required</title></head>" CRLF
+-"<body bgcolor=\"white\">" CRLF
+-"<center><h1>411 Length Required</h1></center>" CRLF
++"<head><title>411 Length Required</title>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<body>" CRLF
++"<div><h1>411 Length Required</h1>" CRLF
+ ;
+ 
+ 
+ static char ngx_http_error_412_page[] =
+ "<html>" CRLF
+-"<head><title>412 Precondition Failed</title></head>" CRLF
+-"<body bgcolor=\"white\">" CRLF
+-"<center><h1>412 Precondition Failed</h1></center>" CRLF
++"<head><title>412 Precondition Failed</title>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<body>" CRLF
++"<div><h1>412 Precondition Failed</h1>" CRLF
+ ;
+ 
+ 
+ static char ngx_http_error_413_page[] =
+ "<html>" CRLF
+-"<head><title>413 Request Entity Too Large</title></head>" CRLF
+-"<body bgcolor=\"white\">" CRLF
+-"<center><h1>413 Request Entity Too Large</h1></center>" CRLF
++"<head><title>413 Request Entity Too Large</title>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<body>" CRLF
++"<div><h1>413 Request Entity Too Large</h1>" CRLF
+ ;
+ 
+ 
+ static char ngx_http_error_414_page[] =
+ "<html>" CRLF
+-"<head><title>414 Request-URI Too Large</title></head>" CRLF
+-"<body bgcolor=\"white\">" CRLF
+-"<center><h1>414 Request-URI Too Large</h1></center>" CRLF
++"<head><title>414 Request-URI Too Large</title>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<body>" CRLF
++"<div><h1>414 Request-URI Too Large</h1>" CRLF
+ ;
+ 
+ 
+ static char ngx_http_error_415_page[] =
+ "<html>" CRLF
+-"<head><title>415 Unsupported Media Type</title></head>" CRLF
+-"<body bgcolor=\"white\">" CRLF
+-"<center><h1>415 Unsupported Media Type</h1></center>" CRLF
++"<head><title>415 Unsupported Media Type</title>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<body>" CRLF
++"<div><h1>415 Unsupported Media Type</h1>" CRLF
+ ;
+ 
+ 
+ static char ngx_http_error_416_page[] =
+ "<html>" CRLF
+-"<head><title>416 Requested Range Not Satisfiable</title></head>" CRLF
+-"<body bgcolor=\"white\">" CRLF
+-"<center><h1>416 Requested Range Not Satisfiable</h1></center>" CRLF
++"<head><title>416 Requested Range Not Satisfiable</title>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<body>" CRLF
++"<div><h1>416 Requested Range Not Satisfiable</h1>" CRLF
+ ;
+ 
+ 
+ static char ngx_http_error_494_page[] =
+ "<html>" CRLF
+-"<head><title>400 Request Header Or Cookie Too Large</title></head>"
+-CRLF
+-"<body bgcolor=\"white\">" CRLF
+-"<center><h1>400 Bad Request</h1></center>" CRLF
+-"<center>Request Header Or Cookie Too Large</center>" CRLF
++"<head><title>400 Bad Request</title>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<body>" CRLF
++"<div><h1>400 Bad Request</h1>" CRLF
++"<h3>Request header or cookie too large</h3>" CRLF
+ ;
+ 
+ 
+ static char ngx_http_error_495_page[] =
+ "<html>" CRLF
+-"<head><title>400 The SSL certificate error</title></head>"
+-CRLF
+-"<body bgcolor=\"white\">" CRLF
+-"<center><h1>400 Bad Request</h1></center>" CRLF
+-"<center>The SSL certificate error</center>" CRLF
++"<head><title>400 Bad Request</title>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<body>" CRLF
++"<div><h1>400 Bad Request</h1>" CRLF
++"<h3>The SSL certificate error</h3>" CRLF
+ ;
+ 
+ 
+ static char ngx_http_error_496_page[] =
+ "<html>" CRLF
+-"<head><title>400 No required SSL certificate was sent</title></head>"
+-CRLF
+-"<body bgcolor=\"white\">" CRLF
+-"<center><h1>400 Bad Request</h1></center>" CRLF
+-"<center>No required SSL certificate was sent</center>" CRLF
++"<head><title>400 Bad Request</title>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<body>" CRLF
++"<div><h1>400 Bad Request</h1>" CRLF
++"<h3>No required SSL certificate was sent</h3>" CRLF
+ ;
+ 
+ 
+ static char ngx_http_error_497_page[] =
+ "<html>" CRLF
+-"<head><title>400 The plain HTTP request was sent to HTTPS port</title></head>"
+-CRLF
+-"<body bgcolor=\"white\">" CRLF
+-"<center><h1>400 Bad Request</h1></center>" CRLF
+-"<center>The plain HTTP request was sent to HTTPS port</center>" CRLF
++"<head><title>400 Bad Request</title>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<body>" CRLF
++"<div><h1>400 Bad Request</h1>" CRLF
++"<h3>The plain HTTP request was sent to HTTPS port</h3>" CRLF
+ ;
+ 
+ 
+ static char ngx_http_error_500_page[] =
+ "<html>" CRLF
+-"<head><title>500 Internal Server Error</title></head>" CRLF
+-"<body bgcolor=\"white\">" CRLF
+-"<center><h1>500 Internal Server Error</h1></center>" CRLF
++"<head><title>500 Internal Server Error</title>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<body>" CRLF
++"<div><h1>500 Internal Server Error</h1>" CRLF
+ ;
+ 
+ 
+ static char ngx_http_error_501_page[] =
+ "<html>" CRLF
+-"<head><title>501 Not Implemented</title></head>" CRLF
+-"<body bgcolor=\"white\">" CRLF
+-"<center><h1>501 Not Implemented</h1></center>" CRLF
++"<head><title>501 Not Implemented</title>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<body>" CRLF
++"<div><h1>501 Not Implemented</h1>" CRLF
+ ;
+ 
+ 
+ static char ngx_http_error_502_page[] =
+ "<html>" CRLF
+-"<head><title>502 Bad Gateway</title></head>" CRLF
+-"<body bgcolor=\"white\">" CRLF
+-"<center><h1>502 Bad Gateway</h1></center>" CRLF
++"<head><title>502 Bad Gateway</title>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<body>" CRLF
++"<div><h1>502 Bad Gateway</h1>" CRLF
+ ;
+ 
+ 
+ static char ngx_http_error_503_page[] =
+ "<html>" CRLF
+-"<head><title>503 Service Temporarily Unavailable</title></head>" CRLF
+-"<body bgcolor=\"white\">" CRLF
+-"<center><h1>503 Service Temporarily Unavailable</h1></center>" CRLF
++"<head><title>503 Service Temporarily Unavailable</title>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<body>" CRLF
++"<div><h1>503 Service Temporarily Unavailable</h1>" CRLF
+ ;
+ 
+ 
+ static char ngx_http_error_504_page[] =
+ "<html>" CRLF
+-"<head><title>504 Gateway Time-out</title></head>" CRLF
+-"<body bgcolor=\"white\">" CRLF
+-"<center><h1>504 Gateway Time-out</h1></center>" CRLF
++"<head><title>504 Gateway Time-out</title>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<body>" CRLF
++"<div><h1>504 Gateway Time-out</h1>" CRLF
+ ;
+ 
+ 
+ static char ngx_http_error_507_page[] =
+ "<html>" CRLF
+-"<head><title>507 Insufficient Storage</title></head>" CRLF
+-"<body bgcolor=\"white\">" CRLF
+-"<center><h1>507 Insufficient Storage</h1></center>" CRLF
++"<head><title>507 Insufficient Storage</title>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<body>" CRLF
++"<div><h1>507 Insufficient Storage</h1>" CRLF
+ ;
+ 
+ 
+diff -urN nginx-1.9.7-orig/src/http/v2/ngx_http_v2_filter_module.c nginx-1.9.7/src/http/v2/ngx_http_v2_filter_module.c
+--- nginx-1.9.7-orig/src/http/v2/ngx_http_v2_filter_module.c	2015-11-22 00:24:20.986487411 +0100
++++ nginx-1.9.7/src/http/v2/ngx_http_v2_filter_module.c	2015-11-22 00:55:06.000000000 +0100
+@@ -216,7 +216,7 @@
+ 
+     if (r->headers_out.server == NULL) {
+         len += 1 + clcf->server_tokens ? ngx_http_v2_literal_size(NGINX_VER)
+-                                       : ngx_http_v2_literal_size("nginx");
++                                       : ngx_http_v2_literal_size("webkaos");
+     }
+ 
+     if (r->headers_out.date == NULL) {
+@@ -412,8 +412,8 @@
+             pos = ngx_cpymem(pos, NGINX_VER, sizeof(NGINX_VER) - 1);
+ 
+         } else {
+-            *pos++ = NGX_HTTP_V2_ENCODE_RAW | (sizeof("nginx") - 1);
+-            pos = ngx_cpymem(pos, "nginx", sizeof("nginx") - 1);
++            *pos++ = NGX_HTTP_V2_ENCODE_RAW | (sizeof("webkaos") - 1);
++            pos = ngx_cpymem(pos, "webkaos", sizeof("webkaos") - 1);
+         }
+     }
+ 
+diff -urN nginx-1.9.7-orig/src/os/unix/ngx_setproctitle.c nginx-1.9.7/src/os/unix/ngx_setproctitle.c
+--- nginx-1.9.7-orig/src/os/unix/ngx_setproctitle.c	2015-11-22 00:24:20.991487593 +0100
++++ nginx-1.9.7/src/os/unix/ngx_setproctitle.c	2015-11-22 00:55:46.000000000 +0100
+@@ -89,7 +89,7 @@
+ 
+     ngx_os_argv[1] = NULL;
+ 
+-    p = ngx_cpystrn((u_char *) ngx_os_argv[0], (u_char *) "nginx: ",
++    p = ngx_cpystrn((u_char *) ngx_os_argv[0], (u_char *) "webkaos: ",
+                     ngx_os_argv_last - ngx_os_argv[0]);
+ 
+     p = ngx_cpystrn(p, (u_char *) title, ngx_os_argv_last - (char *) p);

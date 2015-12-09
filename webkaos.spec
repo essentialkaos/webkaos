@@ -43,7 +43,7 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define open_ssl_ver         1.0.2d
+%define open_ssl_ver         1.0.2e
 %define psol_ver             1.9.32.10
 %define pagespeed_ver        %{psol_ver}-beta
 %define pagespeed_fullver    release-%{pagespeed_ver}
@@ -56,7 +56,7 @@
 
 Summary:              Superb high performance web server
 Name:                 webkaos
-Version:              1.9.7
+Version:              1.9.9
 Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
@@ -79,7 +79,7 @@ Source30:             %{name}-index.html
 
 Source50:             https://github.com/pagespeed/ngx_pagespeed/archive/%{pagespeed_fullver}.zip
 Source51:             https://dl.google.com/dl/page-speed/psol/%{psol_ver}.tar.gz
-Source52:             https://github.com/chaoslawful/lua-nginx-module/archive/v%{lua_module_ver}.tar.gz
+Source52:             https://github.com/openresty/lua-nginx-module/archive/v%{lua_module_ver}.tar.gz
 Source53:             http://www.openssl.org/source/openssl-%{open_ssl_ver}.tar.gz
 Source54:             https://github.com/openresty/headers-more-nginx-module/archive/v%{mh_module_ver}.tar.gz
 
@@ -436,6 +436,10 @@ fi
 ###############################################################################
 
 %changelog
+* Thu Dec 10 2015 Anton Novojilov <andy@essentialkaos.com> - 1.9.9-0
+- Nginx updated to 1.9.9
+- OpenSSL updated to 1.0.2e
+
 * Sun Nov 22 2015 Anton Novojilov <andy@essentialkaos.com> - 1.9.7-0
 - Nginx updated to 1.9.7
 - Lua module updated to 0.9.19

@@ -1,6 +1,6 @@
-diff -urN nginx-1.9.9-orig/auto/lib/openssl/make nginx-1.9.9/auto/lib/openssl/make
---- nginx-1.9.9-orig/auto/lib/openssl/make	2015-12-09 21:46:44.953374911 +0100
-+++ nginx-1.9.9/auto/lib/openssl/make	2014-10-11 13:11:31.000000000 +0200
+diff -urN nginx-1.9.10-orig/auto/lib/openssl/make nginx-1.9.10/auto/lib/openssl/make
+--- nginx-1.9.10-orig/auto/lib/openssl/make	2016-02-02 00:50:21.845000241 +0100
++++ nginx-1.9.10/auto/lib/openssl/make	2014-10-11 13:11:31.000000000 +0200
 @@ -41,22 +41,28 @@
      ;;
  
@@ -33,9 +33,9 @@ diff -urN nginx-1.9.9-orig/auto/lib/openssl/make nginx-1.9.9/auto/lib/openssl/ma
      ;;
  
  esac
-diff -urN nginx-1.9.9-orig/src/core/nginx.c nginx-1.9.9/src/core/nginx.c
---- nginx-1.9.9-orig/src/core/nginx.c	2015-12-09 21:46:44.950374959 +0100
-+++ nginx-1.9.9/src/core/nginx.c	2015-12-09 21:53:13.000000000 +0100
+diff -urN nginx-1.9.10-orig/src/core/nginx.c nginx-1.9.10/src/core/nginx.c
+--- nginx-1.9.10-orig/src/core/nginx.c	2016-02-02 00:50:21.870000529 +0100
++++ nginx-1.9.10/src/core/nginx.c	2016-02-03 22:44:23.000000000 +0100
 @@ -366,13 +366,13 @@
  static void
  ngx_show_version_info()
@@ -54,13 +54,13 @@ diff -urN nginx-1.9.9-orig/src/core/nginx.c nginx-1.9.9/src/core/nginx.c
              "Options:" NGX_LINEFEED
              "  -?,-h         : this help" NGX_LINEFEED
              "  -v            : show version and exit" NGX_LINEFEED
-diff -urN nginx-1.9.9-orig/src/core/nginx.h nginx-1.9.9/src/core/nginx.h
---- nginx-1.9.9-orig/src/core/nginx.h	2015-12-09 21:46:44.949374975 +0100
-+++ nginx-1.9.9/src/core/nginx.h	2015-12-09 21:52:43.000000000 +0100
+diff -urN nginx-1.9.10-orig/src/core/nginx.h nginx-1.9.10/src/core/nginx.h
+--- nginx-1.9.10-orig/src/core/nginx.h	2016-02-02 00:50:21.871000531 +0100
++++ nginx-1.9.10/src/core/nginx.h	2016-02-03 22:43:38.000000000 +0100
 @@ -11,7 +11,7 @@
  
- #define nginx_version      1009009
- #define NGINX_VERSION      "1.9.9"
+ #define nginx_version      1009010
+ #define NGINX_VERSION      "1.9.10"
 -#define NGINX_VER          "nginx/" NGINX_VERSION
 +#define NGINX_VER          "webkaos/" NGINX_VERSION
  
@@ -75,9 +75,9 @@ diff -urN nginx-1.9.9-orig/src/core/nginx.h nginx-1.9.9/src/core/nginx.h
  #define NGX_OLDPID_EXT     ".oldbin"
  
  
-diff -urN nginx-1.9.9-orig/src/core/ngx_log.c nginx-1.9.9/src/core/ngx_log.c
---- nginx-1.9.9-orig/src/core/ngx_log.c	2015-12-09 21:46:44.950374959 +0100
-+++ nginx-1.9.9/src/core/ngx_log.c	2015-12-09 21:57:57.000000000 +0100
+diff -urN nginx-1.9.10-orig/src/core/ngx_log.c nginx-1.9.10/src/core/ngx_log.c
+--- nginx-1.9.10-orig/src/core/ngx_log.c	2016-02-02 00:50:21.870000530 +0100
++++ nginx-1.9.10/src/core/ngx_log.c	2016-02-03 22:45:32.000000000 +0100
 @@ -202,9 +202,9 @@
          return;
      }
@@ -108,9 +108,9 @@ diff -urN nginx-1.9.9-orig/src/core/ngx_log.c nginx-1.9.9/src/core/ngx_log.c
          return NGX_CONF_ERROR;
  #endif
  
-diff -urN nginx-1.9.9-orig/src/event/ngx_event_openssl.c nginx-1.9.9/src/event/ngx_event_openssl.c
---- nginx-1.9.9-orig/src/event/ngx_event_openssl.c	2015-12-09 21:46:44.943375072 +0100
-+++ nginx-1.9.9/src/event/ngx_event_openssl.c	2015-12-09 21:59:21.000000000 +0100
+diff -urN nginx-1.9.10-orig/src/event/ngx_event_openssl.c nginx-1.9.10/src/event/ngx_event_openssl.c
+--- nginx-1.9.10-orig/src/event/ngx_event_openssl.c	2016-02-02 00:50:21.855000475 +0100
++++ nginx-1.9.10/src/event/ngx_event_openssl.c	2016-02-03 22:47:09.000000000 +0100
 @@ -729,7 +729,7 @@
              wbio = SSL_get_wbio((ngx_ssl_conn_t *) ssl_conn);
  
@@ -120,9 +120,9 @@ diff -urN nginx-1.9.9-orig/src/event/ngx_event_openssl.c nginx-1.9.9/src/event/n
                  c->ssl->handshake_buffer_set = 1;
              }
          }
-diff -urN nginx-1.9.9-orig/src/event/ngx_event_openssl.h nginx-1.9.9/src/event/ngx_event_openssl.h
---- nginx-1.9.9-orig/src/event/ngx_event_openssl.h	2015-12-09 21:46:44.942375089 +0100
-+++ nginx-1.9.9/src/event/ngx_event_openssl.h	2015-12-09 22:00:09.000000000 +0100
+diff -urN nginx-1.9.10-orig/src/event/ngx_event_openssl.h nginx-1.9.10/src/event/ngx_event_openssl.h
+--- nginx-1.9.10-orig/src/event/ngx_event_openssl.h	2016-02-02 00:50:21.856000493 +0100
++++ nginx-1.9.10/src/event/ngx_event_openssl.h	2016-02-03 22:47:31.000000000 +0100
 @@ -118,7 +118,8 @@
  #define NGX_SSL_BUFFER   1
  #define NGX_SSL_CLIENT   2
@@ -133,9 +133,9 @@ diff -urN nginx-1.9.9-orig/src/event/ngx_event_openssl.h nginx-1.9.9/src/event/n
  
  
  ngx_int_t ngx_ssl_init(ngx_log_t *log);
-diff -urN nginx-1.9.9-orig/src/http/modules/ngx_http_autoindex_module.c nginx-1.9.9/src/http/modules/ngx_http_autoindex_module.c
---- nginx-1.9.9-orig/src/http/modules/ngx_http_autoindex_module.c	2015-12-09 21:46:44.937375126 +0100
-+++ nginx-1.9.9/src/http/modules/ngx_http_autoindex_module.c	2014-12-29 14:19:39.000000000 +0100
+diff -urN nginx-1.9.10-orig/src/http/modules/ngx_http_autoindex_module.c nginx-1.9.10/src/http/modules/ngx_http_autoindex_module.c
+--- nginx-1.9.10-orig/src/http/modules/ngx_http_autoindex_module.c	2016-02-02 00:50:21.861000547 +0100
++++ nginx-1.9.10/src/http/modules/ngx_http_autoindex_module.c	2014-12-29 14:19:39.000000000 +0100
 @@ -445,9 +445,11 @@
      ;
  
@@ -211,9 +211,9 @@ diff -urN nginx-1.9.9-orig/src/http/modules/ngx_http_autoindex_module.c nginx-1.
                                tm.ngx_tm_mday,
                                months[tm.ngx_tm_mon - 1],
                                tm.ngx_tm_year,
-diff -urN nginx-1.9.9-orig/src/http/ngx_http_header_filter_module.c nginx-1.9.9/src/http/ngx_http_header_filter_module.c
---- nginx-1.9.9-orig/src/http/ngx_http_header_filter_module.c	2015-12-09 21:46:44.939375119 +0100
-+++ nginx-1.9.9/src/http/ngx_http_header_filter_module.c	2015-12-09 22:01:59.000000000 +0100
+diff -urN nginx-1.9.10-orig/src/http/ngx_http_header_filter_module.c nginx-1.9.10/src/http/ngx_http_header_filter_module.c
+--- nginx-1.9.10-orig/src/http/ngx_http_header_filter_module.c	2016-02-02 00:50:21.866000529 +0100
++++ nginx-1.9.10/src/http/ngx_http_header_filter_module.c	2016-02-03 22:49:43.000000000 +0100
 @@ -46,7 +46,7 @@
  };
  
@@ -223,9 +223,9 @@ diff -urN nginx-1.9.9-orig/src/http/ngx_http_header_filter_module.c nginx-1.9.9/
  static char ngx_http_server_full_string[] = "Server: " NGINX_VER CRLF;
  
  
-diff -urN nginx-1.9.9-orig/src/http/ngx_http_special_response.c nginx-1.9.9/src/http/ngx_http_special_response.c
---- nginx-1.9.9-orig/src/http/ngx_http_special_response.c	2015-12-09 21:46:44.941375105 +0100
-+++ nginx-1.9.9/src/http/ngx_http_special_response.c	2015-12-09 22:07:34.000000000 +0100
+diff -urN nginx-1.9.10-orig/src/http/ngx_http_special_response.c nginx-1.9.10/src/http/ngx_http_special_response.c
+--- nginx-1.9.10-orig/src/http/ngx_http_special_response.c	2016-02-02 00:50:21.866000529 +0100
++++ nginx-1.9.10/src/http/ngx_http_special_response.c	2016-02-03 23:53:21.000000000 +0100
 @@ -19,14 +19,14 @@
  
  
@@ -243,7 +243,7 @@ diff -urN nginx-1.9.9-orig/src/http/ngx_http_special_response.c nginx-1.9.9/src/
  "</body>" CRLF
  "</html>" CRLF
  ;
-@@ -52,249 +52,275 @@
+@@ -52,249 +52,284 @@
  
  static char ngx_http_error_301_page[] =
  "<html>" CRLF
@@ -482,6 +482,15 @@ diff -urN nginx-1.9.9-orig/src/http/ngx_http_special_response.c nginx-1.9.9/src/
 +"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
 +"<body>" CRLF
 +"<div><h1>416 Requested Range Not Satisfiable</h1>" CRLF
++;
++
++
++static char ngx_http_error_451_page[] =
++"<html>" CRLF
++"<head><title>451 Unavailable For Legal Reasons</title>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<body>" CRLF
++"<div><h1>451 Unavailable For Legal Reasons</h1>" CRLF
  ;
  
  
@@ -617,9 +626,54 @@ diff -urN nginx-1.9.9-orig/src/http/ngx_http_special_response.c nginx-1.9.9/src/
  ;
  
  
-diff -urN nginx-1.9.9-orig/src/http/v2/ngx_http_v2_filter_module.c nginx-1.9.9/src/http/v2/ngx_http_v2_filter_module.c
---- nginx-1.9.9-orig/src/http/v2/ngx_http_v2_filter_module.c	2015-12-09 21:46:44.940375117 +0100
-+++ nginx-1.9.9/src/http/v2/ngx_http_v2_filter_module.c	2015-12-09 22:08:54.000000000 +0100
+@@ -334,8 +369,43 @@
+     ngx_string(ngx_http_error_414_page),
+     ngx_string(ngx_http_error_415_page),
+     ngx_string(ngx_http_error_416_page),
++    ngx_null_string,                     /* 417 */
++    ngx_null_string,                     /* 418 */
++    ngx_null_string,                     /* 419 */
++    ngx_null_string,                     /* 420 */
++    ngx_null_string,                     /* 421 */
++    ngx_null_string,                     /* 422 */
++    ngx_null_string,                     /* 423 */
++    ngx_null_string,                     /* 424 */
++    ngx_null_string,                     /* 425 */
++    ngx_null_string,                     /* 426 */
++    ngx_null_string,                     /* 427 */
++    ngx_null_string,                     /* 428 */
++    ngx_null_string,                     /* 429 */
++    ngx_null_string,                     /* 430 */
++    ngx_null_string,                     /* 431 */
++    ngx_null_string,                     /* 432 */
++    ngx_null_string,                     /* 433 */
++    ngx_null_string,                     /* 434 */
++    ngx_null_string,                     /* 435 */
++    ngx_null_string,                     /* 436 */
++    ngx_null_string,                     /* 437 */
++    ngx_null_string,                     /* 438 */
++    ngx_null_string,                     /* 439 */
++    ngx_null_string,                     /* 440 */
++    ngx_null_string,                     /* 441 */
++    ngx_null_string,                     /* 442 */
++    ngx_null_string,                     /* 443 */
++    ngx_null_string,                     /* 444 */
++    ngx_null_string,                     /* 445 */
++    ngx_null_string,                     /* 446 */
++    ngx_null_string,                     /* 447 */
++    ngx_null_string,                     /* 448 */
++    ngx_null_string,                     /* 449 */
++    ngx_null_string,                     /* 450 */
++    ngx_string(ngx_http_error_451_page),
+ 
+-#define NGX_HTTP_LAST_4XX  417
++#define NGX_HTTP_LAST_4XX  452
+ #define NGX_HTTP_OFF_5XX   (NGX_HTTP_LAST_4XX - 400 + NGX_HTTP_OFF_4XX)
+ 
+     ngx_string(ngx_http_error_494_page), /* 494, request header too large */
+diff -urN nginx-1.9.10-orig/src/http/v2/ngx_http_v2_filter_module.c nginx-1.9.10/src/http/v2/ngx_http_v2_filter_module.c
+--- nginx-1.9.10-orig/src/http/v2/ngx_http_v2_filter_module.c	2016-02-02 00:50:21.867000523 +0100
++++ nginx-1.9.10/src/http/v2/ngx_http_v2_filter_module.c	2016-02-03 23:05:38.000000000 +0100
 @@ -216,7 +216,7 @@
  
      if (r->headers_out.server == NULL) {
@@ -640,9 +694,9 @@ diff -urN nginx-1.9.9-orig/src/http/v2/ngx_http_v2_filter_module.c nginx-1.9.9/s
          }
      }
  
-diff -urN nginx-1.9.9-orig/src/os/unix/ngx_setproctitle.c nginx-1.9.9/src/os/unix/ngx_setproctitle.c
---- nginx-1.9.9-orig/src/os/unix/ngx_setproctitle.c	2015-12-09 21:46:44.946375023 +0100
-+++ nginx-1.9.9/src/os/unix/ngx_setproctitle.c	2015-12-09 22:09:29.000000000 +0100
+diff -urN nginx-1.9.10-orig/src/os/unix/ngx_setproctitle.c nginx-1.9.10/src/os/unix/ngx_setproctitle.c
+--- nginx-1.9.10-orig/src/os/unix/ngx_setproctitle.c	2016-02-02 00:50:21.851000419 +0100
++++ nginx-1.9.10/src/os/unix/ngx_setproctitle.c	2016-02-03 23:06:08.000000000 +0100
 @@ -89,7 +89,7 @@
  
      ngx_os_argv[1] = NULL;

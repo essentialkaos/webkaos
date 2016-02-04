@@ -43,20 +43,20 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define open_ssl_ver         1.0.2e
+%define open_ssl_ver         1.0.2f
 %define psol_ver             1.9.32.10
 %define pagespeed_ver        %{psol_ver}-beta
 %define pagespeed_fullver    release-%{pagespeed_ver}
 %define pagespeed_cache_path %{service_home}/pagespeed
 
-%define lua_module_ver       0.9.19
-%define mh_module_ver        0.28
+%define lua_module_ver       0.10.0
+%define mh_module_ver        0.29
 
 ###############################################################################
 
 Summary:              Superb high performance web server
 Name:                 webkaos
-Version:              1.9.9
+Version:              1.9.10
 Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
@@ -436,6 +436,13 @@ fi
 ###############################################################################
 
 %changelog
+* Fri Jan 29 2016 Anton Novojilov <andy@essentialkaos.com> - 1.9.10-0
+- Nginx updated to 1.9.10
+- MoreHeaders module updated to 0.29
+- Lua module updated to 0.10.0
+- OpenSSL updated to 1.0.2f
+- Added status code 451 (Unavailable For Legal Reasons)
+
 * Thu Dec 10 2015 Anton Novojilov <andy@essentialkaos.com> - 1.9.9-0
 - Nginx updated to 1.9.9
 - OpenSSL updated to 1.0.2e

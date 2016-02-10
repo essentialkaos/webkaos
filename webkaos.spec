@@ -44,7 +44,7 @@
 %define service_home         %{_cachedir}/%{service_name}
 
 %define open_ssl_ver         1.0.2f
-%define psol_ver             1.9.32.10
+%define psol_ver             1.9.32.13
 %define pagespeed_ver        %{psol_ver}-beta
 %define pagespeed_fullver    release-%{pagespeed_ver}
 %define pagespeed_cache_path %{service_home}/pagespeed
@@ -57,7 +57,7 @@
 Summary:              Superb high performance web server
 Name:                 webkaos
 Version:              1.9.10
-Release:              0%{?dist}
+Release:              1%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 Vendor:               Nginx / Google / CloudFlare / ESSENTIALKAOS
@@ -436,6 +436,9 @@ fi
 ###############################################################################
 
 %changelog
+* Wed Feb 10 2016 Anton Novojilov <andy@essentialkaos.com> - 1.9.10-1
+- PageSpeed updated to 1.9.32.13
+
 * Fri Jan 29 2016 Anton Novojilov <andy@essentialkaos.com> - 1.9.10-0
 - Nginx updated to 1.9.10
 - MoreHeaders module updated to 0.29

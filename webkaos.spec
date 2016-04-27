@@ -43,21 +43,23 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define open_ssl_ver         1.0.2f
-%define psol_ver             1.9.32.13
+%define open_ssl_ver         1.0.2g
+%define psol_ver             1.9.32.14
+%define lua_module_ver       0.10.2
+%define mh_module_ver        0.29
+%define pcre_ver             8.38
+%define zlib_ver             1.2.8
+
 %define pagespeed_ver        %{psol_ver}-beta
 %define pagespeed_fullver    release-%{pagespeed_ver}
 %define pagespeed_cache_path %{service_home}/pagespeed
-
-%define lua_module_ver       0.10.0
-%define mh_module_ver        0.29
 
 ###############################################################################
 
 Summary:              Superb high performance web server
 Name:                 webkaos
-Version:              1.9.10
-Release:              1%{?dist}
+Version:              1.10.0
+Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 Vendor:               Nginx / Google / CloudFlare / ESSENTIALKAOS
@@ -70,10 +72,11 @@ Source3:              %{name}.sysconfig
 Source4:              %{name}.conf
 
 Source20:             pagespeed.conf
-Source21:             pagespeed_enabled.conf
-Source22:             pagespeed_access.pswd
+Source21:             pagespeed-enabled.conf
+Source22:             pagespeed-access.pswd
 Source23:             ssl.conf
 Source24:             common.conf
+Source25:             bots.conf
 
 Source30:             %{name}-index.html
 
@@ -82,17 +85,19 @@ Source51:             https://dl.google.com/dl/page-speed/psol/%{psol_ver}.tar.g
 Source52:             https://github.com/openresty/lua-nginx-module/archive/v%{lua_module_ver}.tar.gz
 Source53:             http://www.openssl.org/source/openssl-%{open_ssl_ver}.tar.gz
 Source54:             https://github.com/openresty/headers-more-nginx-module/archive/v%{mh_module_ver}.tar.gz
+Source55:             http://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-%{pcre_ver}.tar.gz
+Source56:             http://zlib.net/zlib-%{zlib_ver}.tar.gz
 
 Patch0:               %{name}.patch
 Patch1:               mime.patch
+Patch2:               pagespeed-config-%{psol_ver}.patch
 
 BuildRoot:            %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:             initscripts >= 8.36 openssl zlib
-Requires:             gd libXpm libxslt libluajit kaosv >= 2.6
+Requires:             gd libXpm libxslt libluajit kaosv >= 2.8
 
-BuildRequires:        make gcc-c++ zlib-devel pcre-devel perl
-BuildRequires:        openssl-devel make libluajit-devel
+BuildRequires:        make gcc-c++ perl openssl-devel libluajit-devel
 
 Requires(pre):        shadow-utils
 Requires(post):       chkconfig
@@ -132,15 +137,22 @@ Links for nginx compatibility.
 %prep
 %setup -q -n nginx-%{version}
 
-%patch0 -p1
-%patch1 -p1
-
-%build
 %{__unzip}    %{SOURCE50}
 %{__tar} xzvf %{SOURCE51} -C ngx_pagespeed-%{pagespeed_fullver}
 %{__tar} xzvf %{SOURCE52}
 %{__tar} xzvf %{SOURCE53}
 %{__tar} xzvf %{SOURCE54}
+%{__tar} xzvf %{SOURCE55}
+%{__tar} xzvf %{SOURCE56}
+
+%patch0 -p1
+%patch1 -p1
+
+pushd ngx_pagespeed-%{pagespeed_fullver}
+%patch2 -p1
+popd
+
+%build
 
 # Fixed bug with ngx_pagespeed comilation on i386
 %ifarch %ix86
@@ -158,6 +170,8 @@ Links for nginx compatibility.
 
 %{__mv} lua-nginx-module-%{lua_module_ver}/README.markdown ./LUAMODULE-README.markdown
 %{__mv} lua-nginx-module-%{lua_module_ver}/Changes         ./LUAMODULE-CHANGES
+
+%{__mv} headers-more-nginx-module-%{mh_module_ver}/README.markdown ./HEADERSMORE-README.markdown
 
 ./configure \
         --prefix=%{_sysconfdir}/%{name} \
@@ -194,6 +208,9 @@ Links for nginx compatibility.
         --with-file-aio \
         --with-ipv6 \
         --with-debug \
+        --with-zlib=zlib-%{zlib_ver} \
+        --with-pcre-jit \
+        --with-pcre=pcre-%{pcre_ver} \
         --with-openssl-opt=no-krb5 \
         --with-openssl=openssl-%{open_ssl_ver} \
         --add-module=ngx_pagespeed-%{pagespeed_fullver} \
@@ -239,6 +256,9 @@ Links for nginx compatibility.
         --with-mail_ssl_module \
         --with-file-aio \
         --with-ipv6 \
+        --with-zlib=zlib-%{zlib_ver} \
+        --with-pcre-jit \
+        --with-pcre=pcre-%{pcre_ver} \
         --with-openssl-opt=no-krb5 \
         --with-openssl=openssl-%{open_ssl_ver} \
         --add-module=ngx_pagespeed-%{pagespeed_fullver} \
@@ -295,6 +315,7 @@ install -dm 755 %{buildroot}%{_sysconfdir}/%{name}/xtra
 install -pm 644 %{SOURCE4} \
                 %{buildroot}%{_sysconfdir}/%{name}/%{name}.conf
 
+# Install XTRA configs
 install -pm 644 %{SOURCE20} \
                 %{buildroot}%{_sysconfdir}/%{name}/xtra/
 install -pm 644 %{SOURCE21} \
@@ -304,6 +325,8 @@ install -pm 644 %{SOURCE22} \
 install -pm 644 %{SOURCE23} \
                 %{buildroot}%{_sysconfdir}/%{name}/xtra/
 install -pm 644 %{SOURCE24} \
+                %{buildroot}%{_sysconfdir}/%{name}/xtra/
+install -pm 644 %{SOURCE25} \
                 %{buildroot}%{_sysconfdir}/%{name}/xtra/
 
 install -dm 755 %{buildroot}%{_sysconfdir}/sysconfig
@@ -385,6 +408,7 @@ fi
 %doc NGINX-CHANGES NGINX-CHANGES.ru NGINX-LICENSE NGINX-README
 %doc PAGESPEED-LICENSE PAGESPEED-README.md
 %doc LUAMODULE-README.markdown LUAMODULE-CHANGES
+%doc HEADERSMORE-README.markdown
 
 %{_sbindir}/%{name}
 
@@ -393,11 +417,12 @@ fi
 %dir %{_sysconfdir}/%{name}/conf.d
 
 %config(noreplace) %{_sysconfdir}/%{name}/%{name}.conf
-%config(noreplace) %{_sysconfdir}/%{name}/xtra/pagespeed_access.pswd
+%config(noreplace) %{_sysconfdir}/%{name}/xtra/pagespeed-access.pswd
 %config(noreplace) %{_sysconfdir}/%{name}/xtra/pagespeed.conf
-%config(noreplace) %{_sysconfdir}/%{name}/xtra/pagespeed_enabled.conf
+%config(noreplace) %{_sysconfdir}/%{name}/xtra/pagespeed-enabled.conf
 %config %{_sysconfdir}/%{name}/xtra/common.conf
 %config %{_sysconfdir}/%{name}/xtra/ssl.conf
+%config %{_sysconfdir}/%{name}/xtra/bots.conf
 
 %config %{_sysconfdir}/%{name}/mime.types
 %config %{_sysconfdir}/%{name}/fastcgi_params
@@ -436,6 +461,13 @@ fi
 ###############################################################################
 
 %changelog
+* Wed Apr 27 2016 Anton Novojilov <andy@essentialkaos.com> - 1.10.0-0
+- Nginx updated to 1.10.0
+- PageSpeed updated to 1.9.32.14
+- Lua module updated to 0.10.2
+- OpenSSL updated to 1.0.2g
+- Added pcre with jit and zlib
+
 * Wed Feb 10 2016 Anton Novojilov <andy@essentialkaos.com> - 1.9.10-1
 - PageSpeed updated to 1.9.32.13
 

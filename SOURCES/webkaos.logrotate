@@ -1,4 +1,5 @@
-/var/log/webkaos/*.log {
+/var/log/webkaos/*.log 
+/var/log/webkaos/*/*.log {
     daily
     missingok
     rotate 62

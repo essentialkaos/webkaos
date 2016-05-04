@@ -43,7 +43,7 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define open_ssl_ver         1.0.2g
+%define open_ssl_ver         1.0.2h
 %define psol_ver             1.9.32.14
 %define lua_module_ver       0.10.2
 %define mh_module_ver        0.29
@@ -59,7 +59,7 @@
 Summary:              Superb high performance web server
 Name:                 webkaos
 Version:              1.10.0
-Release:              0%{?dist}
+Release:              1%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 Vendor:               Nginx / Google / CloudFlare / ESSENTIALKAOS
@@ -461,6 +461,9 @@ fi
 ###############################################################################
 
 %changelog
+* Wed May 04 2016 Anton Novojilov <andy@essentialkaos.com> - 1.10.0-1
+- OpenSSL updated to 1.0.2h
+
 * Wed Apr 27 2016 Anton Novojilov <andy@essentialkaos.com> - 1.10.0-0
 - Nginx updated to 1.10.0
 - PageSpeed updated to 1.9.32.14

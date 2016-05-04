@@ -83,7 +83,7 @@ Source30:             %{name}-index.html
 Source50:             https://github.com/pagespeed/ngx_pagespeed/archive/%{pagespeed_fullver}.zip
 Source51:             https://dl.google.com/dl/page-speed/psol/%{psol_ver}.tar.gz
 Source52:             https://github.com/openresty/lua-nginx-module/archive/v%{lua_module_ver}.tar.gz
-Source53:             http://www.openssl.org/source/openssl-%{open_ssl_ver}.tar.gz
+Source53:             https://www.openssl.org/source/openssl-%{open_ssl_ver}.tar.gz
 Source54:             https://github.com/openresty/headers-more-nginx-module/archive/v%{mh_module_ver}.tar.gz
 Source55:             http://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-%{pcre_ver}.tar.gz
 Source56:             http://zlib.net/zlib-%{zlib_ver}.tar.gz

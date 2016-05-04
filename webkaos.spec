@@ -43,7 +43,7 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define open_ssl_ver         1.0.2g
+%define open_ssl_ver         1.0.2h
 %define psol_ver             1.9.32.14
 %define lua_module_ver       0.10.2
 %define mh_module_ver        0.29
@@ -59,7 +59,7 @@
 Summary:              Superb high performance web server
 Name:                 webkaos
 Version:              1.10.0
-Release:              0%{?dist}
+Release:              1%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 Vendor:               Nginx / Google / CloudFlare / ESSENTIALKAOS
@@ -83,7 +83,7 @@ Source30:             %{name}-index.html
 Source50:             https://github.com/pagespeed/ngx_pagespeed/archive/%{pagespeed_fullver}.zip
 Source51:             https://dl.google.com/dl/page-speed/psol/%{psol_ver}.tar.gz
 Source52:             https://github.com/openresty/lua-nginx-module/archive/v%{lua_module_ver}.tar.gz
-Source53:             http://www.openssl.org/source/openssl-%{open_ssl_ver}.tar.gz
+Source53:             https://www.openssl.org/source/openssl-%{open_ssl_ver}.tar.gz
 Source54:             https://github.com/openresty/headers-more-nginx-module/archive/v%{mh_module_ver}.tar.gz
 Source55:             http://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-%{pcre_ver}.tar.gz
 Source56:             http://zlib.net/zlib-%{zlib_ver}.tar.gz
@@ -461,6 +461,9 @@ fi
 ###############################################################################
 
 %changelog
+* Wed May 04 2016 Anton Novojilov <andy@essentialkaos.com> - 1.10.0-1
+- OpenSSL updated to 1.0.2h
+
 * Wed Apr 27 2016 Anton Novojilov <andy@essentialkaos.com> - 1.10.0-0
 - Nginx updated to 1.10.0
 - PageSpeed updated to 1.9.32.14

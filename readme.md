@@ -4,7 +4,7 @@
 
 ### Feature list
 
-* Improved default SSL preferencies (A+ by default on SSL Labs)
+* Improved default SSL preferencies (A+ by default on [SSL Labs](https://www.ssllabs.com/ssltest/))
 * Improved SSL/TLS performance
 * [Lua](https://github.com/openresty/lua-nginx-module), [Headers More](https://github.com/openresty/headers-more-nginx-module) and [PageSpeed](https://github.com/pagespeed/ngx_pagespeed) module from the box
 * Improved SysV script

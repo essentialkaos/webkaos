@@ -6,7 +6,7 @@
 
 * Improved default SSL preferencies (A+ by default on SSL Labs)
 * Improved SSL/TLS performance
-* Lua, Headers More and PageSpeed module from the box
+* [Lua](https://github.com/openresty/lua-nginx-module), [Headers More](https://github.com/openresty/headers-more-nginx-module) and [PageSpeed](https://github.com/pagespeed/ngx_pagespeed) module from the box
 * Improved SysV script
 * Well-looking error pages
 * Improved design of index pages
@@ -17,7 +17,7 @@
 ###### From ESSENTIAL KAOS Public repo for RHEL6/CentOS6
 
 ````
-yum install -y http://release.yum.kaos.io/i386/kaos-repo-6.8-0.el6.noarch.rpm
+yum install -y https://yum.kaos.io/6/release/i386/kaos-repo-7.0-0.el6.noarch.rpm
 yum install webkaos
 ````
 

@@ -1,6 +1,6 @@
 # WEBKAOS
 
-*webkaos* is a web-server based on latest version of Nginx.
+`webkaos` is a web-server based on latest version of [Nginx](http://nginx.org).
 
 ### Feature list
 

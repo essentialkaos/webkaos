@@ -1,4 +1,4 @@
-# WEBKAOS
+![WEBKAOS Logo](https://essentialkaos.com/github/webkaos-v2.png)
 
 `webkaos` is a web-server based on latest version of [Nginx](http://nginx.org).
 
@@ -18,6 +18,13 @@
 
 ````
 yum install -y https://yum.kaos.io/6/release/i386/kaos-repo-7.0-0.el6.noarch.rpm
+yum install webkaos
+````
+
+###### From ESSENTIAL KAOS Public repo for RHEL7/CentOS7
+
+````
+yum install -y https://yum.kaos.io/7/release/x86_64/kaos-repo-7.0-0.el7.noarch.rpm
 yum install webkaos
 ````
 

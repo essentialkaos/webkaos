@@ -44,9 +44,9 @@
 %define service_home         %{_cachedir}/%{service_name}
 
 %define open_ssl_ver         1.0.2h
-%define psol_ver             1.9.32.14
-%define lua_module_ver       0.10.2
-%define mh_module_ver        0.29
+%define psol_ver             1.11.33.2
+%define lua_module_ver       0.10.5
+%define mh_module_ver        0.30
 %define pcre_ver             8.38
 %define zlib_ver             1.2.8
 
@@ -58,8 +58,8 @@
 
 Summary:              Superb high performance web server
 Name:                 webkaos
-Version:              1.10.0
-Release:              1%{?dist}
+Version:              1.11.1
+Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 Vendor:               Nginx / Google / CloudFlare / ESSENTIALKAOS
@@ -90,14 +90,13 @@ Source56:             http://zlib.net/zlib-%{zlib_ver}.tar.gz
 
 Patch0:               %{name}.patch
 Patch1:               mime.patch
-Patch2:               pagespeed-config-%{psol_ver}.patch
 
 BuildRoot:            %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Requires:             initscripts >= 8.36 openssl zlib
-Requires:             gd libXpm libxslt libluajit kaosv >= 2.8
+Requires:             initscripts >= 8.36 kaosv >= 2.8
+Requires:             gd libXpm libxslt libluajit
 
-BuildRequires:        make gcc-c++ perl openssl-devel libluajit-devel
+BuildRequires:        make gcc-c++ perl libluajit-devel
 
 Requires(pre):        shadow-utils
 Requires(post):       chkconfig
@@ -129,6 +128,8 @@ Requires:          %{name} >= %{version}
 
 Conflicts:         nginx nginx-kaos tengine openresty
 
+BuildArch:         noarch
+
 %description nginx
 Links for nginx compatibility.
 
@@ -147,10 +148,6 @@ Links for nginx compatibility.
 
 %patch0 -p1
 %patch1 -p1
-
-pushd ngx_pagespeed-%{pagespeed_fullver}
-%patch2 -p1
-popd
 
 %build
 
@@ -461,6 +458,13 @@ fi
 ###############################################################################
 
 %changelog
+* Wed Jun 01 2016 Anton Novojilov <andy@essentialkaos.com> - 1.11.1-0
+- Nginx updated to 1.11.1 with CVE-2016-4450 fix
+- Lua module updated to 0.10.5
+- MoreHeaders module updated to 0.30
+- PageSpeed updated to 1.11.33.2
+- Fixed arch for webkaos-nginx package
+
 * Wed May 04 2016 Anton Novojilov <andy@essentialkaos.com> - 1.10.0-1
 - OpenSSL updated to 1.0.2h
 

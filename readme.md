@@ -1,4 +1,4 @@
-![WEBKAOS Logo](https://essentialkaos.com/github/webkaos-v1.png)
+![WEBKAOS Logo](https://essentialkaos.com/github/webkaos-v2.png)
 
 `webkaos` is a web-server based on latest version of [Nginx](http://nginx.org).
 

@@ -94,31 +94,6 @@ diff -urN nginx-1.11.1-orig/src/core/ngx_log.c nginx-1.11.1/src/core/ngx_log.c
          return NGX_CONF_ERROR;
  #endif
  
-diff -urN nginx-1.11.1-orig/src/event/ngx_event_openssl.c nginx-1.11.1/src/event/ngx_event_openssl.c
---- nginx-1.11.1-orig/src/event/ngx_event_openssl.c	2016-06-01 07:31:55.609143479 -0400
-+++ nginx-1.11.1/src/event/ngx_event_openssl.c	2016-06-01 09:26:00.000000000 -0400
-@@ -803,7 +803,7 @@
-             wbio = SSL_get_wbio((ngx_ssl_conn_t *) ssl_conn);
- 
-             if (rbio != wbio) {
--                (void) BIO_set_write_buffer_size(wbio, NGX_SSL_BUFSIZE);
-+                (void) BIO_set_write_buffer_size(wbio, NGX_SSL_WRITE_BUFSIZE);
-                 c->ssl->handshake_buffer_set = 1;
-             }
-         }
-diff -urN nginx-1.11.1-orig/src/event/ngx_event_openssl.h nginx-1.11.1/src/event/ngx_event_openssl.h
---- nginx-1.11.1-orig/src/event/ngx_event_openssl.h	2016-06-01 07:31:55.610143479 -0400
-+++ nginx-1.11.1/src/event/ngx_event_openssl.h	2016-06-01 09:24:34.000000000 -0400
-@@ -135,7 +135,8 @@
- #define NGX_SSL_BUFFER   1
- #define NGX_SSL_CLIENT   2
- 
--#define NGX_SSL_BUFSIZE  16384
-+#define NGX_SSL_BUFSIZE       1400
-+#define NGX_SSL_WRITE_BUFSIZE 16384
- 
- 
- ngx_int_t ngx_ssl_init(ngx_log_t *log);
 diff -urN nginx-1.11.1-orig/src/http/modules/ngx_http_autoindex_module.c nginx-1.11.1/src/http/modules/ngx_http_autoindex_module.c
 --- nginx-1.11.1-orig/src/http/modules/ngx_http_autoindex_module.c	2016-06-01 07:31:55.617143484 -0400
 +++ nginx-1.11.1/src/http/modules/ngx_http_autoindex_module.c	2014-12-29 08:19:39.000000000 -0500

@@ -59,7 +59,7 @@
 Summary:              Superb high performance web server
 Name:                 webkaos
 Version:              1.11.1
-Release:              0%{?dist}
+Release:              1%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 Vendor:               Nginx / Google / CloudFlare / ESSENTIALKAOS
@@ -89,8 +89,9 @@ Source55:             http://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcr
 Source56:             http://zlib.net/zlib-%{zlib_ver}.tar.gz
 
 Patch0:               %{name}.patch
-Patch1:               mime.patch
-Patch2:               pagespeed-config-%{psol_ver}.patch
+Patch1:               %{name}-dynamic-tls-records.patch
+Patch2:               mime.patch
+Patch3:               pagespeed-config-%{psol_ver}.patch
 
 BuildRoot:            %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -149,9 +150,10 @@ Links for nginx compatibility.
 
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 pushd ngx_pagespeed-%{pagespeed_fullver}
-%patch2 -p1
+%patch3 -p1
 popd
 
 %build
@@ -463,6 +465,9 @@ fi
 ###############################################################################
 
 %changelog
+* Tue Jun 14 2016 Anton Novojilov <andy@essentialkaos.com> - 1.11.1-1
+- Added patch for dynamic TLS records size
+
 * Wed Jun 01 2016 Anton Novojilov <andy@essentialkaos.com> - 1.11.1-0
 - Nginx updated to 1.11.1 with CVE-2016-4450 fix
 - Lua module updated to 0.10.5

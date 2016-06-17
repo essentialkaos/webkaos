@@ -36,7 +36,7 @@ yum install webkaos
 git clone https://github.com/essentialkaos/webkaos.git
 cd webkaos/
 rpmbuilder webkaos.spec -dl SOURCES/
-rpmbuilder webkaos.spec -1 -V
+rpmbuilder webkaos.spec -1 -V -di
 ````
 
 ### License

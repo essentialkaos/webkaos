@@ -59,7 +59,7 @@
 Summary:              Superb high performance web server
 Name:                 webkaos
 Version:              1.11.1
-Release:              1%{?dist}
+Release:              2%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 Vendor:               Nginx / Google / CloudFlare / ESSENTIALKAOS
@@ -215,7 +215,7 @@ Links for nginx compatibility.
         --add-module=ngx_pagespeed-%{pagespeed_fullver} \
         --add-module=lua-nginx-module-%{lua_module_ver} \
         --add-module=headers-more-nginx-module-%{mh_module_ver} \
-        --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
+        --with-cc-opt="%{optflags} $(pcre-config --cflags) -DTCP_FASTOPEN=23" \
         $*
 %{__make} %{?_smp_mflags}
 
@@ -263,7 +263,7 @@ Links for nginx compatibility.
         --add-module=ngx_pagespeed-%{pagespeed_fullver} \
         --add-module=lua-nginx-module-%{lua_module_ver} \
         --add-module=headers-more-nginx-module-%{mh_module_ver} \
-        --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
+        --with-cc-opt="%{optflags} $(pcre-config --cflags) -DTCP_FASTOPEN=23" \
         $*
 %{__make} %{?_smp_mflags}
 
@@ -460,6 +460,9 @@ fi
 ###############################################################################
 
 %changelog
+* Fri Jun 17 2016 Anton Novojilov <andy@essentialkaos.com> - 1.11.1-2
+- Added TCP Fast Open support
+
 * Tue Jun 14 2016 Anton Novojilov <andy@essentialkaos.com> - 1.11.1-1
 - Added patch for dynamic TLS records size
 

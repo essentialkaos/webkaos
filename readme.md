@@ -6,6 +6,7 @@
 
 * Improved default SSL preferencies (A+ by default on [SSL Labs](https://www.ssllabs.com/ssltest/))
 * Improved SSL/TLS performance
+* [TCP Fast Open](https://en.wikipedia.org/wiki/TCP_Fast_Open) support (_only for CentOS7/RHEL7_)
 * [Lua](https://github.com/openresty/lua-nginx-module), [Headers More](https://github.com/openresty/headers-more-nginx-module) and [PageSpeed](https://github.com/pagespeed/ngx_pagespeed) module from the box
 * Improved SysV script
 * Well-looking error pages
@@ -35,7 +36,7 @@ yum install webkaos
 git clone https://github.com/essentialkaos/webkaos.git
 cd webkaos/
 rpmbuilder webkaos.spec -dl SOURCES/
-rpmbuilder webkaos.spec -1 -V
+rpmbuilder webkaos.spec -1 -V -di
 ````
 
 ### License

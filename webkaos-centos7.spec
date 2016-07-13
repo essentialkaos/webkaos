@@ -47,7 +47,7 @@
 %define psol_ver             1.11.33.2
 %define lua_module_ver       0.10.5
 %define mh_module_ver        0.30
-%define pcre_ver             8.38
+%define pcre_ver             8.39
 %define zlib_ver             1.2.8
 
 %define pagespeed_ver        %{psol_ver}-beta
@@ -58,8 +58,8 @@
 
 Summary:              Superb high performance web server
 Name:                 webkaos
-Version:              1.11.1
-Release:              2%{?dist}
+Version:              1.11.2
+Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 Vendor:               Nginx / Google / CloudFlare / ESSENTIALKAOS
@@ -460,6 +460,10 @@ fi
 ###############################################################################
 
 %changelog
+* Wed Jul 13 2016 Anton Novojilov <andy@essentialkaos.com> - 1.11.2-0
+- Nginx updated to 1.11.2
+- PCRE updated to 8.39
+
 * Fri Jun 17 2016 Anton Novojilov <andy@essentialkaos.com> - 1.11.1-2
 - Added TCP Fast Open support
 

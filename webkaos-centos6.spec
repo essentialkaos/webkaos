@@ -44,10 +44,10 @@
 %define service_home         %{_cachedir}/%{service_name}
 
 %define open_ssl_ver         1.0.2h
-%define psol_ver             1.9.32.14
+%define psol_ver             1.11.33.2
 %define lua_module_ver       0.10.5
 %define mh_module_ver        0.30
-%define pcre_ver             8.38
+%define pcre_ver             8.39
 %define zlib_ver             1.2.8
 
 %define pagespeed_ver        %{psol_ver}-beta
@@ -58,8 +58,8 @@
 
 Summary:              Superb high performance web server
 Name:                 webkaos
-Version:              1.11.1
-Release:              1%{?dist}
+Version:              1.11.2
+Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 Vendor:               Nginx / Google / CloudFlare / ESSENTIALKAOS
@@ -91,14 +91,14 @@ Source56:             http://zlib.net/zlib-%{zlib_ver}.tar.gz
 Patch0:               %{name}.patch
 Patch1:               %{name}-dynamic-tls-records.patch
 Patch2:               mime.patch
-Patch3:               pagespeed-config-%{psol_ver}.patch
 
 BuildRoot:            %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:             initscripts >= 8.36 kaosv >= 2.8
 Requires:             gd libXpm libxslt libluajit
 
-BuildRequires:        make gcc-c++ perl libluajit-devel
+BuildRequires:        make devtoolset-2-gcc-c++ devtoolset-2-binutils
+BuildRequires:        perl libluajit-devel
 
 Requires(pre):        shadow-utils
 Requires(post):       chkconfig
@@ -152,10 +152,6 @@ Links for nginx compatibility.
 %patch1 -p1
 %patch2 -p1
 
-pushd ngx_pagespeed-%{pagespeed_fullver}
-%patch3 -p1
-popd
-
 %build
 
 # Fixed bug with ngx_pagespeed comilation on i386
@@ -176,6 +172,9 @@ popd
 %{__mv} lua-nginx-module-%{lua_module_ver}/Changes         ./LUAMODULE-CHANGES
 
 %{__mv} headers-more-nginx-module-%{mh_module_ver}/README.markdown ./HEADERSMORE-README.markdown
+
+# Use gcc and gcc-c++ from devtoolset for build
+export PATH="/opt/rh/devtoolset-2/root/usr/bin:$PATH"
 
 ./configure \
         --prefix=%{_sysconfdir}/%{name} \
@@ -465,6 +464,11 @@ fi
 ###############################################################################
 
 %changelog
+* Wed Jul 13 2016 Anton Novojilov <andy@essentialkaos.com> - 1.11.2-0
+- Nginx updated to 1.11.2
+- PageSpeed updated to 1.11.33.2
+- PCRE updated to 8.39
+
 * Tue Jun 14 2016 Anton Novojilov <andy@essentialkaos.com> - 1.11.1-1
 - Added patch for dynamic TLS records size
 

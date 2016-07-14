@@ -1,5 +1,3 @@
-<p align="center"><a href="#feature-list">Feature list</a> • <a href="#installation">Installation</a> • <a href="#license">License</a></p>
-
 <p align="center">
 <img width="300" height="150" src="https://essentialkaos.com/github/webkaos-v3.png"/>
 </p>

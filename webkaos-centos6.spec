@@ -58,7 +58,7 @@
 
 Summary:              Superb high performance web server
 Name:                 webkaos
-Version:              1.11.2
+Version:              1.11.3
 Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
@@ -464,6 +464,9 @@ fi
 ###############################################################################
 
 %changelog
+* Tue Aug 09 2016 Gleb Goncharov <g.goncharov@fun-box.ru> - 1.11.3-0
+- Nginx updated to 1.11.3
+
 * Wed Jul 13 2016 Anton Novojilov <andy@essentialkaos.com> - 1.11.2-0
 - Nginx updated to 1.11.2
 - PageSpeed updated to 1.11.33.2

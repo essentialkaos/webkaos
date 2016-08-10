@@ -58,7 +58,7 @@
 
 Summary:              Superb high performance web server
 Name:                 webkaos
-Version:              1.11.2
+Version:              1.11.3
 Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons

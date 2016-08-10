@@ -75,8 +75,9 @@ Source20:             pagespeed.conf
 Source21:             pagespeed-enabled.conf
 Source22:             pagespeed-access.pswd
 Source23:             ssl.conf
-Source24:             common.conf
-Source25:             bots.conf
+Source24:             ssl-wildcard.conf
+Source25:             common.conf
+Source26:             bots.conf
 
 Source30:             %{name}-index.html
 
@@ -327,6 +328,8 @@ install -pm 644 %{SOURCE24} \
                 %{buildroot}%{_sysconfdir}/%{name}/xtra/
 install -pm 644 %{SOURCE25} \
                 %{buildroot}%{_sysconfdir}/%{name}/xtra/
+install -pm 644 %{SOURCE26} \
+                %{buildroot}%{_sysconfdir}/%{name}/xtra/
 
 install -dm 755 %{buildroot}%{_sysconfdir}/sysconfig
 
@@ -421,6 +424,7 @@ fi
 %config(noreplace) %{_sysconfdir}/%{name}/xtra/pagespeed-enabled.conf
 %config %{_sysconfdir}/%{name}/xtra/common.conf
 %config %{_sysconfdir}/%{name}/xtra/ssl.conf
+%config %{_sysconfdir}/%{name}/xtra/ssl-wildcard.conf
 %config %{_sysconfdir}/%{name}/xtra/bots.conf
 
 %config %{_sysconfdir}/%{name}/mime.types
@@ -460,6 +464,9 @@ fi
 ###############################################################################
 
 %changelog
+* Tue Aug 09 2016 Gleb Goncharov <g.goncharov@fun-box.ru> - 1.11.3-0
+- Nginx updated to 1.11.3
+
 * Wed Jul 13 2016 Anton Novojilov <andy@essentialkaos.com> - 1.11.2-0
 - Nginx updated to 1.11.2
 - PCRE updated to 8.39

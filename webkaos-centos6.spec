@@ -43,10 +43,10 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define open_ssl_ver         1.0.2h
-%define psol_ver             1.11.33.2
-%define lua_module_ver       0.10.5
-%define mh_module_ver        0.30
+%define open_ssl_ver         1.0.2i
+%define psol_ver             1.11.33.4
+%define lua_module_ver       0.10.6
+%define mh_module_ver        0.31
 %define pcre_ver             8.39
 %define zlib_ver             1.2.8
 
@@ -58,8 +58,8 @@
 
 Summary:              Superb high performance web server
 Name:                 webkaos
-Version:              1.11.3
-Release:              1%{?dist}
+Version:              1.11.4
+Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 Vendor:               Nginx / Google / CloudFlare / ESSENTIALKAOS
@@ -170,7 +170,6 @@ Links for nginx compatibility.
 %{__mv} ngx_pagespeed-%{pagespeed_fullver}/README.md  ./PAGESPEED-README.md
 
 %{__mv} lua-nginx-module-%{lua_module_ver}/README.markdown ./LUAMODULE-README.markdown
-%{__mv} lua-nginx-module-%{lua_module_ver}/Changes         ./LUAMODULE-CHANGES
 
 %{__mv} headers-more-nginx-module-%{mh_module_ver}/README.markdown ./HEADERSMORE-README.markdown
 
@@ -413,7 +412,7 @@ fi
 %defattr(-,root,root)
 %doc NGINX-CHANGES NGINX-CHANGES.ru NGINX-LICENSE NGINX-README
 %doc PAGESPEED-LICENSE PAGESPEED-README.md
-%doc LUAMODULE-README.markdown LUAMODULE-CHANGES
+%doc LUAMODULE-README.markdown
 %doc HEADERSMORE-README.markdown
 
 %{_sbindir}/%{name}
@@ -468,6 +467,13 @@ fi
 ###############################################################################
 
 %changelog
+* Fri Sep 23 2016 Gleb Goncharov <g.goncharov@fun-box.ru> - 1.11.4-0
+- Nginx updated to 1.11.4
+- OpenSSL updated to 1.0.2i
+- PageSpeed updated to 1.11.33.4
+- Lua module updated to 0.10.6
+- More Headers module updated to 0.31
+
 * Fri Aug 19 2016 Anton Novojilov <andy@essentialkaos.com> - 1.11.3-1
 - Fixed bug with log format
 

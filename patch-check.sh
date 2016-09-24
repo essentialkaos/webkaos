@@ -11,7 +11,7 @@ BROWN=33
 BLUE=34
 MAG=35
 CYAN=36
-GREY=37
+GREY=90
 
 CL_NORM="\e[${NORM}m"
 CL_RED="\e[0;${RED};49m"
@@ -50,10 +50,10 @@ main() {
     local new_ver_hash=$(getHash "$new_ver_dir/$source_file")
 
     if [[ "$old_ver_hash" == "$new_ver_hash" ]] ; then
-      show " ${CL_GREEN}✔${CL_NORM} $source_file"
+      show " ${CL_GREEN}✔ ${CL_NORM}$source_file"
     else
       local diff_size=$(diff -U 0 "$old_ver_dir/$source_file" "$new_ver_dir/$source_file" | grep -v ^@ | wc -l)
-      show " ${CL_RED}✖${CL_NORM} $source_file ${CL_GREY}($diff_size lines)${CL_NORM}"
+      show " ${CL_RED}✖ ${CL_NORM}$source_file ${CL_GREY}($diff_size lines)${CL_NORM}"
     fi
   done
 

@@ -6,8 +6,9 @@
 
 ## Feature list
 
-* Improved default SSL preferencies (A+ by default on [SSL Labs](https://www.ssllabs.com/ssltest/analyze.html?d=essentialkaos.com))
-* Improved SSL/TLS performance
+* Improved default SSL/TLS preferencies (A+ by default on [SSL Labs](https://www.ssllabs.com/ssltest/analyze.html?d=essentialkaos.com))
+* [Dynamic TLS Records](https://blog.cloudflare.com/optimizing-tls-over-tcp-to-reduce-latency/) support
+* Latest version of [BoringSSL](https://boringssl.googlesource.com/boringssl/) with some state-of-the-art crypto features
 * [TCP Fast Open](https://en.wikipedia.org/wiki/TCP_Fast_Open) support (_only for CentOS7/RHEL7_)
 * [Lua](https://github.com/openresty/lua-nginx-module), [Headers More](https://github.com/openresty/headers-more-nginx-module) and [PageSpeed](https://github.com/pagespeed/ngx_pagespeed) module from the box
 * Improved SysV script

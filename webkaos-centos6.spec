@@ -43,7 +43,7 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define open_ssl_ver         1.0.2i
+%define boring_commit        4c0e6c64b6866926f96576bc8e8ea8849f018159
 %define psol_ver             1.11.33.4
 %define lua_module_ver       0.10.6
 %define mh_module_ver        0.31
@@ -58,14 +58,14 @@
 
 Summary:              Superb high performance web server
 Name:                 webkaos
-Version:              1.11.4
+Version:              1.11.5
 Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 Vendor:               Nginx / Google / CloudFlare / ESSENTIALKAOS
-URL:                  http://essentialkaos.com
+URL:                  https://github.com/essentialkaos/webkaos
 
-Source0:              http://nginx.org/download/nginx-%{version}.tar.gz
+Source0:              https://nginx.org/download/nginx-%{version}.tar.gz
 Source1:              %{name}.logrotate
 Source2:              %{name}.init
 Source3:              %{name}.sysconfig
@@ -81,17 +81,20 @@ Source26:             bots.conf
 
 Source30:             %{name}-index.html
 
-Source50:             https://github.com/pagespeed/ngx_pagespeed/archive/%{pagespeed_fullver}.zip
+Source50:             https://github.com/pagespeed/ngx_pagespeed/archive/%{pagespeed_fullver}.tar.gz
 Source51:             https://dl.google.com/dl/page-speed/psol/%{psol_ver}.tar.gz
 Source52:             https://github.com/openresty/lua-nginx-module/archive/v%{lua_module_ver}.tar.gz
-Source53:             https://www.openssl.org/source/openssl-%{open_ssl_ver}.tar.gz
+Source53:             https://boringssl.googlesource.com/boringssl/+archive/%{boring_commit}.tar.gz
 Source54:             https://github.com/openresty/headers-more-nginx-module/archive/v%{mh_module_ver}.tar.gz
 Source55:             http://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-%{pcre_ver}.tar.gz
 Source56:             http://zlib.net/zlib-%{zlib_ver}.tar.gz
 
 Patch0:               %{name}.patch
-Patch1:               %{name}-dynamic-tls-records.patch
-Patch2:               mime.patch
+Patch1:               mime.patch
+# https://github.com/cloudflare/sslconfig/blob/master/patches/nginx__1.11.5_dynamic_tls_records.patch
+Patch2:               %{name}-dynamic-tls-records.patch
+# https://github.com/ajhaydock/BoringNginx/blob/master/1.11.4/src/boring.patch
+Patch3:               boring.patch
 
 BuildRoot:            %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -99,7 +102,7 @@ Requires:             initscripts >= 8.36 kaosv >= 2.8
 Requires:             gd libXpm libxslt libluajit
 
 BuildRequires:        make devtoolset-2-gcc-c++ devtoolset-2-binutils
-BuildRequires:        perl libluajit-devel
+BuildRequires:        perl libluajit-devel cmake golang
 
 Requires(pre):        shadow-utils
 Requires(post):       chkconfig
@@ -141,10 +144,12 @@ Links for nginx compatibility.
 %prep
 %setup -q -n nginx-%{version}
 
-%{__unzip}    %{SOURCE50}
+mkdir boringssl
+
+%{__tar} xzvf %{SOURCE50}
 %{__tar} xzvf %{SOURCE51} -C ngx_pagespeed-%{pagespeed_fullver}
 %{__tar} xzvf %{SOURCE52}
-%{__tar} xzvf %{SOURCE53}
+%{__tar} xzvf %{SOURCE53} -C boringssl
 %{__tar} xzvf %{SOURCE54}
 %{__tar} xzvf %{SOURCE55}
 %{__tar} xzvf %{SOURCE56}
@@ -152,6 +157,7 @@ Links for nginx compatibility.
 %patch0 -p1
 %patch1 -p1
 %patch2 -p1
+%patch3 -p1
 
 %build
 
@@ -175,6 +181,25 @@ Links for nginx compatibility.
 
 # Use gcc and gcc-c++ from devtoolset for build
 export PATH="/opt/rh/devtoolset-2/root/usr/bin:$PATH"
+
+# BoringSSL Build ##############################################################
+
+mkdir boringssl/build
+
+pushd boringssl/build &> /dev/null
+  cmake ../
+  %{__make} %{?_smp_mflags}
+popd
+
+mkdir -p "boringssl/.openssl/lib"
+
+pushd boringssl/.openssl &> /dev/null
+  ln -s ../include
+popd
+
+cp boringssl/build/crypto/libcrypto.a boringssl/build/ssl/libssl.a boringssl/.openssl/lib
+
+################################################################################
 
 ./configure \
         --prefix=%{_sysconfdir}/%{name} \
@@ -206,6 +231,9 @@ export PATH="/opt/rh/devtoolset-2/root/usr/bin:$PATH"
         --with-http_gzip_static_module \
         --with-http_secure_link_module \
         --with-http_stub_status_module \
+        --with-stream \
+        --with-stream_ssl_module \
+        --with-stream_ssl_preread_module \
         --with-mail \
         --with-mail_ssl_module \
         --with-file-aio \
@@ -214,13 +242,17 @@ export PATH="/opt/rh/devtoolset-2/root/usr/bin:$PATH"
         --with-zlib=zlib-%{zlib_ver} \
         --with-pcre-jit \
         --with-pcre=pcre-%{pcre_ver} \
-        --with-openssl-opt=no-krb5 \
-        --with-openssl=openssl-%{open_ssl_ver} \
+        --with-openssl=boringssl \
         --add-module=ngx_pagespeed-%{pagespeed_fullver} \
         --add-module=lua-nginx-module-%{lua_module_ver} \
         --add-module=headers-more-nginx-module-%{mh_module_ver} \
-        --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
+        --with-cc-opt="-g -O2 -fPIE -fstack-protector-all -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -I ../boringssl/.openssl/include/" \
+        --with-ld-opt="-Wl,-Bsymbolic-functions -Wl,-z,relro -L ../boringssl/.openssl/lib" \
         $*
+
+# Fix "Error 127" during build with BoringSSL
+touch boringssl/.openssl/include/openssl/ssl.h
+
 %{__make} %{?_smp_mflags}
 
 %{__mv} %{_builddir}/nginx-%{version}/objs/nginx \
@@ -255,6 +287,9 @@ export PATH="/opt/rh/devtoolset-2/root/usr/bin:$PATH"
         --with-http_gzip_static_module \
         --with-http_secure_link_module \
         --with-http_stub_status_module \
+        --with-stream \
+        --with-stream_ssl_module \
+        --with-stream_ssl_preread_module \
         --with-mail \
         --with-mail_ssl_module \
         --with-file-aio \
@@ -262,13 +297,17 @@ export PATH="/opt/rh/devtoolset-2/root/usr/bin:$PATH"
         --with-zlib=zlib-%{zlib_ver} \
         --with-pcre-jit \
         --with-pcre=pcre-%{pcre_ver} \
-        --with-openssl-opt=no-krb5 \
-        --with-openssl=openssl-%{open_ssl_ver} \
+        --with-openssl=boringssl \
         --add-module=ngx_pagespeed-%{pagespeed_fullver} \
         --add-module=lua-nginx-module-%{lua_module_ver} \
         --add-module=headers-more-nginx-module-%{mh_module_ver} \
-        --with-cc-opt="%{optflags} $(pcre-config --cflags)" \
+        --with-cc-opt="-g -O2 -fPIE -fstack-protector-all -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -I ../boringssl/.openssl/include/" \
+        --with-ld-opt="-Wl,-Bsymbolic-functions -Wl,-z,relro -L ../boringssl/.openssl/lib" \
         $*
+
+# Fix "Error 127" during build with BoringSSL
+touch boringssl/.openssl/include/openssl/ssl.h
+
 %{__make} %{?_smp_mflags}
 
 %install
@@ -294,7 +333,7 @@ install -dm 755 %{buildroot}%{pagespeed_cache_path}
 
 # Install html pages
 install -pm 644 %{SOURCE30} \
-                 %{buildroot}%{_datadir}/%{name}/html/index.html
+                %{buildroot}%{_datadir}/%{name}/html/index.html
 
 ln -sf %{_datadir}/%{name}/html \
        %{buildroot}%{_sysconfdir}/%{name}/html
@@ -467,6 +506,10 @@ fi
 ###############################################################################
 
 %changelog
+* Fri Oct 14 2016 Anton Novojilov <andy@essentialkaos.com> - 1.11.5-0
+- Nginx updated to 1.11.5
+- OpenSSL replaced by BoringSSL
+
 * Fri Sep 23 2016 Gleb Goncharov <g.goncharov@fun-box.ru> - 1.11.4-0
 - Nginx updated to 1.11.4
 - OpenSSL updated to 1.0.2i

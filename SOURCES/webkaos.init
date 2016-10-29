@@ -40,6 +40,7 @@ conf_file=${CONF_FILE:-/etc/webkaos/webkaos.conf}
 cache_dir=${CACHE_DIR:-/var/cache/webkaos}
 log_dir=${LOG_DIR:-/var/log/webkaos}
 pagespeed_cache=${PAGESPEED_CACHE:-/var/cache/webkaos/pagespeed}
+ssl_dir=${SSL_DIR:-/etc/webkaos/ssl}
 dh_param=${DH_PARAM:-/etc/webkaos/ssl/dhparam.pem}
 
 delay_upgrade=30
@@ -140,10 +141,21 @@ gendhp() {
 
   openssl dhparam -out $dh_param $size &> /dev/null
 
-  local retcode=$?
-  kv.showStatusMessage "$retcode"
+  if [[ $? -ne 0 ]] ; then
+    kv.showStatusMessage "$ACTION_ERROR"
+    return $ACTION_ERROR
+  fi
 
-  return $retcode
+  chmod 600 $dh_param &> /dev/null
+
+  if [[ $? -ne 0 ]] ; then
+    kv.showStatusMessage "$ACTION_ERROR"
+    return $ACTION_ERROR
+  fi
+
+  kv.showStatusMessage "$ACTION_OK"
+
+  return $ACTION_OK
 }
 
 restart() {
@@ -248,6 +260,16 @@ preStartServiceHandler() {
     kv.show "-------------------------------------------------------------------------------" $GREY
     return $ACTION_ERROR
   fi
+
+  local file file_perms
+
+  for file in $(ls -1 $ssl_dir) ; do
+    file_perms=$(getFilePerms $ssl_dir/$file)
+
+    if [[ "$file_perms" != "600" && "$file_perms" != "400" ]] ; then
+      kv.warn "File $ssl_dir/$file have weak permissions. Please change permissions to 400 or 600."
+    fi
+  done
 }
 
 startServiceHandler() {
@@ -368,6 +390,10 @@ isDHPGenRequired() {
   fi
 
   return 1
+}
+
+getFilePerms() {
+  stat -c '%a' $1
 }
 
 ###############################################################################

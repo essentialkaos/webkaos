@@ -43,10 +43,10 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define boring_commit        4c0e6c64b6866926f96576bc8e8ea8849f018159
+%define boring_commit        11a7b3c2d902ddb039e42fe19933e2a942f585f0
 %define psol_ver             1.11.33.4
-%define lua_module_ver       0.10.6
-%define mh_module_ver        0.31
+%define lua_module_ver       0.10.7
+%define mh_module_ver        0.32
 %define pcre_ver             8.39
 %define zlib_ver             1.2.8
 
@@ -59,7 +59,7 @@
 Summary:              Superb high performance web server
 Name:                 webkaos
 Version:              1.11.5
-Release:              0%{?dist}
+Release:              1%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 Vendor:               Nginx / Google / CloudFlare / ESSENTIALKAOS
@@ -506,6 +506,12 @@ fi
 ###############################################################################
 
 %changelog
+* Wed Nov 09 2016 Anton Novojilov <andy@essentialkaos.com> - 1.11.5-1
+- BoringSSL updated to latest version
+- Lua module updated to 0.10.7
+- More Headers module updated to 0.32
+- Added request_id to log output and X-Request-ID header
+
 * Fri Oct 14 2016 Anton Novojilov <andy@essentialkaos.com> - 1.11.5-0
 - Nginx updated to 1.11.5
 - OpenSSL replaced by BoringSSL

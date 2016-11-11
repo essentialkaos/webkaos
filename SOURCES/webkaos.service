@@ -1,0 +1,15 @@
+[Unit]
+Description=webkaos (HTTP and reverse proxy server)
+Documentation=http://nginx.org/en/docs/
+After=network.target remote-fs.target nss-lookup.target
+ 
+[Service]
+Type=forking
+PIDFile=/var/run/webkaos.pid
+ExecStart=/etc/init.d/webkaos start
+ExecReload=/etc/init.d/webkaos reload
+ExecStop=/etc/init.d/webkaos stop
+PrivateTmp=true
+ 
+[Install]
+WantedBy=multi-user.target

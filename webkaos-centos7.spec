@@ -35,6 +35,7 @@
 %define __useradd         %{_sbindir}/useradd
 %define __groupadd        %{_sbindir}/groupadd
 %define __getent          %{_bindir}/getent
+%define __sysctl          %{_bindir}/systemctl
 
 ###############################################################################
 
@@ -59,7 +60,7 @@
 Summary:              Superb high performance web server
 Name:                 webkaos
 Version:              1.11.5
-Release:              1%{?dist}
+Release:              2%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 Vendor:               Nginx / Google / CloudFlare / ESSENTIALKAOS
@@ -70,6 +71,8 @@ Source1:              %{name}.logrotate
 Source2:              %{name}.init
 Source3:              %{name}.sysconfig
 Source4:              %{name}.conf
+Source5:              %{name}.service
+Source6:              %{name}-debug.service
 
 Source20:             pagespeed.conf
 Source21:             pagespeed-enabled.conf
@@ -98,7 +101,7 @@ Patch3:               boring.patch
 
 BuildRoot:            %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Requires:             initscripts >= 8.36 kaosv >= 2.8
+Requires:             initscripts >= 8.36 systemd kaosv >= 2.10
 Requires:             gd libXpm libxslt libluajit
 
 BuildRequires:        make gcc-c++ perl libluajit-devel cmake golang
@@ -157,6 +160,7 @@ mkdir boringssl
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+
 
 %build
 
@@ -306,18 +310,19 @@ touch boringssl/.openssl/include/openssl/ssl.h
 
 %{__make} %{?_smp_mflags}
 
+
 %install
-%{__rm} -rf %{buildroot}
+rm -rf %{buildroot}
 
 %{make_install}
 
 install -dm 755 %{buildroot}%{_datadir}/%{name}
 
-%{__rm} -f %{buildroot}%{_sysconfdir}/%{name}/nginx.conf
-%{__rm} -f %{buildroot}%{_sysconfdir}/%{name}/*.default
-%{__rm} -f %{buildroot}%{_sysconfdir}/%{name}/fastcgi.conf
+rm -f %{buildroot}%{_sysconfdir}/%{name}/nginx.conf
+rm -f %{buildroot}%{_sysconfdir}/%{name}/*.default
+rm -f %{buildroot}%{_sysconfdir}/%{name}/fastcgi.conf
 
-%{__rm} -rf %{buildroot}%{_sysconfdir}/%{name}/html
+rm -rf %{buildroot}%{_sysconfdir}/%{name}/html
 
 install -dm 755 %{buildroot}%{_sysconfdir}/%{name}/conf.d
 
@@ -339,6 +344,14 @@ install -dm 755 %{buildroot}%{_initrddir}
 
 install -pm 755 %{SOURCE2} \
                 %{buildroot}%{_initrddir}/%{service_name}
+
+# Install systemd stuff
+install -dm 755 %{buildroot}%{_unitdir}
+
+install -pm 644 %{SOURCE5} \
+                %{buildroot}%{_unitdir}/
+install -pm 644 %{SOURCE6} \
+                %{buildroot}%{_unitdir}/
 
 # Install log rotation stuff
 install -dm 755 %{buildroot}%{_sysconfdir}/logrotate.d
@@ -383,8 +396,10 @@ install -dm 755 %{buildroot}%{_sysconfdir}/%{name}/ssl
 ln -sf %{_sysconfdir}/%{name}/ %{buildroot}%{_sysconfdir}/nginx
 ln -sf %{_sysconfdir}/%{name}/%{name}.conf %{buildroot}%{_sysconfdir}/%{name}/nginx.conf
 ln -sf %{_logdir}/%{name}/ %{buildroot}%{_logdir}/nginx
-ln -sf %{_initrddir}/%{service_name} %{buildroot}%{_initrddir}/nginx
 ln -sf %{_sbindir}/%{name} %{buildroot}%{_sbindir}/nginx
+ln -sf %{_initrddir}/%{service_name} %{buildroot}%{_initrddir}/nginx
+ln -sf %{_unitdir}/%{name}.service %{buildroot}%{_unitdir}/nginx.service
+ln -sf %{_unitdir}/%{name}-debug.service %{buildroot}%{_unitdir}/nginx-debug.service
 
 ###############################################################################
 
@@ -393,9 +408,10 @@ getent group %{service_group} >/dev/null || groupadd -r %{service_group}
 getent passwd %{service_user} >/dev/null || useradd -r -g %{service_group} -s /sbin/nologin -d %{service_home} %{service_user}
 exit 0
 
+
 %post
 if [[ $1 -eq 1 ]] ; then
-  %{__chkconfig} --add %{name}
+  %{__sysctl} enable %{name}.service &>/dev/null || :
 
   if [[ -d %{_logdir}/%{name} ]] ; then
     if [[ ! -e %{_logdir}/%{name}/access.log ]]; then
@@ -429,17 +445,20 @@ fi
 
 %preun
 if [[ $1 -eq 0 ]] ; then
-  %{__service} %{service_name} stop > /dev/null 2>&1
-  %{__chkconfig} --del %{service_name}
+  %{__sysctl} --no-reload disable %{name}.service &>/dev/null || :
+  %{__sysctl} stop %{name}.service &>/dev/null || :
 fi
+
 
 %postun
 if [[ $1 -ge 1 ]] ; then
+  %{__sysctl} daemon-reload &>/dev/null || :
   %{__service} %{service_name} upgrade &>/dev/null || :
 fi
 
+
 %clean
-%{__rm} -rf %{buildroot}
+rm -rf %{buildroot}
 
 ###############################################################################
 
@@ -477,7 +496,9 @@ fi
 
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
+
 %{_initrddir}/%{service_name}
+%{_unitdir}/%{name}.service
 
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/html
@@ -490,18 +511,24 @@ fi
 %files debug
 %defattr(-,root,root)
 %attr(0755,root,root) %{_sbindir}/%{name}.debug
+%{_unitdir}/%{name}-debug.service
 
 %files nginx
 %defattr(-,root,root)
 %{_sysconfdir}/%{name}/nginx.conf
 %{_sysconfdir}/nginx
 %{_logdir}/nginx
-%{_initrddir}/nginx
 %{_sbindir}/nginx
+%{_initrddir}/nginx
+%{_unitdir}/nginx.service
+%{_unitdir}/nginx-debug.service
 
 ###############################################################################
 
 %changelog
+* Fri Nov 11 2016 Anton Novojilov <andy@essentialkaos.com> - 1.11.5-2
+- Added systemd support
+
 * Wed Nov 09 2016 Anton Novojilov <andy@essentialkaos.com> - 1.11.5-1
 - BoringSSL updated to latest version
 - Lua module updated to 0.10.7

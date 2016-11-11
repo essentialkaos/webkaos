@@ -311,17 +311,17 @@ touch boringssl/.openssl/include/openssl/ssl.h
 %{__make} %{?_smp_mflags}
 
 %install
-%{__rm} -rf %{buildroot}
+rm -rf %{buildroot}
 
 %{make_install}
 
 install -dm 755 %{buildroot}%{_datadir}/%{name}
 
-%{__rm} -f %{buildroot}%{_sysconfdir}/%{name}/nginx.conf
-%{__rm} -f %{buildroot}%{_sysconfdir}/%{name}/*.default
-%{__rm} -f %{buildroot}%{_sysconfdir}/%{name}/fastcgi.conf
+rm -f %{buildroot}%{_sysconfdir}/%{name}/nginx.conf
+rm -f %{buildroot}%{_sysconfdir}/%{name}/*.default
+rm -f %{buildroot}%{_sysconfdir}/%{name}/fastcgi.conf
 
-%{__rm} -rf %{buildroot}%{_sysconfdir}/%{name}/html
+rm -rf %{buildroot}%{_sysconfdir}/%{name}/html
 
 install -dm 755 %{buildroot}%{_sysconfdir}/%{name}/conf.d
 
@@ -443,7 +443,7 @@ if [[ $1 -ge 1 ]] ; then
 fi
 
 %clean
-%{__rm} -rf %{buildroot}
+rm -rf %{buildroot}
 
 ###############################################################################
 

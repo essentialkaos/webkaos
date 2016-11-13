@@ -204,6 +204,7 @@ cp boringssl/build/crypto/libcrypto.a boringssl/build/ssl/libssl.a boringssl/.op
 ./configure \
         --prefix=%{_sysconfdir}/%{name} \
         --sbin-path=%{_sbindir}/%{name} \
+        --modules-path=%{_libdir}/%{name}/modules \
         --conf-path=%{_sysconfdir}/%{name}/%{name}.conf \
         --error-log-path=%{_logdir}/%{name}/error.log \
         --http-log-path=%{_logdir}/%{name}/access.log \
@@ -261,6 +262,7 @@ touch boringssl/.openssl/include/openssl/ssl.h
 ./configure \
         --prefix=%{_sysconfdir}/%{name} \
         --sbin-path=%{_sbindir}/%{name} \
+        --modules-path=%{_libdir}/%{name}/modules \
         --conf-path=%{_sysconfdir}/%{name}/%{name}.conf \
         --error-log-path=%{_logdir}/%{name}/error.log \
         --http-log-path=%{_logdir}/%{name}/access.log \
@@ -331,6 +333,13 @@ install -dm 755 %{buildroot}%{_rundir}/%{name}
 install -dm 755 %{buildroot}%{_cachedir}/%{name}
 install -dm 755 %{buildroot}%{_datadir}/%{name}/html
 install -dm 755 %{buildroot}%{pagespeed_cache_path}
+
+# Install modules dirs
+install -dm 755 %{buildroot}%{_libdir}/%{name}/modules
+install -dm 755 %{buildroot}%{_datadir}/%{name}/modules
+
+ln -sf %{_datadir}/%{name}/modules \
+       %{buildroot}%{_sysconfdir}/%{name}/modules
 
 # Install html pages
 install -pm 644 %{SOURCE30} \
@@ -504,9 +513,13 @@ rm -rf %{buildroot}
 %dir %{_datadir}/%{name}/html
 %{_datadir}/%{name}/html/*
 
+%dir %{_datadir}/%{name}/modules
+%{_sysconfdir}/%{name}/modules
+
 %attr(0755,%{service_user},%{service_group}) %dir %{_cachedir}/%{name}
 %attr(0755,%{service_user},%{service_group}) %dir %{_logdir}/%{name}
 %attr(0755,%{service_user},%{service_group}) %dir %{pagespeed_cache_path}
+%attr(0755,%{service_user},%{service_group}) %dir %{_libdir}/%{name}/modules
 
 %files debug
 %defattr(-,root,root)
@@ -526,7 +539,8 @@ rm -rf %{buildroot}
 ###############################################################################
 
 %changelog
-* Fri Nov 11 2016 Anton Novojilov <andy@essentialkaos.com> - 1.11.5-2
+* Sun Nov 13 2016 Anton Novojilov <andy@essentialkaos.com> - 1.11.5-2
+- Added dynamic modules support
 - Added systemd support
 
 * Wed Nov 09 2016 Anton Novojilov <andy@essentialkaos.com> - 1.11.5-1

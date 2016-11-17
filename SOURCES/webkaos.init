@@ -59,7 +59,7 @@ kv.addCommand "reload"       "Reload and apply config"                          
 kv.addCommand "check"        "Validate config"                                    "check"
 kv.addCommand "config"       "Show full (merged) config"                          "showConfig"
 
-if [[ `grep 'ssl_dhparam' $conf_file` ]] ; then
+if [[ $(grep 'ssl_dhparam' $conf_file) ]] ; then
   if [[ ! -e $dh_param ]] ; then
     kv.addCommand "gendhp" "Generate Diffie-Hellman parameter for EDH ciphers" "gendhp"
     kv.addCommandVars "gendhp" "size"
@@ -316,7 +316,7 @@ upgradeService() {
 
   for i in $(seq 1 $delay_upgrade) ; do
     if [[ -f ${kv[pid_file]} && -f $old_pid_file ]] ; then
-      local old_pid=`cat $old_pid_file`
+      local old_pid=$(cat $old_pid_file)
       kv.sendSignal "${SIGNAL_QUIT}" "$old_pid"
       return $ACTION_OK
     fi
@@ -363,7 +363,7 @@ cleanPagespeedCache() {
 }
 
 updateOwner() {
-  local user=`getUserFromConfig`
+  local user=$(getUserFromConfig)
 
   [[ -z "$user" ]] && return
 
@@ -385,7 +385,7 @@ getUserFromConfig() {
 }
 
 isDHPGenRequired() {
-  if [[ `grep 'ssl_dhparam' $conf_file` ]] ; then
+  if [[ $(grep 'ssl_dhparam' $conf_file) ]] ; then
     [[ ! -e $dh_param ]] && return 0 || return 1
   fi
 

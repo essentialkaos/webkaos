@@ -407,6 +407,9 @@ getent passwd %{service_user} >/dev/null || useradd -r -g %{service_group} -s /s
 exit 0
 
 %post
+# Ensure secure permissions (CVE-2016-1247)
+%{__chown} root:root %{_logdir}/%{name}
+
 if [[ $1 -eq 1 ]] ; then
   %{__chkconfig} --add %{name}
 
@@ -499,8 +502,9 @@ rm -rf %{buildroot}
 %dir %{_datadir}/%{name}/modules
 %dir %{_sysconfdir}/%{name}/modules
 
+%dir %{_logdir}/%{name}
+
 %attr(0755,%{service_user},%{service_group}) %dir %{_cachedir}/%{name}
-%attr(0755,%{service_user},%{service_group}) %dir %{_logdir}/%{name}
 %attr(0755,%{service_user},%{service_group}) %dir %{pagespeed_cache_path}
 %attr(0755,%{service_user},%{service_group}) %dir %{_libdir}/%{name}/modules
 
@@ -521,6 +525,7 @@ rm -rf %{buildroot}
 %changelog
 * Sun Nov 13 2016 Anton Novojilov <andy@essentialkaos.com> - 1.11.5-2
 - Added dynamic modules support
+- Added fix for CVE-2016-1247
 
 * Wed Nov 09 2016 Anton Novojilov <andy@essentialkaos.com> - 1.11.5-1
 - BoringSSL updated to latest version

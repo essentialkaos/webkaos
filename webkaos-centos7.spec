@@ -419,6 +419,9 @@ exit 0
 
 
 %post
+# Ensure secure permissions (CVE-2013-0337)
+%{__chown} root:root %{_logdir}/%{name}
+
 if [[ $1 -eq 1 ]] ; then
   %{__sysctl} enable %{name}.service &>/dev/null || :
 
@@ -516,8 +519,9 @@ rm -rf %{buildroot}
 %dir %{_datadir}/%{name}/modules
 %{_sysconfdir}/%{name}/modules
 
+%{_logdir}/%{name}
+
 %attr(0755,%{service_user},%{service_group}) %dir %{_cachedir}/%{name}
-%attr(0755,%{service_user},%{service_group}) %dir %{_logdir}/%{name}
 %attr(0755,%{service_user},%{service_group}) %dir %{pagespeed_cache_path}
 %attr(0755,%{service_user},%{service_group}) %dir %{_libdir}/%{name}/modules
 

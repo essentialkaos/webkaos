@@ -44,7 +44,7 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define boring_commit        11a7b3c2d902ddb039e42fe19933e2a942f585f0
+%define boring_commit        fbbef12918ff23e7e296b976fe47d6fc93d71837
 %define psol_ver             1.11.33.4
 %define lua_module_ver       0.10.7
 %define mh_module_ver        0.32
@@ -59,8 +59,8 @@
 
 Summary:              Superb high performance web server
 Name:                 webkaos
-Version:              1.11.5
-Release:              2%{?dist}
+Version:              1.11.6
+Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 Vendor:               Nginx / Google / CloudFlare / ESSENTIALKAOS
@@ -96,7 +96,7 @@ Patch0:               %{name}.patch
 Patch1:               mime.patch
 # https://github.com/cloudflare/sslconfig/blob/master/patches/nginx__1.11.5_dynamic_tls_records.patch
 Patch2:               %{name}-dynamic-tls-records.patch
-# https://github.com/ajhaydock/BoringNginx/blob/master/patches/1.11.5.patch
+# https://github.com/ajhaydock/BoringNginx/blob/master/patches/1.11.6.patch
 Patch3:               boring.patch
 
 BuildRoot:            %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -543,6 +543,10 @@ rm -rf %{buildroot}
 ###############################################################################
 
 %changelog
+* Fri Nov 18 2016 Anton Novojilov <andy@essentialkaos.com> - 1.11.6-0
+- Nginx updated to 1.11.6
+- BoringSSL updated to latest version
+
 * Sun Nov 13 2016 Anton Novojilov <andy@essentialkaos.com> - 1.11.5-2
 - Added dynamic modules support
 - Added systemd support

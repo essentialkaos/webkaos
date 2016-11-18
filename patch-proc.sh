@@ -4,30 +4,27 @@
 
 NORM=0
 BOLD=1
+UNLN=4
 RED=31
 GREEN=32
 BROWN=33
 BLUE=34
 MAG=35
 CYAN=36
-GREY=90
+GREY=37
+DARK=90
 
 CL_NORM="\e[${NORM}m"
 CL_BOLD="\e[${BOLD}m"
-CL_RED="\e[0;${RED};49m"
-CL_GREEN="\e[0;${GREEN};49m"
-CL_BROWN="\e[0;${BROWN};49m"
-CL_BLUE="\e[0;${BLUE};49m"
-CL_MAG="\e[0;${MAG};49m"
-CL_CYAN="\e[0;${CYAN};49m"
-CL_GREY="\e[0;${GREY};49m"
-CL_BL_RED="\e[1;${RED};49m"
-CL_BL_GREEN="\e[1;${GREEN};49m"
-CL_BL_BROWN="\e[1;${BROWN};49m"
-CL_BL_BLUE="\e[1;${BLUE};49m"
-CL_BL_MAG="\e[1;${MAG};49m"
-CL_BL_CYAN="\e[1;${CYAN};49m"
-CL_BL_GREY="\e[1;${GREY};49m"
+CL_UNLN="\e[${UNLN}m"
+CL_RED="\e[${RED}m"
+CL_GREEN="\e[${GREEN}m"
+CL_BROWN="\e[${BROWN}m"
+CL_BLUE="\e[${BLUE}m"
+CL_MAG="\e[${MAG}m"
+CL_CYAN="\e[${CYAN}m"
+CL_GREY="\e[${GREY}m"
+CL_DARK="\e[${DARK}m"
 
 ###############################################################################
 
@@ -37,62 +34,90 @@ main() {
   shift
 
   case $cmd in
-    "check") check $@ ;;
-    "copy")   copy $@ ;;
-    *)          usage ;;  
+    "check") check "$@" ;;
+    "copy")   copy "$@" ;;
+    *)            usage ;;  
   esac
 }
 
 check() {
-  local patch_file="$1"
-  local data_dir="$2"
-  local old_ver="$3"
-  local new_ver="$4"
-  
-  local old_ver_dir="${data_dir}/nginx-${old_ver}-orig"
-  local new_ver_dir="${data_dir}/nginx-${new_ver}-orig"
+  local patch_file data_dir old_ver new_ver old_ver_dir new_ver_dir
+  local sources old_ver_hash new_ver_hash diff_size
 
-  local sources=$(grep '+++' "$patch_file" | tr "\t" " " | cut -f2 -d" " | cut -f2-99 -d "/")
+  patch_file="$1"
+  data_dir="$2"
+  old_ver="$3"
+  new_ver="$4"
+  
+  old_ver_dir="${data_dir}/nginx-${old_ver}-orig"
+  new_ver_dir="${data_dir}/nginx-${new_ver}-orig"
+
+  sources=$(grep '+++' "$patch_file" | tr "\t" " " | cut -f2 -d" " | cut -f2-99 -d "/")
 
   show ""
 
   for source_file in $sources ; do
-    local old_ver_hash=$(getHash "$old_ver_dir/$source_file")
-    local new_ver_hash=$(getHash "$new_ver_dir/$source_file")
+    old_ver_hash=$(getHash "$old_ver_dir/$source_file")
+    new_ver_hash=$(getHash "$new_ver_dir/$source_file")
 
     if [[ "$old_ver_hash" == "$new_ver_hash" ]] ; then
       show " ${CL_GREEN}✔ ${CL_NORM}$source_file"
     else
-      local diff_size=$(diff -U 0 "$old_ver_dir/$source_file" "$new_ver_dir/$source_file" | grep -v ^@ | wc -l)
-      show " ${CL_RED}✖ ${CL_NORM}$source_file ${CL_GREY}(± $diff_size lines)${CL_NORM}"
+      diff_size=$(getDiffSize "$old_ver_dir/$source_file" "$new_ver_dir/$source_file")
+      show " ${CL_RED}✖ ${CL_NORM}${CL_BOLD}$source_file ${CL_DARK}(± $diff_size lines)${CL_NORM}"
+      showDiff "$old_ver_dir/$source_file" "$new_ver_dir/$source_file"
     fi
   done
 
   show ""
 }
 
-copy() {
-  local patch_file="$1"
-  local data_dir="$2"
-  local old_ver="$3"
-  local new_ver="$4"
-  
-  local old_ver_dir="${data_dir}/nginx-${old_ver}-orig"
-  local new_ver_dir="${data_dir}/nginx-${new_ver}-orig"
-  local old_ver_pt_dir="${data_dir}/nginx-${old_ver}"
-  local new_ver_pt_dir="${data_dir}/nginx-${new_ver}"
+getDiffSize() {
+  local file1="$1"
+  local file2="$2"
 
-  local sources=$(grep '+++' "$patch_file" | tr "\t" " " | cut -f2 -d" " | cut -f2-99 -d "/")
+  local diff_size=$(diff -U 0 "$file1" "$file2" | wc -l)
+
+  diff_size=$(( diff_size - 3 ))
+
+  echo "$diff_size"
+}
+
+showDiff() {
+  local file1="$1"
+  local file2="$2"
+
+  show "$CL_GREY"
+  diff -U 0 "$file1" "$file2" | sed -n 3,9999p | sed 's/^/   /g' | sed 's/@@ //g' | sed 's/ @@//g'
+  show "$CL_NORM"
+}
+
+copy() {
+  local patch_file data_dir old_ver new_ver
+  local old_ver_dir new_ver_dir old_ver_pt_dir new_ver_pt_dir
+  local sources old_ver_hash new_ver_hash
+
+  patch_file="$1"
+  data_dir="$2"
+  old_ver="$3"
+  new_ver="$4"
+  
+  old_ver_dir="${data_dir}/nginx-${old_ver}-orig"
+  new_ver_dir="${data_dir}/nginx-${new_ver}-orig"
+  old_ver_pt_dir="${data_dir}/nginx-${old_ver}"
+  new_ver_pt_dir="${data_dir}/nginx-${new_ver}"
+
+  sources=$(grep '+++' "$patch_file" | tr "\t" " " | cut -f2 -d" " | cut -f2-99 -d "/")
 
   show ""
 
   for source_file in $sources ; do
-    local old_ver_hash=$(getHash "$old_ver_dir/$source_file")
-    local new_ver_hash=$(getHash "$new_ver_dir/$source_file")
+    old_ver_hash=$(getHash "$old_ver_dir/$source_file")
+    new_ver_hash=$(getHash "$new_ver_dir/$source_file")
 
     if [[ "$old_ver_hash" == "$new_ver_hash" ]] ; then
-      show " $old_ver_pt_dir/$source_file → $new_ver_pt_dir/$source_file"
-      cp $old_ver_pt_dir/$source_file $new_ver_pt_dir/$source_file
+      show " $data_dir/${CL_BOLD}{$old_ver → $new_ver}${CL_NORM}/$source_file"
+      cp "$old_ver_pt_dir/$source_file" "$new_ver_pt_dir/$source_file"
     fi
   done
 
@@ -101,6 +126,14 @@ copy() {
 
 getHash() {
   sha256sum "$1" | cut -f1 -d" "
+}
+
+show() {
+  if [[ -n "$2" ]] ; then
+    echo -e "\e[${2}m${1}\e[0m"
+  else
+    echo -e "$*"
+  fi
 }
 
 usage() {
@@ -114,18 +147,14 @@ usage() {
   show ""
   show "Examples" $BOLD
   show ""
-  show "  ./patch-proc.sh SOURCES/webkaos.patch /some/dir 1.11.1 1.11.2"
+  show "  ./patch-proc.sh check SOURCES/webkaos.patch /some/dir 1.11.5 1.11.6"
+  show "  Check patch compatibility with newer version" $DARK
   show ""
-}
-
-show() {
-  if [[ -n "$2" ]] ; then
-    echo -e "\e[${2}m${1}${CL_NORM}"
-  else
-    echo -e "$@"
-  fi
+  show "  ./patch-proc.sh copy SOURCES/webkaos.patch /some/dir 1.11.5 1.11.6"
+  show "  Copy unchanged files from previous patched version" $DARK
+  show ""
 }
 
 ###############################################################################
 
-main $@
+main "$@"

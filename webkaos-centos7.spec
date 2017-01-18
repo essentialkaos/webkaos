@@ -44,12 +44,12 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define boring_commit        fbbef12918ff23e7e296b976fe47d6fc93d71837
+%define boring_commit        1252f8758ab1c4c4a14db25f9fa53e5950e4bcda
 %define psol_ver             1.11.33.4
 %define lua_module_ver       0.10.7
 %define mh_module_ver        0.32
-%define pcre_ver             8.39
-%define zlib_ver             1.2.8
+%define pcre_ver             8.40
+%define zlib_ver             1.2.11
 
 %define pagespeed_ver        %{psol_ver}-beta
 %define pagespeed_fullver    release-%{pagespeed_ver}
@@ -59,7 +59,7 @@
 
 Summary:              Superb high performance web server
 Name:                 webkaos
-Version:              1.11.6
+Version:              1.11.8
 Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
@@ -96,7 +96,7 @@ Patch0:               %{name}.patch
 Patch1:               mime.patch
 # https://github.com/cloudflare/sslconfig/blob/master/patches/nginx__1.11.5_dynamic_tls_records.patch
 Patch2:               %{name}-dynamic-tls-records.patch
-# https://github.com/ajhaydock/BoringNginx/blob/master/patches/1.11.6.patch
+# https://github.com/ajhaydock/BoringNginx/blob/master/patches/1.11.8.patch
 Patch3:               boring.patch
 
 BuildRoot:            %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -543,6 +543,14 @@ rm -rf %{buildroot}
 ###############################################################################
 
 %changelog
+* Thu Jan 19 2017 Anton Novojilov <andy@essentialkaos.com> - 1.11.8-0
+- Nginx updated to 1.11.8
+- PageSpeed updated to 1.12.34.2
+- PCRE updated to 8.40
+- zlib updated to 1.2.11
+- BoringSSL updated to latest version
+- Fixed bug in systemd unit file
+
 * Fri Nov 18 2016 Anton Novojilov <andy@essentialkaos.com> - 1.11.6-0
 - Nginx updated to 1.11.6
 - BoringSSL updated to latest version

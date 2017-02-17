@@ -43,7 +43,7 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define boring_commit        1252f8758ab1c4c4a14db25f9fa53e5950e4bcda
+%define boring_commit        12709db3558352c3de60a3ab0e761b9609d2b4e2
 %define psol_ver             1.11.33.4
 %define lua_module_ver       0.10.7
 %define mh_module_ver        0.32
@@ -58,7 +58,7 @@
 
 Summary:              Superb high performance web server
 Name:                 webkaos
-Version:              1.11.8
+Version:              1.11.10
 Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
@@ -93,7 +93,7 @@ Patch0:               %{name}.patch
 Patch1:               mime.patch
 # https://github.com/cloudflare/sslconfig/blob/master/patches/nginx__1.11.5_dynamic_tls_records.patch
 Patch2:               %{name}-dynamic-tls-records.patch
-# https://github.com/ajhaydock/BoringNginx/blob/master/patches/1.11.8.patch
+# https://github.com/ajhaydock/BoringNginx/blob/master/patches/1.11.10.patch
 Patch3:               boring.patch
 
 BuildRoot:            %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -326,6 +326,7 @@ rm -f %{buildroot}%{_sysconfdir}/%{name}/fastcgi.conf
 rm -rf %{buildroot}%{_sysconfdir}/%{name}/html
 
 install -dm 755 %{buildroot}%{_sysconfdir}/%{name}/conf.d
+install -dm 755 %{buildroot}%{_sysconfdir}/%{name}/stream.conf.d
 
 install -dm 755 %{buildroot}%{_logdir}/%{name}
 install -dm 755 %{buildroot}%{_rundir}/%{name}
@@ -471,6 +472,7 @@ rm -rf %{buildroot}
 %dir %{_sysconfdir}/%{name}
 %dir %{_sysconfdir}/%{name}/ssl
 %dir %{_sysconfdir}/%{name}/conf.d
+%dir %{_sysconfdir}/%{name}/stream.conf.d
 
 %config(noreplace) %{_sysconfdir}/%{name}/%{name}.conf
 %config(noreplace) %{_sysconfdir}/%{name}/xtra/pagespeed-access.pswd
@@ -523,6 +525,12 @@ rm -rf %{buildroot}
 ###############################################################################
 
 %changelog
+* Fri Feb 17 2017 Anton Novojilov <andy@essentialkaos.com> - 1.11.10-0
+- Nginx updated to 1.11.10
+- BoringSSL updated to latest version
+- Added directory stream.conf.d for stream configs
+- Fixed bugs in systemd unit files
+
 * Thu Jan 19 2017 Anton Novojilov <andy@essentialkaos.com> - 1.11.8-0
 - Nginx updated to 1.11.8
 - PageSpeed updated to 1.12.34.2

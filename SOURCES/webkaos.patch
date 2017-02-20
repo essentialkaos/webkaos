@@ -235,13 +235,13 @@ diff -urN nginx-1.11.10-orig/src/http/ngx_http_header_filter_module.c nginx-1.11
      ngx_string("500 Internal Server Error"),
 diff -urN nginx-1.11.10-orig/src/http/ngx_http_special_response.c nginx-1.11.10/src/http/ngx_http_special_response.c
 --- nginx-1.11.10-orig/src/http/ngx_http_special_response.c	2017-02-17 15:14:03.347690888 -0500
-+++ nginx-1.11.10/src/http/ngx_http_special_response.c	2017-02-20 08:28:40.000000000 -0500
++++ nginx-1.11.10/src/http/ngx_http_special_response.c	2017-02-20 08:49:52.000000000 -0500
 @@ -19,21 +19,21 @@
  
  
  static u_char ngx_http_error_full_tail[] =
 -"<hr><center>" NGINX_VER "</center>" CRLF
-+"</div>" CRLF
++NGINX_VER "</div>" CRLF
  "</body>" CRLF
  "</html>" CRLF
  ;

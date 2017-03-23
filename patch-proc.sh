@@ -7,7 +7,7 @@ BOLD=1
 UNLN=4
 RED=31
 GREEN=32
-BROWN=33
+YELLOW=33
 BLUE=34
 MAG=35
 CYAN=36
@@ -19,7 +19,7 @@ CL_BOLD="\e[${BOLD}m"
 CL_UNLN="\e[${UNLN}m"
 CL_RED="\e[${RED}m"
 CL_GREEN="\e[${GREEN}m"
-CL_BROWN="\e[${BROWN}m"
+CL_YELLOW="\e[${YELLOW}m"
 CL_BLUE="\e[${BLUE}m"
 CL_MAG="\e[${MAG}m"
 CL_CYAN="\e[${CYAN}m"
@@ -41,6 +41,8 @@ main() {
 }
 
 check() {
+  checkArgs "$@"
+
   local patch_file data_dir old_ver new_ver old_ver_dir new_ver_dir
   local sources old_ver_hash new_ver_hash diff_size
 
@@ -72,27 +74,9 @@ check() {
   show ""
 }
 
-getDiffSize() {
-  local file1="$1"
-  local file2="$2"
-
-  local diff_size=$(diff -U 0 "$file1" "$file2" | wc -l)
-
-  diff_size=$(( diff_size - 3 ))
-
-  echo "$diff_size"
-}
-
-showDiff() {
-  local file1="$1"
-  local file2="$2"
-
-  show "$CL_GREY"
-  diff -U 0 "$file1" "$file2" | sed -n 3,9999p | sed 's/^/   /g' | sed 's/@@ //g' | sed 's/ @@//g'
-  show "$CL_NORM"
-}
-
 copy() {
+  checkArgs "$@"
+  
   local patch_file data_dir old_ver new_ver
   local old_ver_dir new_ver_dir old_ver_pt_dir new_ver_pt_dir
   local sources old_ver_hash new_ver_hash
@@ -124,6 +108,33 @@ copy() {
   show ""
 }
 
+getDiffSize() {
+  local file1="$1"
+  local file2="$2"
+
+  local diff_size=$(diff -U 0 "$file1" "$file2" | wc -l)
+
+  diff_size=$(( diff_size - 3 ))
+
+  echo "$diff_size"
+}
+
+showDiff() {
+  local file1="$1"
+  local file2="$2"
+
+  show "$CL_GREY"
+  diff -U 0 "$file1" "$file2" | sed -n 3,9999p | sed 's/^/   /g' | sed 's/@@ //g' | sed 's/ @@//g'
+  show "$CL_NORM"
+}
+
+checkArgs() {
+  if [[ $# -ne 4 ]] ; then
+    show "Not enough arguments" $YELLOW
+    exit 1
+  fi
+}
+
 getHash() {
   sha256sum "$1" | cut -f1 -d" "
 }
@@ -138,12 +149,12 @@ show() {
 
 usage() {
   show ""
-  show "${CL_BOLD}Usage:${CL_NORM} ./patch-proc.sh ${CL_BROWN}{command}${CL_NORM} webkaos.patch data-dir prev-ver new-ver"
+  show "${CL_BOLD}Usage:${CL_NORM} ./patch-proc.sh ${CL_YELLOW}{command}${CL_NORM} webkaos.patch data-dir prev-ver new-ver"
   show ""
   show "Commands" $BOLD
   show ""
-  show "  ${CL_BROWN}check${CL_NORM}   Check webkaos patch"
-  show "  ${CL_BROWN}copy${CL_NORM}    Copy unchanged files from previous patched version"
+  show "  ${CL_YELLOW}check${CL_NORM}   Check webkaos patch"
+  show "  ${CL_YELLOW}copy${CL_NORM}    Copy unchanged files from previous patched version"
   show ""
   show "Examples" $BOLD
   show ""

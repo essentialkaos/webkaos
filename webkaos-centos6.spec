@@ -43,7 +43,7 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define boring_commit        12709db3558352c3de60a3ab0e761b9609d2b4e2
+%define boring_commit        96e744c176328b51239df6e48a8a590e4949e6c8
 %define psol_ver             1.11.33.4
 %define lua_module_ver       0.10.7
 %define mh_module_ver        0.32
@@ -58,8 +58,8 @@
 
 Summary:              Superb high performance web server
 Name:                 webkaos
-Version:              1.11.10
-Release:              1%{?dist}
+Version:              1.11.11
+Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 Vendor:               Nginx / Google / CloudFlare / ESSENTIALKAOS
@@ -95,6 +95,9 @@ Patch1:               mime.patch
 Patch2:               %{name}-dynamic-tls-records.patch
 # https://github.com/ajhaydock/BoringNginx/blob/master/patches/1.11.10.patch
 Patch3:               boring.patch
+
+# https://github.com/openresty/lua-nginx-module/pull/1017
+Patch4:               %{name}-%{version}-lua-build-fix.patch
 
 BuildRoot:            %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -158,6 +161,10 @@ mkdir boringssl
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+
+pushd lua-nginx-module-%{lua_module_ver}
+%patch4 -p1
+popd
 
 %build
 
@@ -525,6 +532,10 @@ rm -rf %{buildroot}
 ###############################################################################
 
 %changelog
+* Thu Mar 23 2017 Anton Novojilov <andy@essentialkaos.com> - 1.11.11-0
+- Nginx updated to 1.11.11
+- BoringSSL updated to latest version
+
 * Mon Feb 20 2017 Anton Novojilov <andy@essentialkaos.com> - 1.11.10-1
 - Webserver name removed from error pages for security purposes
 

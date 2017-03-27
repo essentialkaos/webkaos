@@ -44,7 +44,7 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define boring_commit        12709db3558352c3de60a3ab0e761b9609d2b4e2
+%define boring_commit        96e744c176328b51239df6e48a8a590e4949e6c8
 %define psol_ver             1.11.33.4
 %define lua_module_ver       0.10.7
 %define mh_module_ver        0.32
@@ -59,8 +59,8 @@
 
 Summary:              Superb high performance web server
 Name:                 webkaos
-Version:              1.11.10
-Release:              1%{?dist}
+Version:              1.11.12
+Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 Vendor:               Nginx / Google / CloudFlare / ESSENTIALKAOS
@@ -99,15 +99,25 @@ Patch2:               %{name}-dynamic-tls-records.patch
 # https://github.com/ajhaydock/BoringNginx/blob/master/patches/1.11.10.patch
 Patch3:               boring.patch
 
+# https://github.com/openresty/lua-nginx-module/pull/1017
+Patch4:               %{name}-%{version}-lua-build-fix.patch
+
 BuildRoot:            %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Requires:             initscripts >= 8.36 systemd kaosv >= 2.10
+Requires:             initscripts >= 8.36 kaosv >= 2.12
 Requires:             gd libXpm libxslt libluajit
 
-BuildRequires:        make gcc-c++ perl libluajit-devel cmake golang
+BuildRequires:        make perl libluajit-devel cmake golang
+
+%if 0%{?rhel} >= 7
+Requires:             systemd
+BuildRequires:        gcc-c++
+%else
+Requires:             chkconfig
+BuildRequires:        devtoolset-2-gcc-c++ devtoolset-2-binutils
+%endif
 
 Requires(pre):        shadow-utils
-Requires(post):       chkconfig
 
 ###############################################################################
 
@@ -161,6 +171,9 @@ mkdir boringssl
 %patch2 -p1
 %patch3 -p1
 
+pushd lua-nginx-module-%{lua_module_ver}
+%patch4 -p1
+popd
 
 %build
 
@@ -181,6 +194,11 @@ mkdir boringssl
 %{__mv} lua-nginx-module-%{lua_module_ver}/README.markdown ./LUAMODULE-README.markdown
 
 %{__mv} headers-more-nginx-module-%{mh_module_ver}/README.markdown ./HEADERSMORE-README.markdown
+
+%if 0%{?rhel} < 7
+# Use gcc and gcc-c++ from devtoolset for build
+export PATH="/opt/rh/devtoolset-2/root/usr/bin:$PATH"
+%endif
 
 # BoringSSL Build ##############################################################
 
@@ -355,6 +373,7 @@ install -dm 755 %{buildroot}%{_initrddir}
 install -pm 755 %{SOURCE2} \
                 %{buildroot}%{_initrddir}/%{service_name}
 
+%if 0%{?rhel} >= 7
 # Install systemd stuff
 install -dm 755 %{buildroot}%{_unitdir}
 
@@ -362,6 +381,7 @@ install -pm 644 %{SOURCE5} \
                 %{buildroot}%{_unitdir}/
 install -pm 644 %{SOURCE6} \
                 %{buildroot}%{_unitdir}/
+%endif
 
 # Install log rotation stuff
 install -dm 755 %{buildroot}%{_sysconfdir}/logrotate.d
@@ -408,8 +428,11 @@ ln -sf %{_sysconfdir}/%{name}/%{name}.conf %{buildroot}%{_sysconfdir}/%{name}/ng
 ln -sf %{_logdir}/%{name}/ %{buildroot}%{_logdir}/nginx
 ln -sf %{_sbindir}/%{name} %{buildroot}%{_sbindir}/nginx
 ln -sf %{_initrddir}/%{service_name} %{buildroot}%{_initrddir}/nginx
+
+%if 0%{?rhel} >= 7
 ln -sf %{_unitdir}/%{name}.service %{buildroot}%{_unitdir}/nginx.service
 ln -sf %{_unitdir}/%{name}-debug.service %{buildroot}%{_unitdir}/nginx-debug.service
+%endif
 
 ###############################################################################
 
@@ -458,14 +481,20 @@ fi
 
 %preun
 if [[ $1 -eq 0 ]] ; then
+%if 0%{?rhel} >= 7
   %{__sysctl} --no-reload disable %{name}.service &>/dev/null || :
   %{__sysctl} stop %{name}.service &>/dev/null || :
+%else
+  %{__service} %{service_name} stop > /dev/null 2>&1
+  %{__chkconfig} --del %{service_name}
+%endif
 fi
-
 
 %postun
 if [[ $1 -ge 1 ]] ; then
+%if 0%{?rhel} >= 7
   %{__sysctl} daemon-reload &>/dev/null || :
+%endif
   %{__service} %{service_name} upgrade &>/dev/null || :
 fi
 
@@ -512,7 +541,10 @@ rm -rf %{buildroot}
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 
 %{_initrddir}/%{service_name}
+
+%if 0%{?rhel} >= 7
 %{_unitdir}/%{name}.service
+%endif
 
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/html
@@ -530,7 +562,9 @@ rm -rf %{buildroot}
 %files debug
 %defattr(-,root,root)
 %attr(0755,root,root) %{_sbindir}/%{name}.debug
+%if 0%{?rhel} >= 7
 %{_unitdir}/%{name}-debug.service
+%endif
 
 %files nginx
 %defattr(-,root,root)
@@ -539,12 +573,22 @@ rm -rf %{buildroot}
 %{_logdir}/nginx
 %{_sbindir}/nginx
 %{_initrddir}/nginx
+%if 0%{?rhel} >= 7
 %{_unitdir}/nginx.service
 %{_unitdir}/nginx-debug.service
+%endif
 
 ###############################################################################
 
 %changelog
+* Mon Mar 27 2017 Anton Novojilov <andy@essentialkaos.com> - 1.11.12-0
+- Nginx updated to 1.11.12
+- Specs for CentOS6 and CentOS7 merged into one spec
+
+* Thu Mar 23 2017 Anton Novojilov <andy@essentialkaos.com> - 1.11.11-0
+- Nginx updated to 1.11.11
+- BoringSSL updated to latest version
+
 * Mon Feb 20 2017 Anton Novojilov <andy@essentialkaos.com> - 1.11.10-1
 - Webserver name removed from error pages for security purposes
 

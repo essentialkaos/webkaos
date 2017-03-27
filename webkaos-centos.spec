@@ -562,7 +562,9 @@ rm -rf %{buildroot}
 %files debug
 %defattr(-,root,root)
 %attr(0755,root,root) %{_sbindir}/%{name}.debug
+%if 0%{?rhel} >= 7
 %{_unitdir}/%{name}-debug.service
+%endif
 
 %files nginx
 %defattr(-,root,root)

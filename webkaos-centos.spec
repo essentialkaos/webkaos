@@ -44,7 +44,7 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define boring_commit        96e744c176328b51239df6e48a8a590e4949e6c8
+%define boring_commit        6114c3c5d4086d4a0b56c7f6eaa2ebd70d2bea93
 %define psol_ver             1.11.33.4
 %define lua_module_ver       0.10.7
 %define mh_module_ver        0.32
@@ -60,7 +60,7 @@
 Summary:              Superb high performance web server
 Name:                 webkaos
 Version:              1.11.12
-Release:              0%{?dist}
+Release:              1%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 Vendor:               Nginx / Google / CloudFlare / ESSENTIALKAOS
@@ -581,6 +581,12 @@ rm -rf %{buildroot}
 ###############################################################################
 
 %changelog
+* Thu Apr 06 2017 Anton Novojilov <andy@essentialkaos.com> - 1.11.12-1
+- BoringSSL updated to latest version
+- Improved SSL preferences
+- Enabled dynamic TLS records by default
+- PCRE JIT enabled by default
+
 * Mon Mar 27 2017 Anton Novojilov <andy@essentialkaos.com> - 1.11.12-0
 - Nginx updated to 1.11.12
 - Specs for CentOS6 and CentOS7 merged into one spec

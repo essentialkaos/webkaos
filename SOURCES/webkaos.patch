@@ -1,6 +1,6 @@
-diff -urN nginx-1.11.12-orig/auto/lib/openssl/make nginx-1.11.12/auto/lib/openssl/make
---- nginx-1.11.12-orig/auto/lib/openssl/make	2017-03-27 05:07:58.035972446 -0400
-+++ nginx-1.11.12/auto/lib/openssl/make	2017-03-27 05:08:19.870751098 -0400
+diff -urN nginx-1.11.13-orig/auto/lib/openssl/make nginx-1.11.13/auto/lib/openssl/make
+--- nginx-1.11.13-orig/auto/lib/openssl/make	2017-04-08 17:37:31.291426468 -0400
++++ nginx-1.11.13/auto/lib/openssl/make	2017-04-08 17:39:20.783343726 -0400
 @@ -45,18 +45,18 @@
              /*) ngx_prefix="$OPENSSL/.openssl" ;;
              *)  ngx_prefix="$PWD/$OPENSSL/.openssl" ;;
@@ -24,9 +24,9 @@ diff -urN nginx-1.11.12-orig/auto/lib/openssl/make nginx-1.11.12/auto/lib/openss
      ;;
  
  esac
-diff -urN nginx-1.11.12-orig/src/core/nginx.c nginx-1.11.12/src/core/nginx.c
---- nginx-1.11.12-orig/src/core/nginx.c	2017-03-27 05:07:58.079970907 -0400
-+++ nginx-1.11.12/src/core/nginx.c	2017-03-27 05:08:19.887750927 -0400
+diff -urN nginx-1.11.13-orig/src/core/nginx.c nginx-1.11.13/src/core/nginx.c
+--- nginx-1.11.13-orig/src/core/nginx.c	2017-04-08 17:37:31.319425061 -0400
++++ nginx-1.11.13/src/core/nginx.c	2017-04-08 17:39:20.800343165 -0400
 @@ -382,13 +382,13 @@
  static void
  ngx_show_version_info(void)
@@ -45,13 +45,13 @@ diff -urN nginx-1.11.12-orig/src/core/nginx.c nginx-1.11.12/src/core/nginx.c
              "Options:" NGX_LINEFEED
              "  -?,-h         : this help" NGX_LINEFEED
              "  -v            : show version and exit" NGX_LINEFEED
-diff -urN nginx-1.11.12-orig/src/core/nginx.h nginx-1.11.12/src/core/nginx.h
---- nginx-1.11.12-orig/src/core/nginx.h	2017-03-27 05:07:58.083970865 -0400
-+++ nginx-1.11.12/src/core/nginx.h	2017-03-27 05:09:23.000000000 -0400
+diff -urN nginx-1.11.13-orig/src/core/nginx.h nginx-1.11.13/src/core/nginx.h
+--- nginx-1.11.13-orig/src/core/nginx.h	2017-04-08 17:37:31.322424960 -0400
++++ nginx-1.11.13/src/core/nginx.h	2017-04-08 17:40:12.000000000 -0400
 @@ -11,7 +11,7 @@
  
- #define nginx_version      1011012
- #define NGINX_VERSION      "1.11.12"
+ #define nginx_version      1011013
+ #define NGINX_VERSION      "1.11.13"
 -#define NGINX_VER          "nginx/" NGINX_VERSION
 +#define NGINX_VER          "webkaos/" NGINX_VERSION
  
@@ -66,9 +66,9 @@ diff -urN nginx-1.11.12-orig/src/core/nginx.h nginx-1.11.12/src/core/nginx.h
  #define NGX_OLDPID_EXT     ".oldbin"
  
  
-diff -urN nginx-1.11.12-orig/src/core/ngx_log.c nginx-1.11.12/src/core/ngx_log.c
---- nginx-1.11.12-orig/src/core/ngx_log.c	2017-03-27 05:07:58.082970876 -0400
-+++ nginx-1.11.12/src/core/ngx_log.c	2017-03-27 05:08:19.917750625 -0400
+diff -urN nginx-1.11.13-orig/src/core/ngx_log.c nginx-1.11.13/src/core/ngx_log.c
+--- nginx-1.11.13-orig/src/core/ngx_log.c	2017-04-08 17:37:31.322424960 -0400
++++ nginx-1.11.13/src/core/ngx_log.c	2017-04-08 17:39:20.823342523 -0400
 @@ -202,9 +202,9 @@
          return;
      }
@@ -99,9 +99,9 @@ diff -urN nginx-1.11.12-orig/src/core/ngx_log.c nginx-1.11.12/src/core/ngx_log.c
          return NGX_CONF_ERROR;
  #endif
  
-diff -urN nginx-1.11.12-orig/src/http/modules/ngx_http_autoindex_module.c nginx-1.11.12/src/http/modules/ngx_http_autoindex_module.c
---- nginx-1.11.12-orig/src/http/modules/ngx_http_autoindex_module.c	2017-03-27 05:07:58.064971161 -0400
-+++ nginx-1.11.12/src/http/modules/ngx_http_autoindex_module.c	2017-03-27 05:08:19.933750462 -0400
+diff -urN nginx-1.11.13-orig/src/http/modules/ngx_http_autoindex_module.c nginx-1.11.13/src/http/modules/ngx_http_autoindex_module.c
+--- nginx-1.11.13-orig/src/http/modules/ngx_http_autoindex_module.c	2017-04-08 17:37:31.310425424 -0400
++++ nginx-1.11.13/src/http/modules/ngx_http_autoindex_module.c	2017-04-08 17:39:20.838342106 -0400
 @@ -445,9 +445,11 @@
      ;
  
@@ -177,9 +177,9 @@ diff -urN nginx-1.11.12-orig/src/http/modules/ngx_http_autoindex_module.c nginx-
                                tm.ngx_tm_mday,
                                months[tm.ngx_tm_mon - 1],
                                tm.ngx_tm_year,
-diff -urN nginx-1.11.12-orig/src/http/ngx_http_header_filter_module.c nginx-1.11.12/src/http/ngx_http_header_filter_module.c
---- nginx-1.11.12-orig/src/http/ngx_http_header_filter_module.c	2017-03-27 05:07:58.070971024 -0400
-+++ nginx-1.11.12/src/http/ngx_http_header_filter_module.c	2017-03-27 05:08:19.947750323 -0400
+diff -urN nginx-1.11.13-orig/src/http/ngx_http_header_filter_module.c nginx-1.11.13/src/http/ngx_http_header_filter_module.c
+--- nginx-1.11.13-orig/src/http/ngx_http_header_filter_module.c	2017-04-08 17:37:31.314425259 -0400
++++ nginx-1.11.13/src/http/ngx_http_header_filter_module.c	2017-04-08 17:48:03.000000000 -0400
 @@ -46,7 +46,7 @@
  };
  
@@ -189,18 +189,10 @@ diff -urN nginx-1.11.12-orig/src/http/ngx_http_header_filter_module.c nginx-1.11
  static u_char ngx_http_server_full_string[] = "Server: " NGINX_VER CRLF;
  static u_char ngx_http_server_build_string[] = "Server: " NGINX_VER_BUILD CRLF;
  
-@@ -101,12 +101,38 @@
-     ngx_null_string,  /* "419 unused" */
-     ngx_null_string,  /* "420 unused" */
-     ngx_string("421 Misdirected Request"),
-+    ngx_null_string,  /* "422 Unprocessable Entity" */
-+    ngx_null_string,  /* "423 Locked" */
-+    ngx_null_string,  /* "424 Failed Dependency" */
-+    ngx_null_string,  /* "425 unused" */
-+    ngx_null_string,  /* "426 unused" */
-+    ngx_null_string,  /* "427 unused" */
-+    ngx_null_string,  /* "428 unused" */
-+    ngx_null_string,  /* "429 unused" */
+@@ -109,8 +109,30 @@
+     ngx_null_string,  /* "427 unused" */
+     ngx_null_string,  /* "428 Precondition Required" */
+     ngx_string("429 Too Many Requests"),
 +    ngx_null_string,  /* "430 unused" */
 +    ngx_null_string,  /* "431 unused" */
 +    ngx_null_string,  /* "432 unused" */
@@ -224,18 +216,14 @@ diff -urN nginx-1.11.12-orig/src/http/ngx_http_header_filter_module.c nginx-1.11
 +    ngx_null_string,  /* "450 unused" */
 +    ngx_string("451 Unavailable For Legal Reasons"),
  
--    /* ngx_null_string, */  /* "422 Unprocessable Entity" */
--    /* ngx_null_string, */  /* "423 Locked" */
--    /* ngx_null_string, */  /* "424 Failed Dependency" */
--
--#define NGX_HTTP_LAST_4XX  422
+-#define NGX_HTTP_LAST_4XX  430
 +#define NGX_HTTP_LAST_4XX  452
  #define NGX_HTTP_OFF_5XX   (NGX_HTTP_LAST_4XX - 400 + NGX_HTTP_OFF_4XX)
  
      ngx_string("500 Internal Server Error"),
-diff -urN nginx-1.11.12-orig/src/http/ngx_http_special_response.c nginx-1.11.12/src/http/ngx_http_special_response.c
---- nginx-1.11.12-orig/src/http/ngx_http_special_response.c	2017-03-27 05:07:58.072970988 -0400
-+++ nginx-1.11.12/src/http/ngx_http_special_response.c	2017-03-27 05:08:19.960750192 -0400
+diff -urN nginx-1.11.13-orig/src/http/ngx_http_special_response.c nginx-1.11.13/src/http/ngx_http_special_response.c
+--- nginx-1.11.13-orig/src/http/ngx_http_special_response.c	2017-04-08 17:37:31.315425217 -0400
++++ nginx-1.11.13/src/http/ngx_http_special_response.c	2017-04-08 17:49:28.000000000 -0400
 @@ -19,21 +19,21 @@
  
  
@@ -261,7 +249,7 @@ diff -urN nginx-1.11.12-orig/src/http/ngx_http_special_response.c nginx-1.11.12/
  "</body>" CRLF
  "</html>" CRLF
  ;
-@@ -59,257 +59,293 @@
+@@ -59,265 +59,302 @@
  
  static char ngx_http_error_301_page[] =
  "<html>" CRLF
@@ -512,6 +500,18 @@ diff -urN nginx-1.11.12-orig/src/http/ngx_http_special_response.c nginx-1.11.12/
 +"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
 +"<body>" CRLF
 +"<div><h1>421 Misdirected Request</h1>" CRLF
+ ;
+ 
+ 
+ static char ngx_http_error_429_page[] =
+ "<html>" CRLF
+-"<head><title>429 Too Many Requests</title></head>" CRLF
+-"<body bgcolor=\"white\">" CRLF
+-"<center><h1>429 Too Many Requests</h1></center>" CRLF
++"<head><title>429 Too Many Requests</title>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<body>" CRLF
++"<div><h1>429 Too Many Requests</h1>" CRLF
 +;
 +
 +
@@ -656,18 +656,10 @@ diff -urN nginx-1.11.12-orig/src/http/ngx_http_special_response.c nginx-1.11.12/
  ;
  
  
-@@ -354,8 +390,38 @@
-     ngx_null_string,                     /* 419 */
-     ngx_null_string,                     /* 420 */
-     ngx_string(ngx_http_error_421_page),
-+    ngx_null_string,                     /* 422 */
-+    ngx_null_string,                     /* 423 */
-+    ngx_null_string,                     /* 424 */
-+    ngx_null_string,                     /* 425 */
-+    ngx_null_string,                     /* 426 */
-+    ngx_null_string,                     /* 427 */
-+    ngx_null_string,                     /* 428 */
-+    ngx_null_string,                     /* 429 */
+@@ -370,8 +407,30 @@
+     ngx_null_string,                     /* 427 */
+     ngx_null_string,                     /* 428 */
+     ngx_string(ngx_http_error_429_page),
 +    ngx_null_string,                     /* 430 */
 +    ngx_null_string,                     /* 431 */
 +    ngx_null_string,                     /* 432 */
@@ -691,14 +683,14 @@ diff -urN nginx-1.11.12-orig/src/http/ngx_http_special_response.c nginx-1.11.12/
 +    ngx_null_string,                     /* 450 */
 +    ngx_string(ngx_http_error_451_page),
  
--#define NGX_HTTP_LAST_4XX  422
+-#define NGX_HTTP_LAST_4XX  430
 +#define NGX_HTTP_LAST_4XX  452
  #define NGX_HTTP_OFF_5XX   (NGX_HTTP_LAST_4XX - 400 + NGX_HTTP_OFF_4XX)
  
      ngx_string(ngx_http_error_494_page), /* 494, request header too large */
-diff -urN nginx-1.11.12-orig/src/http/v2/ngx_http_v2_filter_module.c nginx-1.11.12/src/http/v2/ngx_http_v2_filter_module.c
---- nginx-1.11.12-orig/src/http/v2/ngx_http_v2_filter_module.c	2017-03-27 05:07:58.076970930 -0400
-+++ nginx-1.11.12/src/http/v2/ngx_http_v2_filter_module.c	2017-03-27 05:08:19.978750013 -0400
+diff -urN nginx-1.11.13-orig/src/http/v2/ngx_http_v2_filter_module.c nginx-1.11.13/src/http/v2/ngx_http_v2_filter_module.c
+--- nginx-1.11.13-orig/src/http/v2/ngx_http_v2_filter_module.c	2017-04-08 17:37:31.317425133 -0400
++++ nginx-1.11.13/src/http/v2/ngx_http_v2_filter_module.c	2017-04-08 17:51:03.000000000 -0400
 @@ -139,7 +139,7 @@
      ngx_http_core_srv_conf_t  *cscf;
      u_char                     addr[NGX_SOCKADDR_STRLEN];
@@ -717,9 +709,9 @@ diff -urN nginx-1.11.12-orig/src/http/v2/ngx_http_v2_filter_module.c nginx-1.11.
          }
  
          *pos++ = ngx_http_v2_inc_indexed(NGX_HTTP_V2_SERVER_INDEX);
-diff -urN nginx-1.11.12-orig/src/os/unix/ngx_setproctitle.c nginx-1.11.12/src/os/unix/ngx_setproctitle.c
---- nginx-1.11.12-orig/src/os/unix/ngx_setproctitle.c	2017-03-27 05:07:58.051971578 -0400
-+++ nginx-1.11.12/src/os/unix/ngx_setproctitle.c	2017-03-27 05:08:19.991749880 -0400
+diff -urN nginx-1.11.13-orig/src/os/unix/ngx_setproctitle.c nginx-1.11.13/src/os/unix/ngx_setproctitle.c
+--- nginx-1.11.13-orig/src/os/unix/ngx_setproctitle.c	2017-04-08 17:37:31.297426087 -0400
++++ nginx-1.11.13/src/os/unix/ngx_setproctitle.c	2017-04-08 17:39:20.887340739 -0400
 @@ -89,7 +89,7 @@
  
      ngx_os_argv[1] = NULL;

@@ -60,7 +60,7 @@
 Summary:              Superb high performance web server
 Name:                 webkaos
 Version:              1.11.13
-Release:              0%{?dist}
+Release:              1%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 Vendor:               Nginx / Google / CloudFlare / ESSENTIALKAOS
@@ -581,6 +581,9 @@ rm -rf %{buildroot}
 ###############################################################################
 
 %changelog
+* Wed Apr 19 2017 Anton Novojilov <andy@essentialkaos.com> - 1.11.13-1
+- Added AES128-SHA to list of supported ciphers
+
 * Sun Apr 09 2017 Anton Novojilov <andy@essentialkaos.com> - 1.11.13-0
 - Nginx updated to 1.11.13
 

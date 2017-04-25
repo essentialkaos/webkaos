@@ -44,7 +44,7 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define boring_commit        6114c3c5d4086d4a0b56c7f6eaa2ebd70d2bea93
+%define boring_commit        d617e01cfa59d11b6474380738c92ef2c0d4b09a
 %define psol_ver             1.11.33.4
 %define lua_module_ver       0.10.7
 %define mh_module_ver        0.32
@@ -59,8 +59,8 @@
 
 Summary:              Superb high performance web server
 Name:                 webkaos
-Version:              1.11.13
-Release:              1%{?dist}
+Version:              1.13.0
+Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 Vendor:               Nginx / Google / CloudFlare / ESSENTIALKAOS
@@ -581,6 +581,11 @@ rm -rf %{buildroot}
 ###############################################################################
 
 %changelog
+* Wed Apr 26 2017 Anton Novojilov <andy@essentialkaos.com> - 1.13.0-0
+- Nginx updated to 1.13.0
+- BoringSSL updated to latest version
+- TLS 1.3 enabled by default
+
 * Wed Apr 19 2017 Anton Novojilov <andy@essentialkaos.com> - 1.11.13-1
 - Added AES128-SHA to list of supported ciphers
 

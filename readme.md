@@ -1,6 +1,4 @@
-<p align="center">
-<img width="300" height="150" src="https://essentialkaos.com/github/webkaos-v3.png"/>
-</p>
+<p align="center"><img width="300" height="150" src="https://essentialkaos.com/github/webkaos-v3.png"/></p>
 
 `webkaos` is a web-server based on latest version of [Nginx](http://nginx.org).
 
@@ -16,7 +14,7 @@
 * Improved design of index pages
 * Performance tuning for highload
 
-## Installation
+### Installation
 
 #### From ESSENTIAL KAOS Public repo for RHEL6/CentOS6
 
@@ -42,6 +40,8 @@ rpmbuilder webkaos.spec -dl SOURCES/
 rpmbuilder webkaos.spec -1 -V -di
 ````
 
-## License
+### License
 
 BSD 2-clause
+
+<p align="center"><a href="https://essentialkaos.com"><img src="https://gh.kaos.io/ekgh.svg"/></a></p>

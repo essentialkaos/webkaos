@@ -585,6 +585,7 @@ rm -rf %{buildroot}
 - BoringSSL updated to latest version
 - PCRE updated to 8.41
 - Lua module updated to 0.10.8
+- PageSpeed updated to 1.12.34.2-stable
 
 * Wed Apr 26 2017 Anton Novojilov <andy@essentialkaos.com> - 1.13.0-0
 - Nginx updated to 1.13.0

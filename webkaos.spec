@@ -58,7 +58,7 @@
 
 Summary:              Superb high performance web server
 Name:                 webkaos
-Version:              1.13.2
+Version:              1.13.3
 Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
@@ -580,6 +580,9 @@ rm -rf %{buildroot}
 ###############################################################################
 
 %changelog
+* Wed Jul 12 2017 Anton Novojilov <andy@essentialkaos.com> - 1.13.3-0
+- Nginx updated to 1.13.3 with CVE-2017-7529 fix
+
 * Fri Jul 07 2017 Anton Novojilov <andy@essentialkaos.com> - 1.13.2-0
 - Nginx updated to 1.13.2
 - BoringSSL updated to latest version

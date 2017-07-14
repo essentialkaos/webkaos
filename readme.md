@@ -1,10 +1,10 @@
-<p align="center"><img width="300" height="150" src="https://essentialkaos.com/github/webkaos-v3.png"/></p>
+<p align="center"><img src="https://gh.kaos.io/webkaos.svg"/></p>
 
 `webkaos` is a web-server based on latest version of [Nginx](http://nginx.org).
 
 ## Feature list
 
-* Improved default SSL/TLS preferencies (A+ by default on [SSL Labs](https://www.ssllabs.com/ssltest/analyze.html?d=essentialkaos.com))
+* Improved default SSL/TLS preferencies (A+ by default on [SSL Labs](https://www.ssllabs.com/ssltest/analyze.html?d=essentialkaos.com) and [High-Tech Bridge](https://www.htbridge.com/ssl/?id=ZyvSBsIr))
 * [Dynamic TLS Records](https://blog.cloudflare.com/optimizing-tls-over-tcp-to-reduce-latency/) support
 * Latest version of [BoringSSL](https://boringssl.googlesource.com/boringssl/) with some state-of-the-art crypto features
 * [TCP Fast Open](https://en.wikipedia.org/wiki/TCP_Fast_Open) support (_only for CentOS7/RHEL7_)
@@ -19,15 +19,15 @@
 #### From ESSENTIAL KAOS Public repo for RHEL6/CentOS6
 
 ````
-yum install -y https://yum.kaos.io/6/release/i386/kaos-repo-7.0-0.el6.noarch.rpm
-yum install webkaos
+[sudo] yum install -y https://yum.kaos.io/6/release/x86_64/kaos-repo-8.0-0.el6.noarch.rpm
+[sudo] yum install webkaos
 ````
 
 #### From ESSENTIAL KAOS Public repo for RHEL7/CentOS7
 
 ````
-yum install -y https://yum.kaos.io/7/release/x86_64/kaos-repo-7.0-0.el7.noarch.rpm
-yum install webkaos
+[sudo] yum install -y https://yum.kaos.io/7/release/x86_64/kaos-repo-8.0-0.el7.noarch.rpm
+[sudo] yum install webkaos
 ````
 
 #### Using [rpmbuilder](https://github.com/essentialkaos/rpmbuilder)

@@ -44,9 +44,9 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define boring_commit        2ec3b3154817fbb0a2e6878c9ec605b1854a2bd1
+%define boring_commit        ca9e8f52f1631fa4906a0d44abdeb55f80fe026d
 %define psol_ver             1.12.34.2
-%define lua_module_ver       0.10.8
+%define lua_module_ver       0.10.10
 %define mh_module_ver        0.32
 %define pcre_ver             8.41
 %define zlib_ver             1.2.11
@@ -58,7 +58,7 @@
 
 Summary:              Superb high performance web server
 Name:                 webkaos
-Version:              1.13.3
+Version:              1.13.4
 Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
@@ -98,8 +98,8 @@ Patch2:               %{name}-dynamic-tls-records.patch
 # https://github.com/ajhaydock/BoringNginx/blob/master/patches/1.11.10.patch
 Patch3:               boring.patch
 
-# https://github.com/openresty/lua-nginx-module/pull/1017
-Patch4:               %{name}-%{version}-lua-build-fix.patch
+# Patch for build with nginx >= 1.13.4
+Patch4:               ngx_pagespeed-build-fix.patch
 
 BuildRoot:            %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -170,7 +170,7 @@ mkdir boringssl
 %patch2 -p1
 %patch3 -p1
 
-pushd lua-nginx-module-%{lua_module_ver}
+pushd ngx_pagespeed-%{pagespeed_ver}
 %patch4 -p1
 popd
 
@@ -580,6 +580,11 @@ rm -rf %{buildroot}
 ###############################################################################
 
 %changelog
+* Thu Aug 10 2017 Anton Novojilov <andy@essentialkaos.com> - 1.13.4-0
+- Nginx updated to 1.13.4
+- BoringSSL updated to latest version
+- Lua module updated to 0.10.10
+
 * Wed Jul 12 2017 Anton Novojilov <andy@essentialkaos.com> - 1.13.3-0
 - Nginx updated to 1.13.3 with CVE-2017-7529 fix
 

@@ -99,7 +99,7 @@ Patch2:               %{name}-dynamic-tls-records.patch
 Patch3:               boring.patch
 
 # Patch for build with nginx >= 1.13.4
-Patch4:               ngx_pagespeed-build.patch
+Patch4:               ngx_pagespeed-build-fix.patch
 
 BuildRoot:            %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 

@@ -586,7 +586,7 @@ rm -rf %{buildroot}
 
 %changelog
 * Sat Aug 12 2017 Anton Novojilov <andy@essentialkaos.com> - 1.13.4-1
-- Added patch by CloudFlare for SPDY support
+- Added CloudFlare's patch for SPDY support
 
 * Thu Aug 10 2017 Anton Novojilov <andy@essentialkaos.com> - 1.13.4-0
 - Nginx updated to 1.13.4

@@ -59,7 +59,7 @@
 Summary:              Superb high performance web server
 Name:                 webkaos
 Version:              1.13.4
-Release:              0%{?dist}
+Release:              1%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 Vendor:               Nginx / Google / CloudFlare / ESSENTIALKAOS
@@ -95,11 +95,13 @@ Patch0:               %{name}.patch
 Patch1:               mime.patch
 # https://github.com/cloudflare/sslconfig/blob/master/patches/nginx__1.11.5_dynamic_tls_records.patch
 Patch2:               %{name}-dynamic-tls-records.patch
-# https://github.com/ajhaydock/BoringNginx/blob/master/patches/1.11.10.patch
+# https://github.com/ajhaydock/BoringNginx/blob/master/patches
 Patch3:               boring.patch
+# https://github.com/cloudflare/sslconfig/blob/master/patches/nginx__1.13.0_http2_spdy.patch
+Patch4:               %{name}-http2-spdy.patch
 
 # Patch for build with nginx >= 1.13.4
-Patch4:               ngx_pagespeed-build-fix.patch
+Patch5:               ngx_pagespeed-build-fix.patch
 
 BuildRoot:            %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -169,9 +171,10 @@ mkdir boringssl
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
+%patch4 -p1
 
 pushd ngx_pagespeed-%{pagespeed_ver}
-%patch4 -p1
+%patch5 -p1
 popd
 
 %build
@@ -238,6 +241,7 @@ cp boringssl/build/crypto/libcrypto.a boringssl/build/ssl/libssl.a boringssl/.op
         %{?_with_http_xslt_module} \
         %{?_with_http_flv_module} \
         --with-http_v2_module \
+        --with-http_spdy_module \
         --with-http_gunzip_module \
         --with-http_ssl_module \
         --with-http_realip_module \
@@ -296,6 +300,7 @@ touch boringssl/.openssl/include/openssl/ssl.h
         %{?_with_http_xslt_module} \
         %{?_with_http_flv_module} \
         --with-http_v2_module \
+        --with-http_spdy_module \
         --with-http_gunzip_module \
         --with-http_ssl_module \
         --with-http_realip_module \
@@ -580,6 +585,9 @@ rm -rf %{buildroot}
 ###############################################################################
 
 %changelog
+* Sat Aug 12 2017 Anton Novojilov <andy@essentialkaos.com> - 1.13.4-1
+- Added patch by CloudFlare for SPDY support
+
 * Thu Aug 10 2017 Anton Novojilov <andy@essentialkaos.com> - 1.13.4-0
 - Nginx updated to 1.13.4
 - BoringSSL updated to latest version

@@ -9,7 +9,7 @@
 * Latest version of [BoringSSL](https://boringssl.googlesource.com/boringssl/) with some state-of-the-art crypto features
 * [TCP Fast Open](https://en.wikipedia.org/wiki/TCP_Fast_Open) support (_only for CentOS7/RHEL7_)
 * [Lua](https://github.com/openresty/lua-nginx-module), [Headers More](https://github.com/openresty/headers-more-nginx-module) and [PageSpeed](https://github.com/pagespeed/ngx_pagespeed) module from the box
-* HTTP/2 + SPDY support
+* [HTTP/2 + SPDY](https://blog.cloudflare.com/open-sourcing-our-nginx-http-2-spdy-code/) support
 * Improved SysV script
 * Well-looking error pages
 * Improved design of index pages

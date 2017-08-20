@@ -179,7 +179,7 @@ diff -urN nginx-1.13.4-orig/src/http/modules/ngx_http_autoindex_module.c nginx-1
                                tm.ngx_tm_year,
 diff -urN nginx-1.13.4-orig/src/http/ngx_http_header_filter_module.c nginx-1.13.4/src/http/ngx_http_header_filter_module.c
 --- nginx-1.13.4-orig/src/http/ngx_http_header_filter_module.c	2017-08-10 00:31:54.248110546 +0200
-+++ nginx-1.13.4/src/http/ngx_http_header_filter_module.c	2017-08-10 00:34:07.208096904 +0200
++++ nginx-1.13.4/src/http/ngx_http_header_filter_module.c	2017-08-21 00:13:36.000000000 +0200
 @@ -46,7 +46,7 @@
  };
  
@@ -189,6 +189,15 @@ diff -urN nginx-1.13.4-orig/src/http/ngx_http_header_filter_module.c nginx-1.13.
  static u_char ngx_http_server_full_string[] = "Server: " NGINX_VER CRLF;
  static u_char ngx_http_server_build_string[] = "Server: " NGINX_VER_BUILD CRLF;
  
+@@ -98,7 +98,7 @@
+     ngx_string("415 Unsupported Media Type"),
+     ngx_string("416 Requested Range Not Satisfiable"),
+     ngx_null_string,  /* "417 Expectation Failed" */
+-    ngx_null_string,  /* "418 unused" */
++    ngx_string("418 I'm a teapot"),
+     ngx_null_string,  /* "419 unused" */
+     ngx_null_string,  /* "420 unused" */
+     ngx_string("421 Misdirected Request"),
 @@ -110,8 +110,30 @@
      ngx_null_string,  /* "427 unused" */
      ngx_null_string,  /* "428 Precondition Required" */
@@ -223,7 +232,7 @@ diff -urN nginx-1.13.4-orig/src/http/ngx_http_header_filter_module.c nginx-1.13.
      ngx_string("500 Internal Server Error"),
 diff -urN nginx-1.13.4-orig/src/http/ngx_http_special_response.c nginx-1.13.4/src/http/ngx_http_special_response.c
 --- nginx-1.13.4-orig/src/http/ngx_http_special_response.c	2017-08-10 00:31:54.249110547 +0200
-+++ nginx-1.13.4/src/http/ngx_http_special_response.c	2017-08-10 00:34:07.221096902 +0200
++++ nginx-1.13.4/src/http/ngx_http_special_response.c	2017-08-21 00:11:47.000000000 +0200
 @@ -19,21 +19,21 @@
  
  
@@ -249,7 +258,7 @@ diff -urN nginx-1.13.4-orig/src/http/ngx_http_special_response.c nginx-1.13.4/sr
  "</body>" CRLF
  "</html>" CRLF
  ;
-@@ -59,281 +59,320 @@
+@@ -59,281 +59,329 @@
  
  static char ngx_http_error_301_page[] =
  "<html>" CRLF
@@ -500,6 +509,15 @@ diff -urN nginx-1.13.4-orig/src/http/ngx_http_special_response.c nginx-1.13.4/sr
 +"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
 +"<body>" CRLF
 +"<div><h1>416 Requested Range Not Satisfiable</h1>" CRLF
++;
++
++
++static char ngx_http_error_418_page[] =
++"<html>" CRLF
++"<head><title>418 I'm a teapot</title>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<body>" CRLF
++"<div><h1>418 I'm a teapot</h1>" CRLF
  ;
  
  
@@ -680,7 +698,16 @@ diff -urN nginx-1.13.4-orig/src/http/ngx_http_special_response.c nginx-1.13.4/sr
  ;
  
  
-@@ -387,8 +426,30 @@
+@@ -375,7 +423,7 @@
+     ngx_string(ngx_http_error_415_page),
+     ngx_string(ngx_http_error_416_page),
+     ngx_null_string,                     /* 417 */
+-    ngx_null_string,                     /* 418 */
++    ngx_string(ngx_http_error_418_page),
+     ngx_null_string,                     /* 419 */
+     ngx_null_string,                     /* 420 */
+     ngx_string(ngx_http_error_421_page),
+@@ -387,8 +435,30 @@
      ngx_null_string,                     /* 427 */
      ngx_null_string,                     /* 428 */
      ngx_string(ngx_http_error_429_page),

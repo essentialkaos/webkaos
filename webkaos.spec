@@ -59,7 +59,7 @@
 Summary:              Superb high performance web server
 Name:                 webkaos
 Version:              1.13.4
-Release:              1%{?dist}
+Release:              2%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 Vendor:               Nginx / Google / CloudFlare / ESSENTIALKAOS
@@ -585,6 +585,9 @@ rm -rf %{buildroot}
 ###############################################################################
 
 %changelog
+* Mon Aug 21 2017 Anton Novojilov <andy@essentialkaos.com> - 1.13.4-2
+- Added support of HTTP status code 418 (I'm a teapot)
+
 * Sat Aug 12 2017 Anton Novojilov <andy@essentialkaos.com> - 1.13.4-1
 - Added CloudFlare's patch for SPDY support
 

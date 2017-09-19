@@ -586,7 +586,7 @@ rm -rf %{buildroot}
 
 %changelog
 * Wed Sep 20 2017 Anton Novojilov <andy@essentialkaos.com> - 1.13.5-0
-- Nginx updated to 1.13.4
+- Nginx updated to 1.13.5
 - BoringSSL updated to latest version
 
 * Mon Aug 21 2017 Anton Novojilov <andy@essentialkaos.com> - 1.13.4-2

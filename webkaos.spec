@@ -44,7 +44,7 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define boring_commit        ca9e8f52f1631fa4906a0d44abdeb55f80fe026d
+%define boring_commit        40b24c81546f44cfc840715e8a1c1b5060d313f3
 %define psol_ver             1.12.34.2
 %define lua_module_ver       0.10.10
 %define mh_module_ver        0.32
@@ -58,8 +58,8 @@
 
 Summary:              Superb high performance web server
 Name:                 webkaos
-Version:              1.13.4
-Release:              2%{?dist}
+Version:              1.13.5
+Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 Vendor:               Nginx / Google / CloudFlare / ESSENTIALKAOS
@@ -585,6 +585,10 @@ rm -rf %{buildroot}
 ###############################################################################
 
 %changelog
+* Wed Sep 20 2017 Anton Novojilov <andy@essentialkaos.com> - 1.13.5-0
+- Nginx updated to 1.13.5
+- BoringSSL updated to latest version
+
 * Mon Aug 21 2017 Anton Novojilov <andy@essentialkaos.com> - 1.13.4-2
 - Added support of HTTP status code 418 (I'm a teapot)
 

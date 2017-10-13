@@ -1,20 +1,21 @@
-diff -urN mime-orig/conf/mime.types mime/conf/mime.types
---- mime-orig/conf/mime.types	2014-10-28 16:04:47.000000000 +0100
-+++ mime/conf/mime.types	2014-10-30 22:41:49.000000000 +0100
-@@ -21,7 +21,7 @@
-     image/x-icon                          ico;
-     image/x-jng                           jng;
-     image/x-ms-bmp                        bmp;
--    image/svg+xml                         svg svgz;
-+    image/svg+xml                         svg svgz xng;
-     image/webp                            webp;
+diff -urN nginx-1.13.6-orig/conf/mime.types nginx-1.13.6/conf/mime.types
+--- nginx-1.13.6-orig/conf/mime.types	2017-10-10 17:22:51.000000000 +0200
++++ nginx-1.13.6/conf/mime.types	2017-10-14 00:16:51.000000000 +0200
+@@ -16,7 +16,7 @@
+     text/x-component                                 htc;
  
-     application/font-woff                 woff;
-@@ -86,4 +86,7 @@
-     video/x-ms-asf                        asx asf;
-     video/x-ms-wmv                        wmv;
-     video/x-msvideo                       avi;
-+
-+    application/x-font-ttf                ttf;
-+    application/vnd.ms-opentype           otf;
- }
+     image/png                                        png;
+-    image/svg+xml                                    svg svgz;
++    image/svg+xml                                    svg svgz xng;
+     image/tiff                                       tif tiff;
+     image/vnd.wap.wbmp                               wbmp;
+     image/webp                                       webp;
+@@ -24,6 +24,8 @@
+     image/x-jng                                      jng;
+     image/x-ms-bmp                                   bmp;
+ 
++    application/x-font-ttf                           ttf;
++    application/vnd.ms-opentype                      otf;
+     application/font-woff                            woff;
+     application/java-archive                         jar war ear;
+     application/json                                 json;

@@ -87,13 +87,13 @@ kv.disableOutputRedirect "start" "pre"
 prepare() {
   local has_errors=""
 
-  [[ ! -x $binary ]] && has_errors=true && kv.error "<BINARY> must be executable file."
-  [[ ! -r $conf_file ]] && has_errors=true && kv.error "<CONF_FILE> must be readable file."
-  [[ ! -s $conf_file ]] && has_errors=true && kv.error "<CONF_FILE> can't be empty."
+  [[ ! -x $binary ]] && has_errors=true && kv.error "<BINARY> must be executable file"
+  [[ ! -r $conf_file ]] && has_errors=true && kv.error "<CONF_FILE> must be readable file"
+  [[ ! -s $conf_file ]] && has_errors=true && kv.error "<CONF_FILE> can't be empty"
 
   if kv.isRoot ; then
-    [[ ! -w $cache_dir ]] && has_errors=true && kv.error "<CACHE_DIR> must be writable directory."
-    [[ ! -w $pagespeed_cache ]] && has_errors=true && kv.error "<PAGESPEED_CACHE> must be writable directory."
+    [[ ! -w $cache_dir ]] && has_errors=true && kv.error "<CACHE_DIR> must be writable directory"
+    [[ ! -w $pagespeed_cache ]] && has_errors=true && kv.error "<PAGESPEED_CACHE> must be writable directory"
   fi
 
   [[ $has_errors ]] && kv.exit $ACTION_ERROR

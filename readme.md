@@ -1,4 +1,4 @@
-<p align="center"><img src="https://gh.kaos.io/webkaos.svg"/></p>
+<p align="center"><a href="#readme"><img src="https://gh.kaos.io/webkaos.svg"/></a></p>
 
 `webkaos` is a web-server based on latest version of [Nginx](http://nginx.org).
 

@@ -59,7 +59,7 @@
 Summary:              Superb high performance web server
 Name:                 webkaos
 Version:              1.13.6
-Release:              0%{?dist}
+Release:              1%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 Vendor:               Nginx / Google / CloudFlare / ESSENTIALKAOS
@@ -96,12 +96,14 @@ Patch1:               mime.patch
 # https://github.com/cloudflare/sslconfig/blob/master/patches/nginx__1.11.5_dynamic_tls_records.patch
 Patch2:               %{name}-dynamic-tls-records.patch
 # https://github.com/ajhaydock/BoringNginx/blob/master/patches
-Patch3:               boring.patch
+Patch3:               boringssl.patch
 # https://github.com/cloudflare/sslconfig/blob/master/patches/nginx__1.13.0_http2_spdy.patch
 Patch4:               %{name}-http2-spdy.patch
+Patch5:               boringssl-tls13-support.patch
+
 
 # Patch for build with nginx >= 1.13.4
-Patch5:               ngx_pagespeed-build-fix.patch
+Patch6:               ngx_pagespeed-build-fix.patch
 
 BuildRoot:            %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -173,8 +175,12 @@ mkdir boringssl
 %patch3 -p1
 %patch4 -p1
 
-pushd ngx_pagespeed-%{pagespeed_ver}
+pushd boringssl
 %patch5 -p1
+popd
+
+pushd ngx_pagespeed-%{pagespeed_ver}
+%patch6 -p1
 popd
 
 %build
@@ -198,7 +204,7 @@ popd
 %{__mv} headers-more-nginx-module-%{mh_module_ver}/README.markdown ./HEADERSMORE-README.markdown
 
 %if 0%{?rhel} < 7
-# Use gcc and gcc-c++ from devtoolset for build
+# Use gcc and gcc-c++ from devtoolset for build on CentOS6
 export PATH="/opt/rh/devtoolset-2/root/usr/bin:$PATH"
 %endif
 
@@ -585,6 +591,9 @@ rm -rf %{buildroot}
 ###############################################################################
 
 %changelog
+* Wed Oct 18 2017 Anton Novojilov <andy@essentialkaos.com> - 1.13.6-1
+- Fixed TLS 1.3 support
+
 * Sat Oct 14 2017 Anton Novojilov <andy@essentialkaos.com> - 1.13.6-0
 - Nginx updated to 1.13.5
 - BoringSSL updated to latest version

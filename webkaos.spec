@@ -594,9 +594,8 @@ rm -rf %{buildroot}
 
 %changelog
 * Tue Nov 07 2017 Anton Novojilov <andy@essentialkaos.com> - 1.13.6-2
-- Added '--with-compat' option for improvemed compatibility with dynamic
-  modules
-- Improved preferences
+- Added '--with-compat' option for improved compatibility with dynamic modules
+- Improved extended preferences
 
 * Wed Oct 18 2017 Anton Novojilov <andy@essentialkaos.com> - 1.13.6-1
 - Fixed TLS 1.3 support

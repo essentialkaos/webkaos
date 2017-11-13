@@ -59,7 +59,7 @@
 Summary:              Superb high performance web server
 Name:                 webkaos
 Version:              1.13.6
-Release:              1%{?dist}
+Release:              2%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 Vendor:               Nginx / Google / CloudFlare / ESSENTIALKAOS
@@ -276,6 +276,7 @@ cp boringssl/build/crypto/libcrypto.a boringssl/build/ssl/libssl.a boringssl/.op
         --add-module=headers-more-nginx-module-%{mh_module_ver} \
         --with-cc-opt="-g -O2 -fPIE -fstack-protector-all -DTCP_FASTOPEN=23 -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -I ../boringssl/.openssl/include/" \
         --with-ld-opt="-Wl,-Bsymbolic-functions -Wl,-z,relro -L ../boringssl/.openssl/lib" \
+        --with-compat \
         $*
 
 # Fix "Error 127" during build with BoringSSL
@@ -333,6 +334,7 @@ touch boringssl/.openssl/include/openssl/ssl.h
         --add-module=headers-more-nginx-module-%{mh_module_ver} \
         --with-cc-opt="-g -O2 -fPIE -fstack-protector-all -DTCP_FASTOPEN=23 -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -I ../boringssl/.openssl/include/" \
         --with-ld-opt="-Wl,-Bsymbolic-functions -Wl,-z,relro -L ../boringssl/.openssl/lib" \
+        --with-compat \
         $*
 
 # Fix "Error 127" during build with BoringSSL
@@ -591,6 +593,11 @@ rm -rf %{buildroot}
 ###############################################################################
 
 %changelog
+* Tue Nov 07 2017 Anton Novojilov <andy@essentialkaos.com> - 1.13.6-2
+- Added '--with-compat' option for improvemed compatibility with dynamic
+  modules
+- Improved preferences
+
 * Wed Oct 18 2017 Anton Novojilov <andy@essentialkaos.com> - 1.13.6-1
 - Fixed TLS 1.3 support
 

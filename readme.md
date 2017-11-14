@@ -4,7 +4,7 @@
 
 ## Feature list
 
-* Improved default SSL/TLS preferencies (A+ by default on [SSL Labs](https://www.ssllabs.com/ssltest/analyze.html?d=essentialkaos.com) and [High-Tech Bridge](https://www.htbridge.com/ssl/?id=ZyvSBsIr))
+* Improved default SSL/TLS preferencies (A+ on [SSL Labs](https://www.ssllabs.com/ssltest/analyze.html?d=essentialkaos.com), [High-Tech Bridge](https://www.htbridge.com/ssl/?id=ZyvSBsIr) and [Mozilla Observatory](https://observatory.mozilla.org/analyze.html?host=essentialkaos.com))
 * [Dynamic TLS Records](https://blog.cloudflare.com/optimizing-tls-over-tcp-to-reduce-latency/) support
 * Latest version of [BoringSSL](https://boringssl.googlesource.com/boringssl/) with some state-of-the-art crypto features
 * TLS 1.3 support

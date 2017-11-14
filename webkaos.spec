@@ -59,7 +59,7 @@
 Summary:              Superb high performance web server
 Name:                 webkaos
 Version:              1.13.6
-Release:              1%{?dist}
+Release:              2%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 Vendor:               Nginx / Google / CloudFlare / ESSENTIALKAOS
@@ -276,6 +276,7 @@ cp boringssl/build/crypto/libcrypto.a boringssl/build/ssl/libssl.a boringssl/.op
         --add-module=headers-more-nginx-module-%{mh_module_ver} \
         --with-cc-opt="-g -O2 -fPIE -fstack-protector-all -DTCP_FASTOPEN=23 -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -I ../boringssl/.openssl/include/" \
         --with-ld-opt="-Wl,-Bsymbolic-functions -Wl,-z,relro -L ../boringssl/.openssl/lib" \
+        --with-compat \
         $*
 
 # Fix "Error 127" during build with BoringSSL
@@ -333,6 +334,7 @@ touch boringssl/.openssl/include/openssl/ssl.h
         --add-module=headers-more-nginx-module-%{mh_module_ver} \
         --with-cc-opt="-g -O2 -fPIE -fstack-protector-all -DTCP_FASTOPEN=23 -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -I ../boringssl/.openssl/include/" \
         --with-ld-opt="-Wl,-Bsymbolic-functions -Wl,-z,relro -L ../boringssl/.openssl/lib" \
+        --with-compat \
         $*
 
 # Fix "Error 127" during build with BoringSSL
@@ -451,13 +453,16 @@ getent group %{service_group} >/dev/null || groupadd -r %{service_group}
 getent passwd %{service_user} >/dev/null || useradd -r -g %{service_group} -s /sbin/nologin -d %{service_home} %{service_user}
 exit 0
 
-
 %post
 # Ensure secure permissions (CVE-2013-0337)
 %{__chown} root:root %{_logdir}/%{name}
 
 if [[ $1 -eq 1 ]] ; then
   %{__sysctl} enable %{name}.service &>/dev/null || :
+
+  # Generate unique nonce for common.conf
+  sed -i "s/{RANDOM}/`mktemp -u XXXXXXXXXXXX`/" \
+         %{_sysconfdir}/%{name}/xtra/common.conf
 
   if [[ -d %{_logdir}/%{name} ]] ; then
     if [[ ! -e %{_logdir}/%{name}/access.log ]]; then
@@ -591,6 +596,10 @@ rm -rf %{buildroot}
 ###############################################################################
 
 %changelog
+* Tue Nov 07 2017 Anton Novojilov <andy@essentialkaos.com> - 1.13.6-2
+- Added '--with-compat' option for improved compatibility with dynamic modules
+- Improved extended preferences
+
 * Wed Oct 18 2017 Anton Novojilov <andy@essentialkaos.com> - 1.13.6-1
 - Fixed TLS 1.3 support
 

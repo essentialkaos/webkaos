@@ -453,13 +453,16 @@ getent group %{service_group} >/dev/null || groupadd -r %{service_group}
 getent passwd %{service_user} >/dev/null || useradd -r -g %{service_group} -s /sbin/nologin -d %{service_home} %{service_user}
 exit 0
 
-
 %post
 # Ensure secure permissions (CVE-2013-0337)
 %{__chown} root:root %{_logdir}/%{name}
 
 if [[ $1 -eq 1 ]] ; then
   %{__sysctl} enable %{name}.service &>/dev/null || :
+
+  # Generate unique nonce for common.conf
+  sed -i "s/{RANDOM}/`mktemp -u XXXXXXXXXXXX`/" \
+         %{_sysconfdir}/%{name}/xtra/common.conf
 
   if [[ -d %{_logdir}/%{name} ]] ; then
     if [[ ! -e %{_logdir}/%{name}/access.log ]]; then

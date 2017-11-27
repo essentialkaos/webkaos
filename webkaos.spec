@@ -599,7 +599,7 @@ rm -rf %{buildroot}
 
 %changelog
 * Tue Nov 28 2017 Anton Novojilov <andy@essentialkaos.com> - 1.13.7-0
-- Nginx updated to 1.13.5
+- Nginx updated to 1.13.7
 - BoringSSL updated to latest version
 - Lua module updated to 0.10.11
 - More Headers module updated to 0.33

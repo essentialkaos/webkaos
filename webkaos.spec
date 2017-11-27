@@ -44,10 +44,10 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define boring_commit        e1068b76bd1d7f6ea06c90faa523ad8d562ec11b
+%define boring_commit        8c9ceadc58f425bd5edc71c349ef55e1a516302d
 %define psol_ver             1.12.34.2
-%define lua_module_ver       0.10.10
-%define mh_module_ver        0.32
+%define lua_module_ver       0.10.11
+%define mh_module_ver        0.33
 %define pcre_ver             8.41
 %define zlib_ver             1.2.11
 
@@ -58,8 +58,8 @@
 
 Summary:              Superb high performance web server
 Name:                 webkaos
-Version:              1.13.6
-Release:              2%{?dist}
+Version:              1.13.7
+Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 Vendor:               Nginx / Google / CloudFlare / ESSENTIALKAOS
@@ -100,8 +100,6 @@ Patch3:               boringssl.patch
 # https://github.com/cloudflare/sslconfig/blob/master/patches/nginx__1.13.0_http2_spdy.patch
 Patch4:               %{name}-http2-spdy.patch
 Patch5:               boringssl-tls13-support.patch
-
-
 # Patch for build with nginx >= 1.13.4
 Patch6:               ngx_pagespeed-build-fix.patch
 
@@ -458,7 +456,11 @@ exit 0
 %{__chown} root:root %{_logdir}/%{name}
 
 if [[ $1 -eq 1 ]] ; then
-  %{__sysctl} enable %{name}.service &>/dev/null || :
+  %if 0%{?rhel} >= 7
+    %{__sysctl} enable %{name}.service &>/dev/null || :
+  %else
+    %{__chkconfig} --add %{name} &>/dev/null || :
+  %endif
 
   # Generate unique nonce for common.conf
   sed -i "s/{RANDOM}/`mktemp -u XXXXXXXXXXXX`/" \
@@ -510,7 +512,7 @@ if [[ $1 -ge 1 ]] ; then
 %if 0%{?rhel} >= 7
   %{__sysctl} daemon-reload &>/dev/null || :
 %endif
-  %{__service} %{service_name} upgrade &>/dev/null || :
+%{__service} %{service_name} upgrade &>/dev/null || :
 fi
 
 
@@ -596,6 +598,13 @@ rm -rf %{buildroot}
 ###############################################################################
 
 %changelog
+* Tue Nov 28 2017 Anton Novojilov <andy@essentialkaos.com> - 1.13.7-0
+- Nginx updated to 1.13.7
+- BoringSSL updated to latest version
+- Lua module updated to 0.10.11
+- More Headers module updated to 0.33
+- Fixed bug with autostart on CentOS6
+
 * Tue Nov 07 2017 Anton Novojilov <andy@essentialkaos.com> - 1.13.6-2
 - Added '--with-compat' option for improved compatibility with dynamic modules
 - Improved extended preferences
@@ -604,7 +613,7 @@ rm -rf %{buildroot}
 - Fixed TLS 1.3 support
 
 * Sat Oct 14 2017 Anton Novojilov <andy@essentialkaos.com> - 1.13.6-0
-- Nginx updated to 1.13.5
+- Nginx updated to 1.13.6
 - BoringSSL updated to latest version
 
 * Wed Sep 20 2017 Anton Novojilov <andy@essentialkaos.com> - 1.13.5-0

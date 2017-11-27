@@ -54,6 +54,16 @@ check() {
   old_ver_dir="${data_dir}/nginx-${old_ver}-orig"
   new_ver_dir="${data_dir}/nginx-${new_ver}-orig"
 
+  if [[ ! -e "$old_ver_dir" ]] ; then
+    show "Directory $old_ver_dir doesn't exist" $RED
+    exit 1
+  fi
+
+  if [[ ! -e "$new_ver_dir" ]] ; then
+    show "Directory $new_ver_dir doesn't exist" $RED
+    exit 1
+  fi
+
   sources=$(grep '+++' "$patch_file" | tr "\t" " " | cut -f2 -d" " | cut -f2-99 -d "/")
 
   show ""

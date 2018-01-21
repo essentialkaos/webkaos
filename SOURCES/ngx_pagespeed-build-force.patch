@@ -1,0 +1,12 @@
+diff -urN ngx_pagespeed-1.12.34.3-stable-orig/config ngx_pagespeed-1.12.34.3-stable/config
+--- ngx_pagespeed-1.12.34.3-stable-orig/config	2018-01-22 01:45:10.174446297 +0300
++++ ngx_pagespeed-1.12.34.3-stable/config	2018-01-22 01:47:34.000000000 +0300
+@@ -76,7 +76,7 @@
+ fi
+ 
+ if [ "$NGX_DEBUG" = "YES" ]; then
+-  buildtype=Debug
++  buildtype=Release
+   # If we're using a psol tarball that doesn't contain Debug/ (which is the case
+   # from 1.12 onward) then this will be overriden to buildtype=Release below.
+ else

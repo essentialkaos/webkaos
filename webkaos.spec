@@ -44,21 +44,21 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define boring_commit        8c9ceadc58f425bd5edc71c349ef55e1a516302d
+%define boring_commit        5ab54840444863ba1d8d08e90cc752cf03823419
 %define psol_ver             1.12.34.2
 %define lua_module_ver       0.10.11
 %define mh_module_ver        0.33
 %define pcre_ver             8.41
 %define zlib_ver             1.2.11
 
-%define pagespeed_ver        %{psol_ver}-stable
+%define pagespeed_ver        1.12.34.3-stable
 %define pagespeed_cache_path %{service_home}/pagespeed
 
 ###############################################################################
 
 Summary:              Superb high performance web server
 Name:                 webkaos
-Version:              1.13.7
+Version:              1.13.8
 Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
@@ -100,8 +100,8 @@ Patch3:               boringssl.patch
 # https://github.com/cloudflare/sslconfig/blob/master/patches/nginx__1.13.0_http2_spdy.patch
 Patch4:               %{name}-http2-spdy.patch
 Patch5:               boringssl-tls13-support.patch
-# Patch for build with nginx >= 1.13.4
-Patch6:               ngx_pagespeed-build-fix.patch
+# Patch for forcing build with --with-debug
+Patch6:               ngx_pagespeed-build-force.patch
 
 BuildRoot:            %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -598,6 +598,12 @@ rm -rf %{buildroot}
 ###############################################################################
 
 %changelog
+* Mon Jan 22 2018 Anton Novojilov <andy@essentialkaos.com> - 1.13.8-0
+- Nginx updated to 1.13.8
+- BoringSSL updated to latest version
+- PageSpeed updated to 1.12.34.3-stable
+- Improved PageSpeed build
+
 * Tue Nov 28 2017 Anton Novojilov <andy@essentialkaos.com> - 1.13.7-0
 - Nginx updated to 1.13.7
 - BoringSSL updated to latest version

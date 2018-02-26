@@ -7,7 +7,7 @@
 * Improved default SSL/TLS preferencies (A+ on [SSL Labs](https://www.ssllabs.com/ssltest/analyze.html?d=essentialkaos.com), [High-Tech Bridge](https://www.htbridge.com/ssl/?id=5sLe8Oej) and [Mozilla Observatory](https://observatory.mozilla.org/analyze.html?host=essentialkaos.com))
 * [Dynamic TLS Records](https://blog.cloudflare.com/optimizing-tls-over-tcp-to-reduce-latency/) support
 * Latest version of [BoringSSL](https://boringssl.googlesource.com/boringssl/) with some state-of-the-art crypto features
-* TLS 1.3 support
+* TLS 1.3 support (draft 23)
 * [TCP Fast Open](https://en.wikipedia.org/wiki/TCP_Fast_Open) support (_only for CentOS7/RHEL7_)
 * [Lua](https://github.com/openresty/lua-nginx-module), [Headers More](https://github.com/openresty/headers-more-nginx-module) and [PageSpeed](https://github.com/pagespeed/ngx_pagespeed) module from the box
 * [HTTP/2 + SPDY](https://blog.cloudflare.com/open-sourcing-our-nginx-http-2-spdy-code/) support

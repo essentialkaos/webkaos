@@ -59,7 +59,7 @@
 Summary:              Superb high performance web server
 Name:                 webkaos
 Version:              1.13.9
-Release:              0%{?dist}
+Release:              1%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 Vendor:               Nginx / Google / CloudFlare / ESSENTIALKAOS
@@ -598,6 +598,9 @@ rm -rf %{buildroot}
 ###############################################################################
 
 %changelog
+* Fri Mar 09 2018 Anton Novojilov <andy@essentialkaos.com> - 1.13.9-1
+- Improved configuration files
+
 * Sun Feb 25 2018 Anton Novojilov <andy@essentialkaos.com> - 1.13.9-0
 - Nginx updated to 1.13.9
 - BoringSSL updated to latest version

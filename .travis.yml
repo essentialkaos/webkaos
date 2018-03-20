@@ -9,6 +9,7 @@ before_install:
   - sudo ln -sf /usr/bin/python2.7 /usr/bin/python2.6
   - wget https://apps.kaos.st/perfecto/latest/linux/x86_64/perfecto
   - chmod +x perfecto
+  - ./perfecto -v
 
 script:
-  - perfecto -c .travis/rpmlint.conf webkaos.spec
+  - ./perfecto -c .travis/rpmlint.conf webkaos.spec

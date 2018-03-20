@@ -601,7 +601,6 @@ rm -rf %{buildroot}
 - Nginx updated to 1.13.10
 - PCRE updated to 8.42
 - BoringSSL updated to latest version
-- Added gRPC module
 
 * Fri Mar 09 2018 Anton Novojilov <andy@essentialkaos.com> - 1.13.9-1
 - Improved configuration files

@@ -1,0 +1,15 @@
+language: bash
+
+cache: apt
+
+before_install:
+  - echo "deb http://us.archive.ubuntu.com/ubuntu xenial main universe" | sudo tee -a /etc/apt/sources.list
+  - sudo apt-get update -qq
+  - sudo apt-get install -y rpmlint
+  - sudo ln -sf /usr/bin/python2.7 /usr/bin/python2.6
+  - wget https://apps.kaos.st/perfecto/latest/linux/x86_64/perfecto
+  - chmod +x perfecto
+  - ./perfecto -v
+
+script:
+  - ./perfecto -c .travis/rpmlint.conf webkaos.spec

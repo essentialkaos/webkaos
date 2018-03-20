@@ -1,4 +1,4 @@
-###############################################################################
+################################################################################
 
 %define _posixroot        /
 %define _root             /root
@@ -37,32 +37,38 @@
 %define __getent          %{_bindir}/getent
 %define __sysctl          %{_bindir}/systemctl
 
-###############################################################################
+################################################################################
+
+# Fixed bug with ngx_pagespeed comilation on i386
+%ifarch %ix86
+  %define optflags -O2 -g -march=i686
+%endif
+
+################################################################################
 
 %define service_user         %{name}
 %define service_group        %{name}
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define boring_commit        672f6fc2486745d0cabc3aaeb4e0a3cd13b37b12
+%define boring_commit        d61334d187a33336bc4cf4425d997e1ec8bcfa48
 %define psol_ver             1.12.34.2
 %define lua_module_ver       0.10.11
 %define mh_module_ver        0.33
-%define pcre_ver             8.41
+%define pcre_ver             8.42
 %define zlib_ver             1.2.11
 
 %define pagespeed_ver        1.12.34.3-stable
 %define pagespeed_cache_path %{service_home}/pagespeed
 
-###############################################################################
+################################################################################
 
 Summary:              Superb high performance web server
 Name:                 webkaos
-Version:              1.13.9
-Release:              1%{?dist}
+Version:              1.13.10
+Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
-Vendor:               Nginx / Google / CloudFlare / ESSENTIALKAOS
 URL:                  https://github.com/essentialkaos/webkaos
 
 Source0:              https://nginx.org/download/nginx-%{version}.tar.gz
@@ -120,13 +126,13 @@ BuildRequires:        devtoolset-2-gcc-c++ devtoolset-2-binutils
 
 Requires(pre):        shadow-utils
 
-###############################################################################
+################################################################################
 
 %description
 Superb high performance webserver based on Nginx code, with many
 optimizations and improvements.
 
-###############################################################################
+################################################################################
 
 %package debug
 
@@ -137,7 +143,7 @@ Requires:          %{name} >= %{version}
 %description debug
 Not stripped version of webkaos with the debugging log support
 
-###############################################################################
+################################################################################
 
 %package nginx
 
@@ -152,20 +158,20 @@ BuildArch:         noarch
 %description nginx
 Links for nginx compatibility.
 
-###############################################################################
+################################################################################
 
 %prep
 %setup -q -n nginx-%{version}
 
 mkdir boringssl
 
-%{__tar} xzvf %{SOURCE50}
-%{__tar} xzvf %{SOURCE51} -C ngx_pagespeed-%{pagespeed_ver}
-%{__tar} xzvf %{SOURCE52}
-%{__tar} xzvf %{SOURCE53} -C boringssl
-%{__tar} xzvf %{SOURCE54}
-%{__tar} xzvf %{SOURCE55}
-%{__tar} xzvf %{SOURCE56}
+tar xzvf %{SOURCE50}
+tar xzvf %{SOURCE51} -C ngx_pagespeed-%{pagespeed_ver}
+tar xzvf %{SOURCE52}
+tar xzvf %{SOURCE53} -C boringssl
+tar xzvf %{SOURCE54}
+tar xzvf %{SOURCE55}
+tar xzvf %{SOURCE56}
 
 %patch0 -p1
 %patch1 -p1
@@ -183,23 +189,18 @@ popd
 
 %build
 
-# Fixed bug with ngx_pagespeed comilation on i386
-%ifarch %ix86
-  %define optflags -O2 -g -march=i686
-%endif
-
 # Renaming and moving docs
-%{__mv} CHANGES    NGINX-CHANGES
-%{__mv} CHANGES.ru NGINX-CHANGES.ru
-%{__mv} LICENSE    NGINX-LICENSE
-%{__mv} README     NGINX-README
+mv CHANGES    NGINX-CHANGES
+mv CHANGES.ru NGINX-CHANGES.ru
+mv LICENSE    NGINX-LICENSE
+mv README     NGINX-README
 
-%{__mv} ngx_pagespeed-%{pagespeed_ver}/LICENSE    ./PAGESPEED-LICENSE
-%{__mv} ngx_pagespeed-%{pagespeed_ver}/README.md  ./PAGESPEED-README.md
+mv ngx_pagespeed-%{pagespeed_ver}/LICENSE    ./PAGESPEED-LICENSE
+mv ngx_pagespeed-%{pagespeed_ver}/README.md  ./PAGESPEED-README.md
 
-%{__mv} lua-nginx-module-%{lua_module_ver}/README.markdown ./LUAMODULE-README.markdown
+mv lua-nginx-module-%{lua_module_ver}/README.markdown ./LUAMODULE-README.markdown
 
-%{__mv} headers-more-nginx-module-%{mh_module_ver}/README.markdown ./HEADERSMORE-README.markdown
+mv headers-more-nginx-module-%{mh_module_ver}/README.markdown ./HEADERSMORE-README.markdown
 
 %if 0%{?rhel} < 7
 # Use gcc and gcc-c++ from devtoolset for build on CentOS6
@@ -282,7 +283,7 @@ touch boringssl/.openssl/include/openssl/ssl.h
 
 %{__make} %{?_smp_mflags}
 
-%{__mv} %{_builddir}/nginx-%{version}/objs/nginx \
+mv %{_builddir}/nginx-%{version}/objs/nginx \
         %{_builddir}/nginx-%{version}/objs/%{name}.debug
 
 ./configure \
@@ -444,7 +445,7 @@ ln -sf %{_unitdir}/%{name}.service %{buildroot}%{_unitdir}/nginx.service
 ln -sf %{_unitdir}/%{name}-debug.service %{buildroot}%{_unitdir}/nginx-debug.service
 %endif
 
-###############################################################################
+################################################################################
 
 %pre
 getent group %{service_group} >/dev/null || groupadd -r %{service_group}
@@ -453,7 +454,7 @@ exit 0
 
 %post
 # Ensure secure permissions (CVE-2013-0337)
-%{__chown} root:root %{_logdir}/%{name}
+chown root:root %{_logdir}/%{name}
 
 if [[ $1 -eq 1 ]] ; then
   %if 0%{?rhel} >= 7
@@ -469,14 +470,14 @@ if [[ $1 -eq 1 ]] ; then
   if [[ -d %{_logdir}/%{name} ]] ; then
     if [[ ! -e %{_logdir}/%{name}/access.log ]]; then
       touch %{_logdir}/%{name}/access.log
-      %{__chmod} 640 %{_logdir}/%{name}/access.log
-      %{__chown} %{service_user}: %{_logdir}/%{name}/access.log
+      chmod 640 %{_logdir}/%{name}/access.log
+      chown %{service_user}: %{_logdir}/%{name}/access.log
     fi
 
     if [[ ! -e %{_logdir}/%{name}/error.log ]] ; then
       touch %{_logdir}/%{name}/error.log
-      %{__chmod} 640 %{_logdir}/%{name}/error.log
-      %{__chown} %{service_user}: %{_logdir}/%{name}/error.log
+      chmod 640 %{_logdir}/%{name}/error.log
+      chown %{service_user}: %{_logdir}/%{name}/error.log
     fi
   fi
 fi
@@ -494,7 +495,7 @@ fi
          %{_sysconfdir}/%{name}/%{name}.conf.rpmnew &>/dev/null || :
 %endif
 
-###############################################################################
+################################################################################
 
 %preun
 if [[ $1 -eq 0 ]] ; then
@@ -519,7 +520,7 @@ fi
 %clean
 rm -rf %{buildroot}
 
-###############################################################################
+################################################################################
 
 %files
 %defattr(-,root,root)
@@ -595,9 +596,14 @@ rm -rf %{buildroot}
 %{_unitdir}/nginx-debug.service
 %endif
 
-###############################################################################
+################################################################################
 
 %changelog
+* Tue Mar 20 2018 Anton Novojilov <andy@essentialkaos.com> - 1.13.10-0
+- Nginx updated to 1.13.10
+- PCRE updated to 8.42
+- BoringSSL updated to latest version
+
 * Fri Mar 09 2018 Anton Novojilov <andy@essentialkaos.com> - 1.13.9-1
 - Improved configuration files
 

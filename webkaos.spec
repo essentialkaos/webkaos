@@ -44,11 +44,11 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define boring_commit        672f6fc2486745d0cabc3aaeb4e0a3cd13b37b12
+%define boring_commit        d61334d187a33336bc4cf4425d997e1ec8bcfa48
 %define psol_ver             1.12.34.2
 %define lua_module_ver       0.10.11
 %define mh_module_ver        0.33
-%define pcre_ver             8.41
+%define pcre_ver             8.42
 %define zlib_ver             1.2.11
 
 %define pagespeed_ver        1.12.34.3-stable
@@ -58,11 +58,10 @@
 
 Summary:              Superb high performance web server
 Name:                 webkaos
-Version:              1.13.9
-Release:              1%{?dist}
+Version:              1.13.10
+Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
-Vendor:               Nginx / Google / CloudFlare / ESSENTIALKAOS
 URL:                  https://github.com/essentialkaos/webkaos
 
 Source0:              https://nginx.org/download/nginx-%{version}.tar.gz
@@ -598,6 +597,12 @@ rm -rf %{buildroot}
 ###############################################################################
 
 %changelog
+* Tue Mar 20 2018 Anton Novojilov <andy@essentialkaos.com> - 1.13.10-0
+- Nginx updated to 1.13.10
+- PCRE updated to 8.42
+- BoringSSL updated to latest version
+- Added gRPC module
+
 * Fri Mar 09 2018 Anton Novojilov <andy@essentialkaos.com> - 1.13.9-1
 - Improved configuration files
 

@@ -143,6 +143,43 @@ checkArgs() {
     show "Not enough arguments" $YELLOW
     exit 1
   fi
+
+  local patch_file data_dir old_ver new_ver
+  local old_ver_dir new_ver_dir old_ver_pt_dir new_ver_pt_dir
+
+  data_dir="$2"
+  old_ver="$3"
+  new_ver="$4"
+
+  old_ver_dir="${data_dir}/nginx-${old_ver}-orig"
+  new_ver_dir="${data_dir}/nginx-${new_ver}-orig"
+  old_ver_pt_dir="${data_dir}/nginx-${old_ver}"
+  new_ver_pt_dir="${data_dir}/nginx-${new_ver}"
+
+  if [[ ! -e "$data_dir" ]] ; then
+    show "Directory $data_dir doesn't exist" $RED
+    exit 1
+  fi
+
+  if [[ ! -e "$old_ver_dir" ]] ; then
+    show "Directory $old_ver_dir doesn't exist" $RED
+    exit 1
+  fi
+
+  if [[ ! -e "$new_ver_dir" ]] ; then
+    show "Directory $new_ver_dir doesn't exist" $RED
+    exit 1
+  fi
+
+  if [[ ! -e "$old_ver_pt_dir" ]] ; then
+    show "Directory $old_ver_pt_dir doesn't exist" $RED
+    exit 1
+  fi
+
+  if [[ ! -e "$new_ver_pt_dir" ]] ; then
+    show "Directory $new_ver_pt_dir doesn't exist" $RED
+    exit 1
+  fi
 }
 
 getHash() {

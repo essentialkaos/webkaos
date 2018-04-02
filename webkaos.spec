@@ -66,7 +66,7 @@
 Summary:              Superb high performance web server
 Name:                 webkaos
 Version:              1.13.10
-Release:              0%{?dist}
+Release:              1%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 URL:                  https://github.com/essentialkaos/webkaos
@@ -599,6 +599,9 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Tue Apr 03 2018 Anton Novojilov <andy@essentialkaos.com> - 1.13.10-1
+- Google Public DNS replaced by Cloudflare Public DNS
+
 * Tue Mar 20 2018 Anton Novojilov <andy@essentialkaos.com> - 1.13.10-0
 - Nginx updated to 1.13.10
 - PCRE updated to 8.42
@@ -644,7 +647,7 @@ rm -rf %{buildroot}
 - Added support of HTTP status code 418 (I'm a teapot)
 
 * Sat Aug 12 2017 Anton Novojilov <andy@essentialkaos.com> - 1.13.4-1
-- Added CloudFlare's patch for SPDY support
+- Added Cloudflare's patch for SPDY support
 
 * Thu Aug 10 2017 Anton Novojilov <andy@essentialkaos.com> - 1.13.4-0
 - Nginx updated to 1.13.4

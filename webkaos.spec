@@ -163,7 +163,7 @@ Links for nginx compatibility.
 ################################################################################
 
 %prep
-%setup -q -n nginx-%{version}
+%setup -qn nginx-%{version}
 
 mkdir boringssl
 

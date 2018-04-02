@@ -51,9 +51,9 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define boring_commit        d61334d187a33336bc4cf4425d997e1ec8bcfa48
+%define boring_commit        7a62ab1938965de5cf9d2991ae6b57df781e63d1
 %define psol_ver             1.12.34.2
-%define lua_module_ver       0.10.11
+%define lua_module_ver       0.10.12rc2
 %define mh_module_ver        0.33
 %define pcre_ver             8.42
 %define zlib_ver             1.2.11
@@ -111,17 +111,19 @@ Patch6:               ngx_pagespeed-build-force.patch
 
 BuildRoot:            %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Requires:             initscripts >= 8.36 kaosv >= 2.12
+Requires:             initscripts >= 8.36 kaosv >= 2.15
 Requires:             gd libXpm libxslt libluajit
 
 BuildRequires:        make perl libluajit-devel cmake golang
 
+# http://mirror.centos.org/centos/6/sclo/x86_64/rh/devtoolset-3/
+# http://mirror.centos.org/centos/7/sclo/x86_64/rh/devtoolset-3/
+BuildRequires:        devtoolset-3-gcc-c++ devtoolset-3-binutils
+
 %if 0%{?rhel} >= 7
 Requires:             systemd
-BuildRequires:        gcc-c++
 %else
 Requires:             chkconfig
-BuildRequires:        devtoolset-2-gcc-c++ devtoolset-2-binutils
 %endif
 
 Requires(pre):        shadow-utils
@@ -202,10 +204,8 @@ mv lua-nginx-module-%{lua_module_ver}/README.markdown ./LUAMODULE-README.markdow
 
 mv headers-more-nginx-module-%{mh_module_ver}/README.markdown ./HEADERSMORE-README.markdown
 
-%if 0%{?rhel} < 7
-# Use gcc and gcc-c++ from devtoolset for build on CentOS6
-export PATH="/opt/rh/devtoolset-2/root/usr/bin:$PATH"
-%endif
+# Use gcc and gcc-c++ from DevToolSet 3
+export PATH="/opt/rh/devtoolset-3/root/usr/bin:$PATH"
 
 # BoringSSL Build ##############################################################
 
@@ -601,6 +601,9 @@ rm -rf %{buildroot}
 %changelog
 * Tue Apr 03 2018 Anton Novojilov <andy@essentialkaos.com> - 1.13.10-1
 - Google Public DNS replaced by Cloudflare Public DNS
+- Using devtoolset-3 for build on all systems
+- BoringSSL updated to latest version
+- Lua module updated to 0.10.12rc2
 
 * Tue Mar 20 2018 Anton Novojilov <andy@essentialkaos.com> - 1.13.10-0
 - Nginx updated to 1.13.10

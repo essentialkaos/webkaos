@@ -65,8 +65,8 @@
 
 Summary:              Superb high performance web server
 Name:                 webkaos
-Version:              1.13.10
-Release:              1%{?dist}
+Version:              1.13.11
+Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 URL:                  https://github.com/essentialkaos/webkaos
@@ -599,6 +599,9 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Wed Apr 04 2018 Anton Novojilov <andy@essentialkaos.com> - 1.13.11-0
+- Nginx updated to 1.13.11
+
 * Tue Apr 03 2018 Anton Novojilov <andy@essentialkaos.com> - 1.13.10-1
 - Google Public DNS replaced by Cloudflare Public DNS
 - Using devtoolset-3 for build on all systems

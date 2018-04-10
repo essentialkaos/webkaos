@@ -503,7 +503,7 @@ if [[ $1 -eq 0 ]] ; then
   %{__sysctl} --no-reload disable %{name}.service &>/dev/null || :
   %{__sysctl} stop %{name}.service &>/dev/null || :
 %else
-  %{__service} %{service_name} stop > /dev/null 2>&1
+  %{__service} %{service_name} stop &>/dev/null || :
   %{__chkconfig} --del %{service_name}
 %endif
 fi

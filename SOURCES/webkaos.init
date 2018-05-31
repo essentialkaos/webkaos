@@ -131,8 +131,8 @@ showConfig() {
 
 gendhp() {
   kv.show ""
-  kv.show "For better SSL security we generate Diffie-Hellman parameter for EDH ciphers." $GREY
-  kv.show "This is going to take a long time. Please be patient." $GREY
+  kv.show "For better SSL security we generate Diffie-Hellman parameter for EDH ciphers." $DARK
+  kv.show "This is going to take a long time. Please be patient." $DARK
   kv.show ""
 
   kv.showProcessMessage "Generating parameter"

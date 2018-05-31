@@ -604,6 +604,7 @@ rm -rf %{buildroot}
 - Lua module updated to 0.10.13
 - BoringSSL updated to latest version
 - Improved default settings
+- Improved init script
 
 * Fri Apr 13 2018 Anton Novojilov <andy@essentialkaos.com> - 1.13.12-0
 - Nginx updated to 1.13.12

@@ -51,9 +51,9 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define boring_commit        acddb8c13428e11da98928798c533b4c1a37f93c
+%define boring_commit        fe7a17440fe7560511615c6bd59d299a0e5d45a4
 %define psol_ver             1.12.34.2
-%define lua_module_ver       0.10.12rc2
+%define lua_module_ver       0.10.13
 %define mh_module_ver        0.33
 %define pcre_ver             8.42
 %define zlib_ver             1.2.11
@@ -65,7 +65,7 @@
 
 Summary:              Superb high performance web server
 Name:                 webkaos
-Version:              1.13.12
+Version:              1.14.0
 Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
@@ -94,7 +94,7 @@ Source51:             https://dl.google.com/dl/page-speed/psol/%{psol_ver}-x64.t
 Source52:             https://github.com/openresty/lua-nginx-module/archive/v%{lua_module_ver}.tar.gz
 Source53:             https://boringssl.googlesource.com/boringssl/+archive/%{boring_commit}.tar.gz
 Source54:             https://github.com/openresty/headers-more-nginx-module/archive/v%{mh_module_ver}.tar.gz
-Source55:             http://ftp.csx.cam.ac.uk/pub/software/programming/pcre/pcre-%{pcre_ver}.tar.gz
+Source55:             https://ftp.pcre.org/pub/pcre/pcre-%{pcre_ver}.tar.gz
 Source56:             http://zlib.net/zlib-%{zlib_ver}.tar.gz
 
 Patch0:               %{name}.patch
@@ -599,6 +599,13 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Thu May 31 2018 Anton Novojilov <andy@essentialkaos.com> - 1.14.0-0
+- Nginx updated to 1.14.0
+- Lua module updated to 0.10.13
+- BoringSSL updated to latest version
+- Improved default settings
+- Improved init script
+
 * Fri Apr 13 2018 Anton Novojilov <andy@essentialkaos.com> - 1.13.12-0
 - Nginx updated to 1.13.12
 - BoringSSL updated to latest version
@@ -902,7 +909,7 @@ rm -rf %{buildroot}
 * Fri Oct 10 2014 Anton Novojilov <andy@essentialkaos.com> - 1.7.6-0
 - Nginx updated to 1.7.6
 - PageSpeed updated to 1.9.32.1
-- Added common.conf with prefered performances
+- Added common.conf with preferred performances
 - Improved ssl.conf
 
 * Mon Sep 15 2014 Anton Novojilov <andy@essentialkaos.com> - 1.7.5-0

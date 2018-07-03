@@ -1,6 +1,6 @@
-diff -urN nginx-1.13.6-orig/conf/mime.types nginx-1.13.6/conf/mime.types
---- nginx-1.13.6-orig/conf/mime.types	2017-10-10 17:22:51.000000000 +0200
-+++ nginx-1.13.6/conf/mime.types	2017-10-14 00:16:51.000000000 +0200
+diff -urN nginx-1.15.1-orig/conf/mime.types nginx-1.15.1/conf/mime.types
+--- nginx-1.15.1-orig/conf/mime.types	2018-07-03 18:07:44.000000000 +0300
++++ nginx-1.15.1/conf/mime.types	2018-07-04 02:10:22.000000000 +0300
 @@ -16,7 +16,7 @@
      text/x-component                                 htc;
  
@@ -16,6 +16,6 @@ diff -urN nginx-1.13.6-orig/conf/mime.types nginx-1.13.6/conf/mime.types
  
 +    application/x-font-ttf                           ttf;
 +    application/vnd.ms-opentype                      otf;
-     application/font-woff                            woff;
-     application/java-archive                         jar war ear;
-     application/json                                 json;
+     font/woff                                        woff;
+     font/woff2                                       woff2;
+ 

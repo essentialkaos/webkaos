@@ -66,7 +66,7 @@
 Summary:              Superb high performance web server
 Name:                 webkaos
 Version:              1.15.1
-Release:              0%{?dist}
+Release:              1%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 URL:                  https://github.com/essentialkaos/webkaos
@@ -599,6 +599,11 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Wed Jul 04 2018 Anton Novojilov <andy@essentialkaos.com> - 1.15.1-1
+- Dropped TLSv1 support
+- Dropped support of TLS_RSA_WITH_AES_256_CBC_SHA and
+  TLS_RSA_WITH_AES_128_CBC_SHA
+
 * Wed Jul 04 2018 Anton Novojilov <andy@essentialkaos.com> - 1.15.1-0
 - Nginx updated to 1.15.1
 - BoringSSL updated to latest version

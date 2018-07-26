@@ -1,6 +1,6 @@
-diff -urN nginx-1.15.1-orig/auto/lib/openssl/make nginx-1.15.1/auto/lib/openssl/make
---- nginx-1.15.1-orig/auto/lib/openssl/make	2018-07-03 18:07:44.000000000 +0300
-+++ nginx-1.15.1/auto/lib/openssl/make	2018-07-04 01:39:45.552129243 +0300
+diff -urN nginx-1.15.2-orig/auto/lib/openssl/make nginx-1.15.2/auto/lib/openssl/make
+--- nginx-1.15.2-orig/auto/lib/openssl/make	2018-07-24 16:11:00.000000000 +0300
++++ nginx-1.15.2/auto/lib/openssl/make	2018-07-26 15:08:05.484784550 +0300
 @@ -45,18 +45,18 @@
              /*) ngx_prefix="$OPENSSL/.openssl" ;;
              *)  ngx_prefix="$PWD/$OPENSSL/.openssl" ;;
@@ -24,9 +24,9 @@ diff -urN nginx-1.15.1-orig/auto/lib/openssl/make nginx-1.15.1/auto/lib/openssl/
      ;;
  
  esac
-diff -urN nginx-1.15.1-orig/src/core/nginx.c nginx-1.15.1/src/core/nginx.c
---- nginx-1.15.1-orig/src/core/nginx.c	2018-07-03 18:07:44.000000000 +0300
-+++ nginx-1.15.1/src/core/nginx.c	2018-07-04 01:39:45.558129194 +0300
+diff -urN nginx-1.15.2-orig/src/core/nginx.c nginx-1.15.2/src/core/nginx.c
+--- nginx-1.15.2-orig/src/core/nginx.c	2018-07-24 16:11:00.000000000 +0300
++++ nginx-1.15.2/src/core/nginx.c	2018-07-26 15:08:05.489784513 +0300
 @@ -389,13 +389,13 @@
  static void
  ngx_show_version_info(void)
@@ -45,13 +45,13 @@ diff -urN nginx-1.15.1-orig/src/core/nginx.c nginx-1.15.1/src/core/nginx.c
              "Options:" NGX_LINEFEED
              "  -?,-h         : this help" NGX_LINEFEED
              "  -v            : show version and exit" NGX_LINEFEED
-diff -urN nginx-1.15.1-orig/src/core/nginx.h nginx-1.15.1/src/core/nginx.h
---- nginx-1.15.1-orig/src/core/nginx.h	2018-07-03 18:07:44.000000000 +0300
-+++ nginx-1.15.1/src/core/nginx.h	2018-07-04 01:40:37.000000000 +0300
+diff -urN nginx-1.15.2-orig/src/core/nginx.h nginx-1.15.2/src/core/nginx.h
+--- nginx-1.15.2-orig/src/core/nginx.h	2018-07-24 16:11:00.000000000 +0300
++++ nginx-1.15.2/src/core/nginx.h	2018-07-26 15:24:34.000000000 +0300
 @@ -11,7 +11,7 @@
  
- #define nginx_version      1015001
- #define NGINX_VERSION      "1.15.1"
+ #define nginx_version      1015002
+ #define NGINX_VERSION      "1.15.2"
 -#define NGINX_VER          "nginx/" NGINX_VERSION
 +#define NGINX_VER          "webkaos/" NGINX_VERSION
  
@@ -66,9 +66,9 @@ diff -urN nginx-1.15.1-orig/src/core/nginx.h nginx-1.15.1/src/core/nginx.h
  #define NGX_OLDPID_EXT     ".oldbin"
  
  
-diff -urN nginx-1.15.1-orig/src/core/ngx_log.c nginx-1.15.1/src/core/ngx_log.c
---- nginx-1.15.1-orig/src/core/ngx_log.c	2018-07-03 18:07:44.000000000 +0300
-+++ nginx-1.15.1/src/core/ngx_log.c	2018-07-04 01:39:45.566129129 +0300
+diff -urN nginx-1.15.2-orig/src/core/ngx_log.c nginx-1.15.2/src/core/ngx_log.c
+--- nginx-1.15.2-orig/src/core/ngx_log.c	2018-07-24 16:11:00.000000000 +0300
++++ nginx-1.15.2/src/core/ngx_log.c	2018-07-26 15:08:05.498784447 +0300
 @@ -202,9 +202,9 @@
          return;
      }
@@ -99,9 +99,9 @@ diff -urN nginx-1.15.1-orig/src/core/ngx_log.c nginx-1.15.1/src/core/ngx_log.c
          return NGX_CONF_ERROR;
  #endif
  
-diff -urN nginx-1.15.1-orig/src/http/modules/ngx_http_autoindex_module.c nginx-1.15.1/src/http/modules/ngx_http_autoindex_module.c
---- nginx-1.15.1-orig/src/http/modules/ngx_http_autoindex_module.c	2018-07-03 18:07:44.000000000 +0300
-+++ nginx-1.15.1/src/http/modules/ngx_http_autoindex_module.c	2018-07-04 01:39:45.571129088 +0300
+diff -urN nginx-1.15.2-orig/src/http/modules/ngx_http_autoindex_module.c nginx-1.15.2/src/http/modules/ngx_http_autoindex_module.c
+--- nginx-1.15.2-orig/src/http/modules/ngx_http_autoindex_module.c	2018-07-24 16:11:00.000000000 +0300
++++ nginx-1.15.2/src/http/modules/ngx_http_autoindex_module.c	2018-07-26 15:08:05.503784410 +0300
 @@ -451,9 +451,11 @@
      ;
  
@@ -177,9 +177,9 @@ diff -urN nginx-1.15.1-orig/src/http/modules/ngx_http_autoindex_module.c nginx-1
                                tm.ngx_tm_mday,
                                months[tm.ngx_tm_mon - 1],
                                tm.ngx_tm_year,
-diff -urN nginx-1.15.1-orig/src/http/ngx_http_header_filter_module.c nginx-1.15.1/src/http/ngx_http_header_filter_module.c
---- nginx-1.15.1-orig/src/http/ngx_http_header_filter_module.c	2018-07-03 18:07:44.000000000 +0300
-+++ nginx-1.15.1/src/http/ngx_http_header_filter_module.c	2018-07-04 01:39:45.576129048 +0300
+diff -urN nginx-1.15.2-orig/src/http/ngx_http_header_filter_module.c nginx-1.15.2/src/http/ngx_http_header_filter_module.c
+--- nginx-1.15.2-orig/src/http/ngx_http_header_filter_module.c	2018-07-24 16:11:00.000000000 +0300
++++ nginx-1.15.2/src/http/ngx_http_header_filter_module.c	2018-07-26 15:08:05.508784374 +0300
 @@ -46,7 +46,7 @@
  };
  
@@ -230,9 +230,9 @@ diff -urN nginx-1.15.1-orig/src/http/ngx_http_header_filter_module.c nginx-1.15.
  #define NGX_HTTP_OFF_5XX   (NGX_HTTP_LAST_4XX - 400 + NGX_HTTP_OFF_4XX)
  
      ngx_string("500 Internal Server Error"),
-diff -urN nginx-1.15.1-orig/src/http/ngx_http_special_response.c nginx-1.15.1/src/http/ngx_http_special_response.c
---- nginx-1.15.1-orig/src/http/ngx_http_special_response.c	2018-07-03 18:07:44.000000000 +0300
-+++ nginx-1.15.1/src/http/ngx_http_special_response.c	2018-07-04 01:39:45.581129007 +0300
+diff -urN nginx-1.15.2-orig/src/http/ngx_http_special_response.c nginx-1.15.2/src/http/ngx_http_special_response.c
+--- nginx-1.15.2-orig/src/http/ngx_http_special_response.c	2018-07-24 16:11:00.000000000 +0300
++++ nginx-1.15.2/src/http/ngx_http_special_response.c	2018-07-26 15:08:05.513784337 +0300
 @@ -19,21 +19,21 @@
  
  
@@ -739,9 +739,9 @@ diff -urN nginx-1.15.1-orig/src/http/ngx_http_special_response.c nginx-1.15.1/sr
  #define NGX_HTTP_OFF_5XX   (NGX_HTTP_LAST_4XX - 400 + NGX_HTTP_OFF_4XX)
  
      ngx_string(ngx_http_error_494_page), /* 494, request header too large */
-diff -urN nginx-1.15.1-orig/src/http/v2/ngx_http_v2_filter_module.c nginx-1.15.1/src/http/v2/ngx_http_v2_filter_module.c
---- nginx-1.15.1-orig/src/http/v2/ngx_http_v2_filter_module.c	2018-07-03 18:07:44.000000000 +0300
-+++ nginx-1.15.1/src/http/v2/ngx_http_v2_filter_module.c	2018-07-04 01:47:55.000000000 +0300
+diff -urN nginx-1.15.2-orig/src/http/v2/ngx_http_v2_filter_module.c nginx-1.15.2/src/http/v2/ngx_http_v2_filter_module.c
+--- nginx-1.15.2-orig/src/http/v2/ngx_http_v2_filter_module.c	2018-07-24 16:11:00.000000000 +0300
++++ nginx-1.15.2/src/http/v2/ngx_http_v2_filter_module.c	2018-07-26 15:25:40.000000000 +0300
 @@ -148,7 +148,7 @@
      ngx_http_core_srv_conf_t  *cscf;
      u_char                     addr[NGX_SOCKADDR_STRLEN];
@@ -760,9 +760,9 @@ diff -urN nginx-1.15.1-orig/src/http/v2/ngx_http_v2_filter_module.c nginx-1.15.1
          }
  
          *pos++ = ngx_http_v2_inc_indexed(NGX_HTTP_V2_SERVER_INDEX);
-diff -urN nginx-1.15.1-orig/src/os/unix/ngx_setproctitle.c nginx-1.15.1/src/os/unix/ngx_setproctitle.c
---- nginx-1.15.1-orig/src/os/unix/ngx_setproctitle.c	2018-07-03 18:07:44.000000000 +0300
-+++ nginx-1.15.1/src/os/unix/ngx_setproctitle.c	2018-07-04 01:39:45.590128934 +0300
+diff -urN nginx-1.15.2-orig/src/os/unix/ngx_setproctitle.c nginx-1.15.2/src/os/unix/ngx_setproctitle.c
+--- nginx-1.15.2-orig/src/os/unix/ngx_setproctitle.c	2018-07-24 16:11:00.000000000 +0300
++++ nginx-1.15.2/src/os/unix/ngx_setproctitle.c	2018-07-26 15:08:05.522784271 +0300
 @@ -89,7 +89,7 @@
  
      ngx_os_argv[1] = NULL;

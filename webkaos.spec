@@ -51,7 +51,7 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define boring_commit        2e74fdaa4a847a6ed2d89f57eaf9936e05bd5169
+%define boring_commit        f3bfab0035fe671889250c1cc52973109bfc104f
 %define psol_ver             1.12.34.2
 %define lua_module_ver       0.10.13
 %define mh_module_ver        0.33
@@ -65,8 +65,8 @@
 
 Summary:              Superb high performance web server
 Name:                 webkaos
-Version:              1.15.1
-Release:              1%{?dist}
+Version:              1.15.2
+Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 URL:                  https://github.com/essentialkaos/webkaos
@@ -95,7 +95,7 @@ Source52:             https://github.com/openresty/lua-nginx-module/archive/v%{l
 Source53:             https://boringssl.googlesource.com/boringssl/+archive/%{boring_commit}.tar.gz
 Source54:             https://github.com/openresty/headers-more-nginx-module/archive/v%{mh_module_ver}.tar.gz
 Source55:             https://ftp.pcre.org/pub/pcre/pcre-%{pcre_ver}.tar.gz
-Source56:             http://zlib.net/zlib-%{zlib_ver}.tar.gz
+Source56:             https://zlib.net/zlib-%{zlib_ver}.tar.gz
 
 Patch0:               %{name}.patch
 Patch1:               mime.patch
@@ -599,6 +599,10 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Thu Jul 26 2018 Anton Novojilov <andy@essentialkaos.com> - 1.15.2-0
+- Nginx updated to 1.15.2
+- BoringSSL updated to latest version
+
 * Wed Jul 04 2018 Anton Novojilov <andy@essentialkaos.com> - 1.15.1-1
 - Dropped TLSv1 support
 - Dropped support of TLS_RSA_WITH_AES_256_CBC_SHA and

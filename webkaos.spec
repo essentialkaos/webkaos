@@ -51,7 +51,7 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define boring_commit        67e64342c1aa0b31b0b5c11e5ee21c481ce530e8
+%define boring_commit        f3bfab0035fe671889250c1cc52973109bfc104f
 %define psol_ver             1.12.34.2
 %define lua_module_ver       0.10.13
 %define mh_module_ver        0.33

@@ -39,7 +39,7 @@
 
 ################################################################################
 
-# Fixed bug with ngx_pagespeed comilation on i386
+# Fixed bug with incubator-pagespeed-ngx comilation on i386
 %ifarch %ix86
   %define optflags -O2 -g -march=i686
 %endif
@@ -89,7 +89,7 @@ Source26:             bots.conf
 
 Source30:             %{name}-index.html
 
-Source50:             https://github.com/pagespeed/ngx_pagespeed/archive/v%{pagespeed_ver}.tar.gz
+Source50:             https://github.com/apache/incubator-pagespeed-ngx/archive/v%{pagespeed_ver}.tar.gz
 Source51:             https://dl.google.com/dl/page-speed/psol/%{psol_ver}-x64.tar.gz
 Source52:             https://github.com/openresty/lua-nginx-module/archive/v%{lua_module_ver}.tar.gz
 Source53:             https://boringssl.googlesource.com/boringssl/+archive/%{boring_commit}.tar.gz
@@ -107,7 +107,7 @@ Patch3:               boringssl.patch
 Patch4:               %{name}-http2-spdy.patch
 Patch5:               boringssl-tls13-support.patch
 # Patch for forcing build with --with-debug
-Patch6:               ngx_pagespeed-build-force.patch
+Patch6:               incubator-pagespeed-ngx-build-force.patch
 
 BuildRoot:            %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -168,7 +168,7 @@ Links for nginx compatibility.
 mkdir boringssl
 
 tar xzvf %{SOURCE50}
-tar xzvf %{SOURCE51} -C ngx_pagespeed-%{pagespeed_ver}
+tar xzvf %{SOURCE51} -C incubator-pagespeed-ngx-%{pagespeed_ver}
 tar xzvf %{SOURCE52}
 tar xzvf %{SOURCE53} -C boringssl
 tar xzvf %{SOURCE54}
@@ -185,7 +185,7 @@ pushd boringssl
 %patch5 -p1
 popd
 
-pushd ngx_pagespeed-%{pagespeed_ver}
+pushd incubator-pagespeed-ngx-%{pagespeed_ver}
 %patch6 -p1
 popd
 
@@ -197,8 +197,8 @@ mv CHANGES.ru NGINX-CHANGES.ru
 mv LICENSE    NGINX-LICENSE
 mv README     NGINX-README
 
-mv ngx_pagespeed-%{pagespeed_ver}/LICENSE    ./PAGESPEED-LICENSE
-mv ngx_pagespeed-%{pagespeed_ver}/README.md  ./PAGESPEED-README.md
+mv incubator-pagespeed-ngx-%{pagespeed_ver}/LICENSE    ./PAGESPEED-LICENSE
+mv incubator-pagespeed-ngx-%{pagespeed_ver}/README.md  ./PAGESPEED-README.md
 
 mv lua-nginx-module-%{lua_module_ver}/README.markdown ./LUAMODULE-README.markdown
 
@@ -270,7 +270,7 @@ cp boringssl/build/crypto/libcrypto.a boringssl/build/ssl/libssl.a boringssl/.op
         --with-pcre-jit \
         --with-pcre=pcre-%{pcre_ver} \
         --with-openssl=boringssl \
-        --add-module=ngx_pagespeed-%{pagespeed_ver} \
+        --add-module=incubator-pagespeed-ngx-%{pagespeed_ver} \
         --add-module=lua-nginx-module-%{lua_module_ver} \
         --add-module=headers-more-nginx-module-%{mh_module_ver} \
         --with-cc-opt="-g -O2 -fPIE -fstack-protector-all -DTCP_FASTOPEN=23 -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -I ../boringssl/.openssl/include/" \
@@ -328,7 +328,7 @@ mv %{_builddir}/nginx-%{version}/objs/nginx \
         --with-pcre-jit \
         --with-pcre=pcre-%{pcre_ver} \
         --with-openssl=boringssl \
-        --add-module=ngx_pagespeed-%{pagespeed_ver} \
+        --add-module=incubator-pagespeed-ngx-%{pagespeed_ver} \
         --add-module=lua-nginx-module-%{lua_module_ver} \
         --add-module=headers-more-nginx-module-%{mh_module_ver} \
         --with-cc-opt="-g -O2 -fPIE -fstack-protector-all -DTCP_FASTOPEN=23 -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -I ../boringssl/.openssl/include/" \

@@ -562,17 +562,17 @@ rm -rf %{buildroot}
 * Thu Sep 27 2018 Anton Novojilov <andy@essentialkaos.com> - 1.15.4-0
 - Nginx updated to 1.15.4
 - PageSpeed removed
-- Updated dynamic TLS records patch for compatibility with latest version
-- Updated BoringSSL patch for compatibility with latest version
+- Updated dynamic TLS records patch for compatibility with the latest version
+- Updated BoringSSL patch for compatibility with the latest version
 
 * Sun Sep 02 2018 Anton Novojilov <andy@essentialkaos.com> - 1.15.3-0
 - Nginx updated to 1.15.3
 - BoringSSL updated to latest version
-- Updated dynamic TLS records patch for compatibility with latest version
+- Updated dynamic TLS records patch for compatibility with the latest version
 
 * Thu Jul 26 2018 Anton Novojilov <andy@essentialkaos.com> - 1.15.2-0
 - Nginx updated to 1.15.2
-- BoringSSL updated to latest version
+- BoringSSL updated to the latest version
 
 * Wed Jul 04 2018 Anton Novojilov <andy@essentialkaos.com> - 1.15.1-1
 - Dropped TLSv1 support

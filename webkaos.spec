@@ -39,13 +39,6 @@
 
 ################################################################################
 
-# Fixed bug with ngx_pagespeed comilation on i386
-%ifarch %ix86
-  %define optflags -O2 -g -march=i686
-%endif
-
-################################################################################
-
 %define service_user         %{name}
 %define service_group        %{name}
 %define service_name         %{name}
@@ -58,14 +51,11 @@
 %define pcre_ver             8.42
 %define zlib_ver             1.2.11
 
-%define pagespeed_ver        1.12.34.3-stable
-%define pagespeed_cache_path %{service_home}/pagespeed
-
 ################################################################################
 
 Summary:              Superb high performance web server
 Name:                 webkaos
-Version:              1.15.3
+Version:              1.15.4
 Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
@@ -79,23 +69,18 @@ Source4:              %{name}.conf
 Source5:              %{name}.service
 Source6:              %{name}-debug.service
 
-Source20:             pagespeed.conf
-Source21:             pagespeed-enabled.conf
-Source22:             pagespeed-access.pswd
-Source23:             ssl.conf
-Source24:             ssl-wildcard.conf
-Source25:             common.conf
-Source26:             bots.conf
+Source20:             ssl.conf
+Source21:             ssl-wildcard.conf
+Source22:             common.conf
+Source23:             bots.conf
 
 Source30:             %{name}-index.html
 
-Source50:             https://github.com/pagespeed/ngx_pagespeed/archive/v%{pagespeed_ver}.tar.gz
-Source51:             https://dl.google.com/dl/page-speed/psol/%{psol_ver}-x64.tar.gz
-Source52:             https://github.com/openresty/lua-nginx-module/archive/v%{lua_module_ver}.tar.gz
-Source53:             https://boringssl.googlesource.com/boringssl/+archive/%{boring_commit}.tar.gz
-Source54:             https://github.com/openresty/headers-more-nginx-module/archive/v%{mh_module_ver}.tar.gz
-Source55:             https://ftp.pcre.org/pub/pcre/pcre-%{pcre_ver}.tar.gz
-Source56:             https://zlib.net/zlib-%{zlib_ver}.tar.gz
+Source50:             https://github.com/openresty/lua-nginx-module/archive/v%{lua_module_ver}.tar.gz
+Source51:             https://boringssl.googlesource.com/boringssl/+archive/%{boring_commit}.tar.gz
+Source52:             https://github.com/openresty/headers-more-nginx-module/archive/v%{mh_module_ver}.tar.gz
+Source53:             https://ftp.pcre.org/pub/pcre/pcre-%{pcre_ver}.tar.gz
+Source54:             https://zlib.net/zlib-%{zlib_ver}.tar.gz
 
 Patch0:               %{name}.patch
 Patch1:               mime.patch
@@ -106,8 +91,6 @@ Patch3:               boringssl.patch
 # https://github.com/cloudflare/sslconfig/blob/master/patches/nginx__1.13.0_http2_spdy.patch
 Patch4:               %{name}-http2-spdy.patch
 Patch5:               boringssl-tls13-support.patch
-# Patch for forcing build with --with-debug
-Patch6:               ngx_pagespeed-build-force.patch
 
 BuildRoot:            %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -168,12 +151,10 @@ Links for nginx compatibility.
 mkdir boringssl
 
 tar xzvf %{SOURCE50}
-tar xzvf %{SOURCE51} -C ngx_pagespeed-%{pagespeed_ver}
+tar xzvf %{SOURCE51} -C boringssl
 tar xzvf %{SOURCE52}
-tar xzvf %{SOURCE53} -C boringssl
+tar xzvf %{SOURCE53}
 tar xzvf %{SOURCE54}
-tar xzvf %{SOURCE55}
-tar xzvf %{SOURCE56}
 
 %patch0 -p1
 %patch1 -p1
@@ -185,10 +166,6 @@ pushd boringssl
 %patch5 -p1
 popd
 
-pushd ngx_pagespeed-%{pagespeed_ver}
-%patch6 -p1
-popd
-
 %build
 
 # Renaming and moving docs
@@ -196,9 +173,6 @@ mv CHANGES    NGINX-CHANGES
 mv CHANGES.ru NGINX-CHANGES.ru
 mv LICENSE    NGINX-LICENSE
 mv README     NGINX-README
-
-mv ngx_pagespeed-%{pagespeed_ver}/LICENSE    ./PAGESPEED-LICENSE
-mv ngx_pagespeed-%{pagespeed_ver}/README.md  ./PAGESPEED-README.md
 
 mv lua-nginx-module-%{lua_module_ver}/README.markdown ./LUAMODULE-README.markdown
 
@@ -270,7 +244,6 @@ cp boringssl/build/crypto/libcrypto.a boringssl/build/ssl/libssl.a boringssl/.op
         --with-pcre-jit \
         --with-pcre=pcre-%{pcre_ver} \
         --with-openssl=boringssl \
-        --add-module=ngx_pagespeed-%{pagespeed_ver} \
         --add-module=lua-nginx-module-%{lua_module_ver} \
         --add-module=headers-more-nginx-module-%{mh_module_ver} \
         --with-cc-opt="-g -O2 -fPIE -fstack-protector-all -DTCP_FASTOPEN=23 -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -I ../boringssl/.openssl/include/" \
@@ -328,7 +301,6 @@ mv %{_builddir}/nginx-%{version}/objs/nginx \
         --with-pcre-jit \
         --with-pcre=pcre-%{pcre_ver} \
         --with-openssl=boringssl \
-        --add-module=ngx_pagespeed-%{pagespeed_ver} \
         --add-module=lua-nginx-module-%{lua_module_ver} \
         --add-module=headers-more-nginx-module-%{mh_module_ver} \
         --with-cc-opt="-g -O2 -fPIE -fstack-protector-all -DTCP_FASTOPEN=23 -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -I ../boringssl/.openssl/include/" \
@@ -362,7 +334,6 @@ install -dm 755 %{buildroot}%{_logdir}/%{name}
 install -dm 755 %{buildroot}%{_rundir}/%{name}
 install -dm 755 %{buildroot}%{_cachedir}/%{name}
 install -dm 755 %{buildroot}%{_datadir}/%{name}/html
-install -dm 755 %{buildroot}%{pagespeed_cache_path}
 
 # Install modules dirs
 install -dm 755 %{buildroot}%{_libdir}/%{name}/modules
@@ -407,7 +378,7 @@ install -dm 755 %{buildroot}%{_sysconfdir}/%{name}/xtra
 install -pm 644 %{SOURCE4} \
                 %{buildroot}%{_sysconfdir}/%{name}/%{name}.conf
 
-# Install XTRA configs
+# Install extra configs
 install -pm 644 %{SOURCE20} \
                 %{buildroot}%{_sysconfdir}/%{name}/xtra/
 install -pm 644 %{SOURCE21} \
@@ -415,12 +386,6 @@ install -pm 644 %{SOURCE21} \
 install -pm 644 %{SOURCE22} \
                 %{buildroot}%{_sysconfdir}/%{name}/xtra/
 install -pm 644 %{SOURCE23} \
-                %{buildroot}%{_sysconfdir}/%{name}/xtra/
-install -pm 644 %{SOURCE24} \
-                %{buildroot}%{_sysconfdir}/%{name}/xtra/
-install -pm 644 %{SOURCE25} \
-                %{buildroot}%{_sysconfdir}/%{name}/xtra/
-install -pm 644 %{SOURCE26} \
                 %{buildroot}%{_sysconfdir}/%{name}/xtra/
 
 install -dm 755 %{buildroot}%{_sysconfdir}/sysconfig
@@ -525,7 +490,6 @@ rm -rf %{buildroot}
 %files
 %defattr(-,root,root)
 %doc NGINX-CHANGES NGINX-CHANGES.ru NGINX-LICENSE NGINX-README
-%doc PAGESPEED-LICENSE PAGESPEED-README.md
 %doc LUAMODULE-README.markdown
 %doc HEADERSMORE-README.markdown
 
@@ -537,9 +501,6 @@ rm -rf %{buildroot}
 %dir %{_sysconfdir}/%{name}/stream.conf.d
 
 %config(noreplace) %{_sysconfdir}/%{name}/%{name}.conf
-%config(noreplace) %{_sysconfdir}/%{name}/xtra/pagespeed-access.pswd
-%config(noreplace) %{_sysconfdir}/%{name}/xtra/pagespeed.conf
-%config(noreplace) %{_sysconfdir}/%{name}/xtra/pagespeed-enabled.conf
 %config %{_sysconfdir}/%{name}/xtra/common.conf
 %config %{_sysconfdir}/%{name}/xtra/ssl.conf
 %config %{_sysconfdir}/%{name}/xtra/ssl-wildcard.conf
@@ -574,7 +535,6 @@ rm -rf %{buildroot}
 %{_logdir}/%{name}
 
 %attr(0755,%{service_user},%{service_group}) %dir %{_cachedir}/%{name}
-%attr(0755,%{service_user},%{service_group}) %dir %{pagespeed_cache_path}
 %attr(0755,%{service_user},%{service_group}) %dir %{_libdir}/%{name}/modules
 
 %files debug
@@ -599,14 +559,20 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Thu Sep 27 2018 Anton Novojilov <andy@essentialkaos.com> - 1.15.4-0
+- Nginx updated to 1.15.4
+- PageSpeed removed
+- Updated dynamic TLS records patch for compatibility with the latest version
+- Updated BoringSSL patch for compatibility with the latest version
+
 * Sun Sep 02 2018 Anton Novojilov <andy@essentialkaos.com> - 1.15.3-0
 - Nginx updated to 1.15.3
 - BoringSSL updated to latest version
-- Updated dynamic TLS records patch for compatibility with latest version
+- Updated dynamic TLS records patch for compatibility with the latest version
 
 * Thu Jul 26 2018 Anton Novojilov <andy@essentialkaos.com> - 1.15.2-0
 - Nginx updated to 1.15.2
-- BoringSSL updated to latest version
+- BoringSSL updated to the latest version
 
 * Wed Jul 04 2018 Anton Novojilov <andy@essentialkaos.com> - 1.15.1-1
 - Dropped TLSv1 support

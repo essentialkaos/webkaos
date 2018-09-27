@@ -39,7 +39,6 @@ binary=${BINARY:-/usr/sbin/webkaos}
 conf_file=${CONF_FILE:-/etc/webkaos/webkaos.conf}
 cache_dir=${CACHE_DIR:-/var/cache/webkaos}
 log_dir=${LOG_DIR:-/var/log/webkaos}
-pagespeed_cache=${PAGESPEED_CACHE:-/var/cache/webkaos/pagespeed}
 ssl_dir=${SSL_DIR:-/etc/webkaos/ssl}
 dh_param=${DH_PARAM:-/etc/webkaos/ssl/dhparam.pem}
 
@@ -70,8 +69,6 @@ kv.addCommandAlias "check"   "configtest"
 kv.addCommandAlias "restart" "condrestart"
 kv.addCommandAlias "config"  "conf"
 
-[[ $pagespeed_cache ]] && kv.addCommand "clean" "Clean pagespeed cache" "clean"
-
 kv.addHandler "start"   "startServiceHandler"
 kv.addHandler "start"   "preStartServiceHandler" "pre"
 kv.addHandler "stop"    "stopServiceHandler"
@@ -93,7 +90,6 @@ prepare() {
 
   if kv.isRoot ; then
     [[ ! -w $cache_dir ]] && has_errors=true && kv.error "<CACHE_DIR> must be writable directory"
-    [[ ! -w $pagespeed_cache ]] && has_errors=true && kv.error "<PAGESPEED_CACHE> must be writable directory"
   fi
 
   [[ $has_errors ]] && kv.exit $ACTION_ERROR
@@ -233,20 +229,6 @@ reload() {
   return $status
 }
 
-clean() {
-  kv.showProcessMessage "Cleaning pagespeed cache"
-
-  cleanPagespeedCache
-
-  local status=$?
-
-  kv.showStatusMessage "$status"
-
-  [[ $status -eq $ACTION_OK ]] && kv.log "pagespeed cache cleaned by ${kv[real_user]}."
-
-  return $status
-}
-
 ###############################################################################
 
 preStartServiceHandler() {
@@ -348,20 +330,6 @@ testServiceConfig() {
   [[ $status -eq $ACTION_OK ]] && return $ACTION_OK || return $ACTION_ERROR
 }
 
-cleanPagespeedCache() {
-  if [[ -d $pagespeed_cache ]] ; then
-    if kv.statusIs "$STATUS_WORKS" ; then
-      touch $pagespeed_cache/cache.flush
-    else
-      rm -rf $pagespeed_cache/* &> /dev/null
-    fi
-
-    [[ $? -eq $ACTION_OK ]] && return $ACTION_OK || $ACTION_ERROR
-  fi
-
-  return $ACTION_ERROR
-}
-
 updateOwner() {
   local user=$(getUserFromConfig)
 
@@ -369,10 +337,6 @@ updateOwner() {
 
   if [[ $cache_dir && -d $cache_dir ]] ; then
     chown -R $user: $cache_dir -R
-  fi
-
-  if [[ $pagespeed_cache && -d $pagespeed_cache ]] ; then
-    chown -R $user: $pagespeed_cache -R
   fi
 
   if [[ $log_dir && -d $log_dir ]] ; then

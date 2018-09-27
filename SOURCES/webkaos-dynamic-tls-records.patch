@@ -1,7 +1,7 @@
-diff -urN nginx-1.15.3-orig/src/event/ngx_event_openssl.c nginx-1.15.3/src/event/ngx_event_openssl.c
---- nginx-1.15.3-orig/src/event/ngx_event_openssl.c	2018-08-28 18:36:00.000000000 +0300
-+++ nginx-1.15.3/src/event/ngx_event_openssl.c	2018-09-02 01:18:43.000000000 +0300
-@@ -1239,6 +1239,7 @@
+diff -urN nginx-1.15.4-orig/src/event/ngx_event_openssl.c nginx-1.15.4-dyntls/src/event/ngx_event_openssl.c
+--- nginx-1.15.4-orig/src/event/ngx_event_openssl.c	2018-09-25 18:11:39.000000000 +0300
++++ nginx-1.15.4-dyntls/src/event/ngx_event_openssl.c	2018-09-27 14:01:16.000000000 +0300
+@@ -1267,6 +1267,7 @@
  
      sc->buffer = ((flags & NGX_SSL_BUFFER) != 0);
      sc->buffer_size = ssl->buffer_size;
@@ -9,7 +9,7 @@ diff -urN nginx-1.15.3-orig/src/event/ngx_event_openssl.c nginx-1.15.3/src/event
  
      sc->session_ctx = ssl->ctx;
  
-@@ -1806,6 +1807,41 @@
+@@ -2115,6 +2116,41 @@
  
      for ( ;; ) {
  
@@ -51,7 +51,7 @@ diff -urN nginx-1.15.3-orig/src/event/ngx_event_openssl.c nginx-1.15.3/src/event
          while (in && buf->last < buf->end && send < limit) {
              if (in->buf->last_buf || in->buf->flush) {
                  flush = 1;
-@@ -1907,6 +1943,9 @@
+@@ -2222,6 +2258,9 @@
  
      if (n > 0) {
  
@@ -61,10 +61,10 @@ diff -urN nginx-1.15.3-orig/src/event/ngx_event_openssl.c nginx-1.15.3/src/event
          if (c->ssl->saved_read_handler) {
  
              c->read->handler = c->ssl->saved_read_handler;
-diff -urN nginx-1.15.3-orig/src/event/ngx_event_openssl.h nginx-1.15.3/src/event/ngx_event_openssl.h
---- nginx-1.15.3-orig/src/event/ngx_event_openssl.h	2018-08-28 18:36:00.000000000 +0300
-+++ nginx-1.15.3/src/event/ngx_event_openssl.h	2018-09-02 01:20:39.000000000 +0300
-@@ -58,6 +58,13 @@
+diff -urN nginx-1.15.4-orig/src/event/ngx_event_openssl.h nginx-1.15.4-dyntls/src/event/ngx_event_openssl.h
+--- nginx-1.15.4-orig/src/event/ngx_event_openssl.h	2018-09-25 18:11:39.000000000 +0300
++++ nginx-1.15.4-dyntls/src/event/ngx_event_openssl.h	2018-09-27 14:05:40.000000000 +0300
+@@ -58,6 +58,12 @@
  #define ngx_ssl_session_t       SSL_SESSION
  #define ngx_ssl_conn_t          SSL
  
@@ -74,11 +74,10 @@ diff -urN nginx-1.15.3-orig/src/event/ngx_event_openssl.h nginx-1.15.3/src/event
 +    size_t                      size_lo;
 +    size_t                      size_hi;
 +} ngx_ssl_dyn_rec_t;
-+
  
  #if (OPENSSL_VERSION_NUMBER < 0x10002000L)
  #define SSL_is_server(s)        (s)->server
-@@ -68,6 +75,7 @@
+@@ -68,6 +74,7 @@
      SSL_CTX                    *ctx;
      ngx_log_t                  *log;
      size_t                      buffer_size;
@@ -86,10 +85,10 @@ diff -urN nginx-1.15.3-orig/src/event/ngx_event_openssl.h nginx-1.15.3/src/event
  };
  
  
-@@ -93,6 +101,10 @@
-     unsigned                    no_wait_shutdown:1;
-     unsigned                    no_send_shutdown:1;
-     unsigned                    handshake_buffer_set:1;
+@@ -98,6 +105,10 @@
+     unsigned                    try_early_data:1;
+     unsigned                    in_early:1;
+     unsigned                    early_preread:1;
 +
 +    ngx_ssl_dyn_rec_t           dyn_rec;
 +    ngx_msec_t                  dyn_rec_last_write;
@@ -97,7 +96,7 @@ diff -urN nginx-1.15.3-orig/src/event/ngx_event_openssl.h nginx-1.15.3/src/event
  };
  
  
-@@ -102,7 +114,7 @@
+@@ -107,7 +118,7 @@
  #define NGX_SSL_DFLT_BUILTIN_SCACHE  -5
  
  
@@ -106,9 +105,9 @@ diff -urN nginx-1.15.3-orig/src/event/ngx_event_openssl.h nginx-1.15.3/src/event
  
  typedef struct ngx_ssl_sess_id_s  ngx_ssl_sess_id_t;
  
-diff -urN nginx-1.15.3-orig/src/http/modules/ngx_http_ssl_module.c nginx-1.15.3/src/http/modules/ngx_http_ssl_module.c
---- nginx-1.15.3-orig/src/http/modules/ngx_http_ssl_module.c	2018-08-28 18:36:00.000000000 +0300
-+++ nginx-1.15.3/src/http/modules/ngx_http_ssl_module.c	2018-09-02 01:24:26.000000000 +0300
+diff -urN nginx-1.15.4-orig/src/http/modules/ngx_http_ssl_module.c nginx-1.15.4-dyntls/src/http/modules/ngx_http_ssl_module.c
+--- nginx-1.15.4-orig/src/http/modules/ngx_http_ssl_module.c	2018-09-25 18:11:39.000000000 +0300
++++ nginx-1.15.4-dyntls/src/http/modules/ngx_http_ssl_module.c	2018-09-27 14:08:12.000000000 +0300
 @@ -246,6 +246,41 @@
        offsetof(ngx_http_ssl_srv_conf_t, early_data),
        NULL },
@@ -208,14 +207,14 @@ diff -urN nginx-1.15.3-orig/src/http/modules/ngx_http_ssl_module.c nginx-1.15.3/
 +
 +    } else {
 +        conf->ssl.dyn_rec.timeout = 0;
-+    }
++    }   
 +
      return NGX_CONF_OK;
  }
  
-diff -urN nginx-1.15.3-orig/src/http/modules/ngx_http_ssl_module.h nginx-1.15.3/src/http/modules/ngx_http_ssl_module.h
---- nginx-1.15.3-orig/src/http/modules/ngx_http_ssl_module.h	2018-08-28 18:36:00.000000000 +0300
-+++ nginx-1.15.3/src/http/modules/ngx_http_ssl_module.h	2018-09-02 01:25:11.000000000 +0300
+diff -urN nginx-1.15.4-orig/src/http/modules/ngx_http_ssl_module.h nginx-1.15.4-dyntls/src/http/modules/ngx_http_ssl_module.h
+--- nginx-1.15.4-orig/src/http/modules/ngx_http_ssl_module.h	2018-09-25 18:11:39.000000000 +0300
++++ nginx-1.15.4-dyntls/src/http/modules/ngx_http_ssl_module.h	2018-09-27 14:09:20.000000000 +0300
 @@ -58,6 +58,12 @@
  
      u_char                         *file;

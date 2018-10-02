@@ -55,7 +55,7 @@
 
 Summary:              Superb high performance web server
 Name:                 webkaos
-Version:              1.15.4
+Version:              1.15.5
 Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
@@ -559,6 +559,9 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Tue Oct 02 2018 Anton Novojilov <andy@essentialkaos.com> - 1.15.5-0
+- Nginx updated to 1.15.5
+
 * Thu Sep 27 2018 Anton Novojilov <andy@essentialkaos.com> - 1.15.4-0
 - Nginx updated to 1.15.4
 - PageSpeed removed

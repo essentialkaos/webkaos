@@ -44,8 +44,7 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define boring_commit        384d0eaf1930af1ebc47eda751f0c78dfcba1c03
-%define psol_ver             1.12.34.2
+%define boring_commit        5ecfb10d54600dc6ee6f3070b842f5289b6e6c1e
 %define lua_module_ver       0.10.13
 %define mh_module_ver        0.33
 %define pcre_ver             8.42
@@ -55,7 +54,7 @@
 
 Summary:              Superb high performance web server
 Name:                 webkaos
-Version:              1.15.6
+Version:              1.15.7
 Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
@@ -559,6 +558,10 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Thu Nov 29 2018 Anton Novojilov <andy@essentialkaos.com> - 1.15.7-0
+- Nginx updated to 1.15.7
+- BoringSSL updated
+
 * Thu Nov 08 2018 Anton Novojilov <andy@essentialkaos.com> - 1.15.6-0
 - Nginx updated to 1.15.6 with fixes for CVE-2018-16843, CVE-2018-16844
   and CVE-2018-16845

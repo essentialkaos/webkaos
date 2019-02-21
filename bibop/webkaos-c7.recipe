@@ -1,0 +1,70 @@
+# Bibop recipe for webkaos (CentOS 7)
+# See more: https://github.com/essentialkaos/bibop
+
+require-root yes
+unsafe-actions yes
+
+var service_name webkaos
+var user_name webkaos
+var config /etc/webkaos/webkaos.conf
+var pid_file /var/run/webkaos.pid
+var dh_param /etc/webkaos/ssl/dhparam.pem
+var log_dir /var/log/webkaos
+
+command "-" "System environment validation"
+  user-exist {user_name}
+  group-exist {user_name}
+  service-present {service_name}
+  service-enabled {service_name}
+  exist {config}
+  exist {log_dir}
+
+command "-" "Configuration backup"
+  backup {config}
+
+command "-" "Add test DH params file"
+  copy dhparam.pem {dh_param}
+  chmod {dh_param} 600
+
+command "systemctl start {service_name}" "Start service"
+  wait-pid {pid_file} 180
+  service-works {service_name}
+  http-status GET "http://127.0.0.1:80" 200
+  http-header GET "http://127.0.0.1:80" server webkaos
+  !empty {log_dir}/access.log
+  checksum-read {pid_file} pid_sha
+
+command "service {service_name} upgrade" "Binary upgrade"
+  wait 3
+  exist {pid_file}
+  service-works {service_name}
+  http-status GET "http://127.0.0.1:80" 200
+  !checksum {pid_file} {pid_sha}
+
+command "-" "Update configuration to broken one"
+  copy broken.conf {config}
+
+command "service {service_name} check" "Broken config check"
+  !exit 0
+  !empty {log_dir}/error.log
+
+command "service {service_name} reload" "Broken config reload"
+  !exit 0
+
+command "service {service_name} restart" "Restart with broken config"
+  !exit 0
+
+command "-" "Configuration restore"
+  backup-restore {config}
+
+command "service {service_name} reload" "Reload with original config"
+  exit 0
+
+command "systemctl stop {service_name}" "Stop service"
+  !wait-pid {pid_file} 5
+  !service-works {service_name}
+  !connect tcp ":http"
+  !exist {pid_file}
+
+command "-" "DH param cleanup"
+  remove {dh_param}

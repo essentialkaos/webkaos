@@ -1,0 +1,22 @@
+diff -urN boringssl-orig/include/openssl/bn.h boringssl/include/openssl/bn.h
+--- boringssl-orig/include/openssl/bn.h	2019-02-28 00:09:32.000000000 +0300
++++ boringssl/include/openssl/bn.h	2019-02-28 01:48:53.000000000 +0300
+@@ -126,6 +126,7 @@
+ #include <openssl/base.h>
+ #include <openssl/thread.h>
+ 
++#define __STDC_FORMAT_MACROS
+ #include <inttypes.h>  // for PRIu64 and friends
+ #include <stdio.h>  // for FILE*
+ 
+diff -urN boringssl-orig/ssl/test/bssl_shim.cc boringssl/ssl/test/bssl_shim.cc
+--- boringssl-orig/ssl/test/bssl_shim.cc	2019-02-28 00:09:32.000000000 +0300
++++ boringssl/ssl/test/bssl_shim.cc	2019-02-28 01:49:35.000000000 +0300
+@@ -33,6 +33,7 @@
+ #endif
+ 
+ #include <assert.h>
++#define __STDC_FORMAT_MACROS
+ #include <inttypes.h>
+ #include <string.h>
+ #include <time.h>

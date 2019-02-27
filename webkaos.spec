@@ -44,17 +44,17 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define boring_commit        5ecfb10d54600dc6ee6f3070b842f5289b6e6c1e
-%define lua_module_ver       0.10.13
+%define boring_commit        a6124742d008e7cd4613833350a16d68537687c9
+%define lua_module_ver       0.10.14
 %define mh_module_ver        0.33
-%define pcre_ver             8.42
+%define pcre_ver             8.43
 %define zlib_ver             1.2.11
 
 ################################################################################
 
 Summary:              Superb high performance web server
 Name:                 webkaos
-Version:              1.15.7
+Version:              1.15.9
 Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
@@ -90,6 +90,7 @@ Patch3:               boringssl.patch
 # https://github.com/cloudflare/sslconfig/blob/master/patches/nginx__1.13.0_http2_spdy.patch
 Patch4:               %{name}-http2-spdy.patch
 Patch5:               boringssl-tls13-support.patch
+Patch6:               boringssl-c6-build-fix.patch
 
 BuildRoot:            %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -163,6 +164,9 @@ tar xzvf %{SOURCE54}
 
 pushd boringssl
 %patch5 -p1
+%if 0%{?rhel} == 6
+%patch6 -p1
+%endif
 popd
 
 %build
@@ -558,6 +562,17 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Thu Feb 28 2019 Anton Novojilov <andy@essentialkaos.com> - 1.15.9-0
+- Nginx updated to 1.15.9
+
+* Thu Feb 28 2019 Anton Novojilov <andy@essentialkaos.com> - 1.15.8-0
+- Nginx updated to 1.15.8
+- PCRE updated to 8.43
+- Lua module updated to 0.10.14
+- BoringSSL updated to the latest version
+- Updated dynamic TLS records patch for compatibility with the latest version
+- Added patch for building BoringSSL on CentOS 6
+
 * Thu Nov 29 2018 Anton Novojilov <andy@essentialkaos.com> - 1.15.7-0
 - Nginx updated to 1.15.7
 - BoringSSL updated

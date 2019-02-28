@@ -49,6 +49,7 @@
 %define mh_module_ver        0.33
 %define pcre_ver             8.43
 %define zlib_ver             1.2.11
+%define luajit_ver           2.1-20190221
 
 ################################################################################
 
@@ -80,6 +81,7 @@ Source51:             https://boringssl.googlesource.com/boringssl/+archive/%{bo
 Source52:             https://github.com/openresty/headers-more-nginx-module/archive/v%{mh_module_ver}.tar.gz
 Source53:             https://ftp.pcre.org/pub/pcre/pcre-%{pcre_ver}.tar.gz
 Source54:             https://zlib.net/zlib-%{zlib_ver}.tar.gz
+Source55:             https://github.com/openresty/luajit2/archive/v%{luajit_ver}.tar.gz
 
 Patch0:               %{name}.patch
 Patch1:               mime.patch
@@ -95,9 +97,9 @@ Patch6:               boringssl-c6-build-fix.patch
 BuildRoot:            %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 Requires:             initscripts >= 8.36 kaosv >= 2.15
-Requires:             gd libXpm libxslt libluajit
+Requires:             gd libXpm libxslt
 
-BuildRequires:        make perl libluajit-devel cmake golang
+BuildRequires:        make perl cmake golang
 
 # http://mirror.centos.org/centos/6/sclo/x86_64/rh/devtoolset-3/
 # http://mirror.centos.org/centos/7/sclo/x86_64/rh/devtoolset-3/
@@ -155,6 +157,7 @@ tar xzvf %{SOURCE51} -C boringssl
 tar xzvf %{SOURCE52}
 tar xzvf %{SOURCE53}
 tar xzvf %{SOURCE54}
+tar xzvf %{SOURCE55}
 
 %patch0 -p1
 %patch1 -p1
@@ -178,11 +181,24 @@ mv LICENSE    NGINX-LICENSE
 mv README     NGINX-README
 
 mv lua-nginx-module-%{lua_module_ver}/README.markdown ./LUAMODULE-README.markdown
-
 mv headers-more-nginx-module-%{mh_module_ver}/README.markdown ./HEADERSMORE-README.markdown
 
 # Use gcc and gcc-c++ from DevToolSet 3
 export PATH="/opt/rh/devtoolset-3/root/usr/bin:$PATH"
+
+# LuaJIT2 Build ################################################################
+
+export LUAJIT2_DIR=$(pwd)/luajit2-%{luajit_ver}
+
+pushd luajit2-%{luajit_ver}
+  %{__make} %{?_smp_mflags}
+  %{__make} install DESTDIR=$LUAJIT2_DIR \
+                    PREFIX=/ \
+                    INSTALL_LIB=$LUAJIT2_DIR/lib
+popd
+
+export LUAJIT_LIB="$LUAJIT2_DIR/lib"
+export LUAJIT_INC="$LUAJIT2_DIR/include/luajit-2.1"
 
 # BoringSSL Build ##############################################################
 
@@ -250,7 +266,7 @@ cp boringssl/build/crypto/libcrypto.a boringssl/build/ssl/libssl.a boringssl/.op
         --add-module=lua-nginx-module-%{lua_module_ver} \
         --add-module=headers-more-nginx-module-%{mh_module_ver} \
         --with-cc-opt="-g -O2 -fPIE -fstack-protector-all -DTCP_FASTOPEN=23 -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -I ../boringssl/.openssl/include/" \
-        --with-ld-opt="-Wl,-Bsymbolic-functions -Wl,-z,relro -L ../boringssl/.openssl/lib" \
+        --with-ld-opt="-Wl,-Bsymbolic-functions -Wl,-z,relro -L ../boringssl/.openssl/lib -L ../luajit2-%{luajit_ver}/lib" \
         --with-compat \
         $*
 
@@ -564,6 +580,8 @@ rm -rf %{buildroot}
 %changelog
 * Thu Feb 28 2019 Anton Novojilov <andy@essentialkaos.com> - 1.15.9-0
 - Nginx updated to 1.15.9
+- LuaJIT replaced by OpenResty's fork
+- Fixed exit code for failed validation while restart in init script
 
 * Thu Feb 28 2019 Anton Novojilov <andy@essentialkaos.com> - 1.15.8-0
 - Nginx updated to 1.15.8

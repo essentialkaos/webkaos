@@ -155,9 +155,11 @@ gendhp() {
 }
 
 restart() {
-  if check ; then
-    kv.restart
+  if ! check ; then
+    return $ACTION_ERROR
   fi
+
+  kv.restart
 
   return $?
 }

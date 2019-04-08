@@ -1,7 +1,7 @@
 diff -urN boringssl-orig/ssl/s3_lib.cc boringssl/ssl/s3_lib.cc
---- boringssl-orig/ssl/s3_lib.cc	2017-11-27 23:19:17.297484878 +0100
-+++ boringssl/ssl/s3_lib.cc	2017-11-27 23:20:24.000000000 +0100
-@@ -199,7 +199,7 @@
+--- boringssl-orig/ssl/s3_lib.cc	2019-04-09 00:27:58.157453794 +0300
++++ boringssl/ssl/s3_lib.cc	2019-04-09 00:29:57.000000000 +0300
+@@ -202,7 +202,7 @@
    // TODO(davidben): Move this field into |s3|, have it store the normalized
    // protocol version, and implement this pre-negotiation quirk in |SSL_version|
    // at the API boundary rather than in internal state.
@@ -11,14 +11,14 @@ diff -urN boringssl-orig/ssl/s3_lib.cc boringssl/ssl/s3_lib.cc
  }
  
 diff -urN boringssl-orig/ssl/ssl_versions.cc boringssl/ssl/ssl_versions.cc
---- boringssl-orig/ssl/ssl_versions.cc	2017-11-27 23:19:17.294484878 +0100
-+++ boringssl/ssl/ssl_versions.cc	2017-11-27 23:21:15.000000000 +0100
-@@ -209,7 +209,7 @@
+--- boringssl-orig/ssl/ssl_versions.cc	2019-04-09 00:27:58.158453785 +0300
++++ boringssl/ssl/ssl_versions.cc	2019-04-09 00:41:47.000000000 +0300
+@@ -158,7 +158,7 @@
                              uint16_t version) {
    // Zero is interpreted as the default maximum version.
    if (version == 0) {
--    *out = TLS1_2_VERSION;
-+    *out = TLS1_3_VERSION;
+-    *out = method->is_dtls ? DTLS1_2_VERSION : TLS1_2_VERSION;
++    *out = method->is_dtls ? DTLS1_2_VERSION : TLS1_3_VERSION;
      return true;
    }
  

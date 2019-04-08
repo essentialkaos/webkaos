@@ -44,18 +44,18 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define boring_commit        a6124742d008e7cd4613833350a16d68537687c9
+%define boring_commit        a26d01719b4c56241424c8cfed2ca326ea229790
 %define lua_module_ver       0.10.14
 %define mh_module_ver        0.33
 %define pcre_ver             8.43
 %define zlib_ver             1.2.11
-%define luajit_ver           2.1-20190221
+%define luajit_ver           2.1-20190329
 
 ################################################################################
 
 Summary:              Superb high performance web server
 Name:                 webkaos
-Version:              1.15.9
+Version:              1.15.10
 Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
@@ -578,6 +578,12 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Tue Apr 09 2019 Anton Novojilov <andy@essentialkaos.com> - 1.5.10-0
+- Nginx updated to 1.15.10
+- BoringSSL updated to the latest version
+- LuaJIT updated to 2.1-20190329
+- Updated BoringSSL patch for compatibility with the latest version
+
 * Thu Feb 28 2019 Anton Novojilov <andy@essentialkaos.com> - 1.15.9-0
 - Nginx updated to 1.15.9
 - LuaJIT replaced by OpenResty's fork

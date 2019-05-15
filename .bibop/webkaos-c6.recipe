@@ -1,5 +1,7 @@
-# Bibop recipe for webkaos (CentOS 7)
+# Bibop recipe for webkaos (CentOS 6)
 # See more: https://github.com/essentialkaos/bibop
+
+pkg webkaos
 
 require-root yes
 unsafe-actions yes
@@ -26,7 +28,7 @@ command "-" "Add test DH params file"
   copy dhparam.pem {dh_param}
   chmod {dh_param} 600
 
-command "systemctl start {service_name}" "Start service"
+command "service {service_name} start" "Start service"
   wait-pid {pid_file} 180
   service-works {service_name}
   http-status GET "http://127.0.0.1:80" 200
@@ -60,7 +62,7 @@ command "-" "Configuration restore"
 command "service {service_name} reload" "Reload with original config"
   exit 0
 
-command "systemctl stop {service_name}" "Stop service"
+command "service {service_name} stop" "Stop service"
   !wait-pid {pid_file} 5
   !service-works {service_name}
   !connect tcp ":http"

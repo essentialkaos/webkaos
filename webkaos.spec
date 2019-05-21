@@ -575,7 +575,7 @@ rm -rf %{buildroot}
 %changelog
 * Tue May 21 2019 Anton Novojilov <andy@essentialkaos.com> - 1.17.0-0
 - Nginx updated to 1.17.0
-- Imporved styles for error and index pages
+- Improved styles for error and index pages
 - Dropped SPDY support
 
 * Thu May 16 2019 Anton Novojilov <andy@essentialkaos.com> - 1.15.12-0

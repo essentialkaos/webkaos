@@ -1,16 +1,15 @@
 <p align="center"><a href="#readme"><img src="https://gh.kaos.st/webkaos.svg"/></a></p>
 
-`webkaos` is a web-server based on latest version of [Nginx](http://nginx.org).
+`webkaos` is a web-server based on the latest version of [Nginx](http://nginx.org).
 
 ## Feature list
 
 * Improved default SSL/TLS preferencies (A+ on [SSL Labs](https://www.ssllabs.com/ssltest/analyze.html?d=essentialkaos.com), [High-Tech Bridge](https://www.htbridge.com/ssl/?id=WHUz0U3v) and [Mozilla Observatory](https://observatory.mozilla.org/analyze/essentialkaos.com))
 * [Dynamic TLS Records](https://blog.cloudflare.com/optimizing-tls-over-tcp-to-reduce-latency/) support
-* Latest version of [BoringSSL](https://boringssl.googlesource.com/boringssl/) with some state-of-the-art crypto features
+* The latest version of [BoringSSL](https://boringssl.googlesource.com/boringssl/) with some state-of-the-art crypto features
 * TLS 1.3 support (RFC 8446)
 * [TCP Fast Open](https://en.wikipedia.org/wiki/TCP_Fast_Open) support (only for CentOS7/RHEL7)
 * [Lua](https://github.com/openresty/lua-nginx-module) and [Headers More](https://github.com/openresty/headers-more-nginx-module) modules from the box
-* [HTTP/2 + SPDY/3.1](https://blog.cloudflare.com/open-sourcing-our-nginx-http-2-spdy-code/) support
 * Improved SysV script
 * Well-looking error pages
 * Improved design of index pages

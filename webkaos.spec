@@ -55,7 +55,7 @@
 
 Summary:              Superb high performance web server
 Name:                 webkaos
-Version:              1.15.12
+Version:              1.17.0
 Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
@@ -89,8 +89,6 @@ Patch1:               mime.patch
 Patch2:               %{name}-dynamic-tls-records.patch
 # https://github.com/ajhaydock/BoringNginx/blob/master/patches
 Patch3:               boringssl.patch
-# https://github.com/cloudflare/sslconfig/blob/master/patches/nginx__1.13.0_http2_spdy.patch
-Patch4:               %{name}-http2-spdy.patch
 Patch5:               boringssl-tls13-support.patch
 Patch6:               boringssl-c6-build-fix.patch
 
@@ -163,7 +161,6 @@ tar xzvf %{SOURCE55}
 %patch1 -p1
 %patch2 -p1
 %patch3 -p1
-%patch4 -p1
 
 pushd boringssl
 %patch5 -p1
@@ -239,7 +236,6 @@ cp boringssl/build/crypto/libcrypto.a boringssl/build/ssl/libssl.a boringssl/.op
         %{?_with_http_xslt_module} \
         %{?_with_http_flv_module} \
         --with-http_v2_module \
-        --with-http_spdy_module \
         --with-http_gunzip_module \
         --with-http_ssl_module \
         --with-http_realip_module \
@@ -298,7 +294,6 @@ mv %{_builddir}/nginx-%{version}/objs/nginx \
         %{?_with_http_xslt_module} \
         %{?_with_http_flv_module} \
         --with-http_v2_module \
-        --with-http_spdy_module \
         --with-http_gunzip_module \
         --with-http_ssl_module \
         --with-http_realip_module \
@@ -578,6 +573,11 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Tue May 21 2019 Anton Novojilov <andy@essentialkaos.com> - 1.17.0-0
+- Nginx updated to 1.17.0
+- Imporved styles for error and index pages
+- Dropped SPDY support
+
 * Thu May 16 2019 Anton Novojilov <andy@essentialkaos.com> - 1.15.12-0
 - Nginx updated to 1.15.12
 - BoringSSL updated to the latest version

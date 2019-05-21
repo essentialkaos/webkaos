@@ -1,6 +1,6 @@
-diff -urN nginx-1.15.12-orig/auto/lib/openssl/make nginx-1.15.12/auto/lib/openssl/make
---- nginx-1.15.12-orig/auto/lib/openssl/make	2019-04-16 17:54:59.000000000 +0300
-+++ nginx-1.15.12/auto/lib/openssl/make	2019-05-16 00:40:31.283067124 +0300
+diff -urN nginx-1.17.0-orig/auto/lib/openssl/make nginx-1.17.0/auto/lib/openssl/make
+--- nginx-1.17.0-orig/auto/lib/openssl/make	2019-05-21 17:23:57.000000000 +0300
++++ nginx-1.17.0/auto/lib/openssl/make	2019-05-22 00:06:31.588052220 +0300
 @@ -45,18 +45,18 @@
              /*) ngx_prefix="$OPENSSL/.openssl" ;;
              *)  ngx_prefix="$PWD/$OPENSSL/.openssl" ;;
@@ -24,9 +24,9 @@ diff -urN nginx-1.15.12-orig/auto/lib/openssl/make nginx-1.15.12/auto/lib/openss
      ;;
  
  esac
-diff -urN nginx-1.15.12-orig/src/core/nginx.c nginx-1.15.12/src/core/nginx.c
---- nginx-1.15.12-orig/src/core/nginx.c	2019-04-16 17:54:59.000000000 +0300
-+++ nginx-1.15.12/src/core/nginx.c	2019-05-16 00:40:31.289067070 +0300
+diff -urN nginx-1.17.0-orig/src/core/nginx.c nginx-1.17.0/src/core/nginx.c
+--- nginx-1.17.0-orig/src/core/nginx.c	2019-05-21 17:23:57.000000000 +0300
++++ nginx-1.17.0/src/core/nginx.c	2019-05-22 00:06:31.594052167 +0300
 @@ -389,13 +389,13 @@
  static void
  ngx_show_version_info(void)
@@ -45,13 +45,13 @@ diff -urN nginx-1.15.12-orig/src/core/nginx.c nginx-1.15.12/src/core/nginx.c
              "Options:" NGX_LINEFEED
              "  -?,-h         : this help" NGX_LINEFEED
              "  -v            : show version and exit" NGX_LINEFEED
-diff -urN nginx-1.15.12-orig/src/core/nginx.h nginx-1.15.12/src/core/nginx.h
---- nginx-1.15.12-orig/src/core/nginx.h	2019-04-16 17:54:59.000000000 +0300
-+++ nginx-1.15.12/src/core/nginx.h	2019-05-16 00:38:56.000000000 +0300
+diff -urN nginx-1.17.0-orig/src/core/nginx.h nginx-1.17.0/src/core/nginx.h
+--- nginx-1.17.0-orig/src/core/nginx.h	2019-05-21 17:23:57.000000000 +0300
++++ nginx-1.17.0/src/core/nginx.h	2019-05-22 00:21:44.000000000 +0300
 @@ -11,7 +11,7 @@
  
- #define nginx_version      1015012
- #define NGINX_VERSION      "1.15.12"
+ #define nginx_version      1017000
+ #define NGINX_VERSION      "1.17.0"
 -#define NGINX_VER          "nginx/" NGINX_VERSION
 +#define NGINX_VER          "webkaos/" NGINX_VERSION
  
@@ -66,9 +66,9 @@ diff -urN nginx-1.15.12-orig/src/core/nginx.h nginx-1.15.12/src/core/nginx.h
  #define NGX_OLDPID_EXT     ".oldbin"
  
  
-diff -urN nginx-1.15.12-orig/src/core/ngx_log.c nginx-1.15.12/src/core/ngx_log.c
---- nginx-1.15.12-orig/src/core/ngx_log.c	2019-04-16 17:54:59.000000000 +0300
-+++ nginx-1.15.12/src/core/ngx_log.c	2019-05-16 00:40:31.299066978 +0300
+diff -urN nginx-1.17.0-orig/src/core/ngx_log.c nginx-1.17.0/src/core/ngx_log.c
+--- nginx-1.17.0-orig/src/core/ngx_log.c	2019-05-21 17:23:57.000000000 +0300
++++ nginx-1.17.0/src/core/ngx_log.c	2019-05-22 00:06:31.604052077 +0300
 @@ -202,9 +202,9 @@
          return;
      }
@@ -99,16 +99,16 @@ diff -urN nginx-1.15.12-orig/src/core/ngx_log.c nginx-1.15.12/src/core/ngx_log.c
          return NGX_CONF_ERROR;
  #endif
  
-diff -urN nginx-1.15.12-orig/src/http/modules/ngx_http_autoindex_module.c nginx-1.15.12/src/http/modules/ngx_http_autoindex_module.c
---- nginx-1.15.12-orig/src/http/modules/ngx_http_autoindex_module.c	2019-04-16 17:54:59.000000000 +0300
-+++ nginx-1.15.12/src/http/modules/ngx_http_autoindex_module.c	2019-05-16 00:40:31.305066923 +0300
+diff -urN nginx-1.17.0-orig/src/http/modules/ngx_http_autoindex_module.c nginx-1.17.0/src/http/modules/ngx_http_autoindex_module.c
+--- nginx-1.17.0-orig/src/http/modules/ngx_http_autoindex_module.c	2019-05-21 17:23:57.000000000 +0300
++++ nginx-1.17.0/src/http/modules/ngx_http_autoindex_module.c	2019-05-22 00:17:05.000000000 +0300
 @@ -449,9 +449,11 @@
      ;
  
      static u_char  header[] =
 -        "</title></head>" CRLF
 +        "</title>" CRLF
-+        "<style>html,body{background-color:#FFF;color:#666;font-family:'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Sawasdee,Helvetica,Trebuchet,sans-serif;margin:12px}pre{font:300 .9em/1.4em 'Consolas','Droid Sans Mono','Menlo','Courier New',Courier,monospace}hr{border:none;background-color:#CCC;height:1px}h1{font-weight:100;color:#888;font-size:2.2em}a{color:#333}a:hover{color:#666}#dir{font-weight:bold}h1 span{color:#444}</style>" CRLF
++        "<style>html,body{background-color:#FFF;color:#666;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;margin:12px}pre{font:300 .9em/1.4em 'Consolas','Droid Sans Mono','Menlo','Courier New',Courier,monospace}hr{border:none;background-color:#CCC;height:1px}h1{font-weight:200;color:#888;font-size:2.2em}a{color:#333}a:hover{color:#666}#dir{font-weight:bold}h1 span{color:#444}</style>" CRLF
 +        "</head>" CRLF
          "<body>" CRLF
 -        "<h1>Index of "
@@ -177,9 +177,9 @@ diff -urN nginx-1.15.12-orig/src/http/modules/ngx_http_autoindex_module.c nginx-
                                tm.ngx_tm_mday,
                                months[tm.ngx_tm_mon - 1],
                                tm.ngx_tm_year,
-diff -urN nginx-1.15.12-orig/src/http/ngx_http_header_filter_module.c nginx-1.15.12/src/http/ngx_http_header_filter_module.c
---- nginx-1.15.12-orig/src/http/ngx_http_header_filter_module.c	2019-04-16 17:54:59.000000000 +0300
-+++ nginx-1.15.12/src/http/ngx_http_header_filter_module.c	2019-05-16 00:40:31.311066869 +0300
+diff -urN nginx-1.17.0-orig/src/http/ngx_http_header_filter_module.c nginx-1.17.0/src/http/ngx_http_header_filter_module.c
+--- nginx-1.17.0-orig/src/http/ngx_http_header_filter_module.c	2019-05-21 17:23:57.000000000 +0300
++++ nginx-1.17.0/src/http/ngx_http_header_filter_module.c	2019-05-22 00:06:31.616051969 +0300
 @@ -46,7 +46,7 @@
  };
  
@@ -230,9 +230,9 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_header_filter_module.c nginx-1.15
  #define NGX_HTTP_OFF_5XX   (NGX_HTTP_LAST_4XX - 400 + NGX_HTTP_OFF_4XX)
  
      ngx_string("500 Internal Server Error"),
-diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/src/http/ngx_http_special_response.c
---- nginx-1.15.12-orig/src/http/ngx_http_special_response.c	2019-04-16 17:54:59.000000000 +0300
-+++ nginx-1.15.12/src/http/ngx_http_special_response.c	2019-05-16 00:40:31.317066814 +0300
+diff -urN nginx-1.17.0-orig/src/http/ngx_http_special_response.c nginx-1.17.0/src/http/ngx_http_special_response.c
+--- nginx-1.17.0-orig/src/http/ngx_http_special_response.c	2019-05-21 17:23:57.000000000 +0300
++++ nginx-1.17.0/src/http/ngx_http_special_response.c	2019-05-22 00:20:57.000000000 +0300
 @@ -19,21 +19,21 @@
  
  
@@ -264,7 +264,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
  "<html>" CRLF
 -"<head><title>301 Moved Permanently</title></head>" CRLF
 +"<head><title>301 Moved Permanently</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>301 Moved Permanently</h1></center>" CRLF
 +"<div><h1>301 Moved Permanently</h1>" CRLF
@@ -275,7 +275,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
  "<html>" CRLF
 -"<head><title>302 Found</title></head>" CRLF
 +"<head><title>302 Found</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>302 Found</h1></center>" CRLF
 +"<div><h1>302 Found</h1>" CRLF
@@ -286,7 +286,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
  "<html>" CRLF
 -"<head><title>303 See Other</title></head>" CRLF
 +"<head><title>303 See Other</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>303 See Other</h1></center>" CRLF
 +"<div><h1>303 See Other</h1>" CRLF
@@ -297,7 +297,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
  "<html>" CRLF
 -"<head><title>307 Temporary Redirect</title></head>" CRLF
 +"<head><title>307 Temporary Redirect</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>307 Temporary Redirect</h1></center>" CRLF
 +"<div><h1>307 Temporary Redirect</h1>" CRLF
@@ -308,7 +308,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
  "<html>" CRLF
 -"<head><title>308 Permanent Redirect</title></head>" CRLF
 +"<head><title>308 Permanent Redirect</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>308 Permanent Redirect</h1></center>" CRLF
 +"<div><h1>308 Permanent Redirect</h1>" CRLF
@@ -319,7 +319,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
  "<html>" CRLF
 -"<head><title>400 Bad Request</title></head>" CRLF
 +"<head><title>400 Bad Request</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>400 Bad Request</h1></center>" CRLF
 +"<div><h1>400 Bad Request</h1>" CRLF
@@ -330,7 +330,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
  "<html>" CRLF
 -"<head><title>401 Authorization Required</title></head>" CRLF
 +"<head><title>401 Authorization Required</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>401 Authorization Required</h1></center>" CRLF
 +"<div><h1>401 Authorization Required</h1>" CRLF
@@ -341,7 +341,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
  "<html>" CRLF
 -"<head><title>402 Payment Required</title></head>" CRLF
 +"<head><title>402 Payment Required</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>402 Payment Required</h1></center>" CRLF
 +"<div><h1>402 Payment Required</h1>" CRLF
@@ -352,7 +352,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
  "<html>" CRLF
 -"<head><title>403 Forbidden</title></head>" CRLF
 +"<head><title>403 Forbidden</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>403 Forbidden</h1></center>" CRLF
 +"<div><h1>403 Forbidden</h1>" CRLF
@@ -363,7 +363,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
  "<html>" CRLF
 -"<head><title>404 Not Found</title></head>" CRLF
 +"<head><title>404 Not Found</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>404 Not Found</h1></center>" CRLF
 +"<div><h1>404 Not Found</h1>" CRLF
@@ -374,7 +374,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
  "<html>" CRLF
 -"<head><title>405 Not Allowed</title></head>" CRLF
 +"<head><title>405 Not Allowed</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>405 Not Allowed</h1></center>" CRLF
 +"<div><h1>405 Not Allowed</h1>" CRLF
@@ -385,7 +385,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
  "<html>" CRLF
 -"<head><title>406 Not Acceptable</title></head>" CRLF
 +"<head><title>406 Not Acceptable</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>406 Not Acceptable</h1></center>" CRLF
 +"<div><h1>406 Not Acceptable</h1>" CRLF
@@ -396,7 +396,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
  "<html>" CRLF
 -"<head><title>408 Request Time-out</title></head>" CRLF
 +"<head><title>408 Request Time-out</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>408 Request Time-out</h1></center>" CRLF
 +"<div><h1>408 Request Time-out</h1>" CRLF
@@ -407,7 +407,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
  "<html>" CRLF
 -"<head><title>409 Conflict</title></head>" CRLF
 +"<head><title>409 Conflict</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>409 Conflict</h1></center>" CRLF
 +"<div><h1>409 Conflict</h1>" CRLF
@@ -418,7 +418,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
  "<html>" CRLF
 -"<head><title>410 Gone</title></head>" CRLF
 +"<head><title>410 Gone</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>410 Gone</h1></center>" CRLF
 +"<div><h1>410 Gone</h1>" CRLF
@@ -429,7 +429,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
  "<html>" CRLF
 -"<head><title>411 Length Required</title></head>" CRLF
 +"<head><title>411 Length Required</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>411 Length Required</h1></center>" CRLF
 +"<div><h1>411 Length Required</h1>" CRLF
@@ -440,7 +440,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
  "<html>" CRLF
 -"<head><title>412 Precondition Failed</title></head>" CRLF
 +"<head><title>412 Precondition Failed</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>412 Precondition Failed</h1></center>" CRLF
 +"<div><h1>412 Precondition Failed</h1>" CRLF
@@ -451,7 +451,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
  "<html>" CRLF
 -"<head><title>413 Request Entity Too Large</title></head>" CRLF
 +"<head><title>413 Request Entity Too Large</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>413 Request Entity Too Large</h1></center>" CRLF
 +"<div><h1>413 Request Entity Too Large</h1>" CRLF
@@ -462,7 +462,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
  "<html>" CRLF
 -"<head><title>414 Request-URI Too Large</title></head>" CRLF
 +"<head><title>414 Request-URI Too Large</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>414 Request-URI Too Large</h1></center>" CRLF
 +"<div><h1>414 Request-URI Too Large</h1>" CRLF
@@ -473,7 +473,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
  "<html>" CRLF
 -"<head><title>415 Unsupported Media Type</title></head>" CRLF
 +"<head><title>415 Unsupported Media Type</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>415 Unsupported Media Type</h1></center>" CRLF
 +"<div><h1>415 Unsupported Media Type</h1>" CRLF
@@ -484,7 +484,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
  "<html>" CRLF
 -"<head><title>416 Requested Range Not Satisfiable</title></head>" CRLF
 +"<head><title>416 Requested Range Not Satisfiable</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>416 Requested Range Not Satisfiable</h1></center>" CRLF
 +"<div><h1>416 Requested Range Not Satisfiable</h1>" CRLF
@@ -494,7 +494,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
 +static char ngx_http_error_418_page[] =
 +"<html>" CRLF
 +"<head><title>418 I'm a teapot</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
 +"<body>" CRLF
 +"<div><h1>418 I'm a teapot</h1>" CRLF
  ;
@@ -504,7 +504,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
  "<html>" CRLF
 -"<head><title>421 Misdirected Request</title></head>" CRLF
 +"<head><title>421 Misdirected Request</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>421 Misdirected Request</h1></center>" CRLF
 +"<div><h1>421 Misdirected Request</h1>" CRLF
@@ -515,7 +515,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
  "<html>" CRLF
 -"<head><title>429 Too Many Requests</title></head>" CRLF
 +"<head><title>429 Too Many Requests</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
 +"<body>" CRLF
 +"<div><h1>429 Too Many Requests</h1>" CRLF
 +;
@@ -524,7 +524,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
 +static char ngx_http_error_451_page[] =
 +"<html>" CRLF
 +"<head><title>451 Unavailable For Legal Reasons</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>429 Too Many Requests</h1></center>" CRLF
 +"<div><h1>451 Unavailable For Legal Reasons</h1>" CRLF
@@ -536,7 +536,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
 -"<head><title>400 Request Header Or Cookie Too Large</title></head>"
 -CRLF
 +"<head><title>400 Bad Request</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>400 Bad Request</h1></center>" CRLF
 -"<center>Request Header Or Cookie Too Large</center>" CRLF
@@ -550,7 +550,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
 -"<head><title>400 The SSL certificate error</title></head>"
 -CRLF
 +"<head><title>400 Bad Request</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>400 Bad Request</h1></center>" CRLF
 -"<center>The SSL certificate error</center>" CRLF
@@ -564,7 +564,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
 -"<head><title>400 No required SSL certificate was sent</title></head>"
 -CRLF
 +"<head><title>400 Bad Request</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>400 Bad Request</h1></center>" CRLF
 -"<center>No required SSL certificate was sent</center>" CRLF
@@ -578,7 +578,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
 -"<head><title>400 The plain HTTP request was sent to HTTPS port</title></head>"
 -CRLF
 +"<head><title>400 Bad Request</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>400 Bad Request</h1></center>" CRLF
 -"<center>The plain HTTP request was sent to HTTPS port</center>" CRLF
@@ -591,7 +591,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
  "<html>" CRLF
 -"<head><title>500 Internal Server Error</title></head>" CRLF
 +"<head><title>500 Internal Server Error</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>500 Internal Server Error</h1></center>" CRLF
 +"<div><h1>500 Internal Server Error</h1>" CRLF
@@ -602,7 +602,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
  "<html>" CRLF
 -"<head><title>501 Not Implemented</title></head>" CRLF
 +"<head><title>501 Not Implemented</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>501 Not Implemented</h1></center>" CRLF
 +"<div><h1>501 Not Implemented</h1>" CRLF
@@ -613,7 +613,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
  "<html>" CRLF
 -"<head><title>502 Bad Gateway</title></head>" CRLF
 +"<head><title>502 Bad Gateway</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>502 Bad Gateway</h1></center>" CRLF
 +"<div><h1>502 Bad Gateway</h1>" CRLF
@@ -624,7 +624,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
  "<html>" CRLF
 -"<head><title>503 Service Temporarily Unavailable</title></head>" CRLF
 +"<head><title>503 Service Temporarily Unavailable</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>503 Service Temporarily Unavailable</h1></center>" CRLF
 +"<div><h1>503 Service Temporarily Unavailable</h1>" CRLF
@@ -635,7 +635,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
  "<html>" CRLF
 -"<head><title>504 Gateway Time-out</title></head>" CRLF
 +"<head><title>504 Gateway Time-out</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>504 Gateway Time-out</h1></center>" CRLF
 +"<div><h1>504 Gateway Time-out</h1>" CRLF
@@ -646,7 +646,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
  "<html>" CRLF
 -"<head><title>505 HTTP Version Not Supported</title></head>" CRLF
 +"<head><title>505 HTTP Version Not Supported</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>505 HTTP Version Not Supported</h1></center>" CRLF
 +"<div><h1>505 HTTP Version Not Supported</h1>" CRLF
@@ -657,7 +657,7 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
  "<html>" CRLF
 -"<head><title>507 Insufficient Storage</title></head>" CRLF
 +"<head><title>507 Insufficient Storage</title>" CRLF
-+"<style>html,body{background-color:#EEE;color:#AAA;font:100 1em/1em 'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:100}</style></head>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>507 Insufficient Storage</h1></center>" CRLF
 +"<div><h1>507 Insufficient Storage</h1>" CRLF
@@ -705,9 +705,9 @@ diff -urN nginx-1.15.12-orig/src/http/ngx_http_special_response.c nginx-1.15.12/
  #define NGX_HTTP_OFF_5XX   (NGX_HTTP_LAST_4XX - 400 + NGX_HTTP_OFF_4XX)
  
      ngx_string(ngx_http_error_494_page), /* 494, request header too large */
-diff -urN nginx-1.15.12-orig/src/http/v2/ngx_http_v2_filter_module.c nginx-1.15.12/src/http/v2/ngx_http_v2_filter_module.c
---- nginx-1.15.12-orig/src/http/v2/ngx_http_v2_filter_module.c	2019-04-16 17:54:59.000000000 +0300
-+++ nginx-1.15.12/src/http/v2/ngx_http_v2_filter_module.c	2019-05-16 00:40:31.322066768 +0300
+diff -urN nginx-1.17.0-orig/src/http/v2/ngx_http_v2_filter_module.c nginx-1.17.0/src/http/v2/ngx_http_v2_filter_module.c
+--- nginx-1.17.0-orig/src/http/v2/ngx_http_v2_filter_module.c	2019-05-21 17:23:57.000000000 +0300
++++ nginx-1.17.0/src/http/v2/ngx_http_v2_filter_module.c	2019-05-22 00:06:31.627051871 +0300
 @@ -148,7 +148,7 @@
      ngx_http_core_srv_conf_t  *cscf;
      u_char                     addr[NGX_SOCKADDR_STRLEN];
@@ -726,9 +726,9 @@ diff -urN nginx-1.15.12-orig/src/http/v2/ngx_http_v2_filter_module.c nginx-1.15.
          }
  
          *pos++ = ngx_http_v2_inc_indexed(NGX_HTTP_V2_SERVER_INDEX);
-diff -urN nginx-1.15.12-orig/src/os/unix/ngx_setproctitle.c nginx-1.15.12/src/os/unix/ngx_setproctitle.c
---- nginx-1.15.12-orig/src/os/unix/ngx_setproctitle.c	2019-04-16 17:54:59.000000000 +0300
-+++ nginx-1.15.12/src/os/unix/ngx_setproctitle.c	2019-05-16 00:40:31.328066713 +0300
+diff -urN nginx-1.17.0-orig/src/os/unix/ngx_setproctitle.c nginx-1.17.0/src/os/unix/ngx_setproctitle.c
+--- nginx-1.17.0-orig/src/os/unix/ngx_setproctitle.c	2019-05-21 17:23:57.000000000 +0300
++++ nginx-1.17.0/src/os/unix/ngx_setproctitle.c	2019-05-22 00:06:31.632051826 +0300
 @@ -89,7 +89,7 @@
  
      ngx_os_argv[1] = NULL;

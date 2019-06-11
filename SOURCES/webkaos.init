@@ -254,6 +254,8 @@ preStartServiceHandler() {
       kv.warn "File $ssl_dir/$file have weak permissions. Please change permissions to 400 or 600."
     fi
   done
+
+  return $ACTION_OK
 }
 
 startServiceHandler() {

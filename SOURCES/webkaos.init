@@ -81,7 +81,7 @@ kv.disableOutputRedirect "start" "pre"
 
 ###############################################################################
 
-prepare() {
+checkEnv() {
   local has_errors=""
 
   [[ ! -x $binary ]] && has_errors=true && kv.error "<BINARY> must be executable file"
@@ -94,8 +94,6 @@ prepare() {
 
   [[ $has_errors ]] && kv.exit $ACTION_ERROR
 }
-
-###############################################################################
 
 check() {
   kv.showProcessMessage "Checking ${kv[prog_name]} config"
@@ -234,6 +232,8 @@ reload() {
 ###############################################################################
 
 preStartServiceHandler() {
+  checkEnv
+
   if isDHPGenRequired ; then
     gendhp
   fi
@@ -363,7 +363,5 @@ getFilePerms() {
 }
 
 ###############################################################################
-
-prepare
 
 kv.go $@

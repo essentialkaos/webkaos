@@ -56,7 +56,7 @@
 Summary:              Superb high performance web server
 Name:                 webkaos
 Version:              1.17.0
-Release:              0%{?dist}
+Release:              1%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 URL:                  https://github.com/essentialkaos/webkaos
@@ -573,6 +573,9 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Wed Jun 12 2019 Anton Novojilov <andy@essentialkaos.com> - 1.17.0-1
+- Init script improvements
+
 * Tue May 21 2019 Anton Novojilov <andy@essentialkaos.com> - 1.17.0-0
 - Nginx updated to 1.17.0
 - Improved styles for error and index pages

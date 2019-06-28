@@ -44,19 +44,19 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define boring_commit        c12b7cda729f9a05e3bfb391e7e4273b0f342963
-%define lua_module_ver       0.10.14
+%define boring_commit        d6f9c359d219055a89c676cb8886421b145a08da
+%define lua_module_ver       0.10.15
 %define mh_module_ver        0.33
 %define pcre_ver             8.43
 %define zlib_ver             1.2.11
-%define luajit_ver           2.1-20190507
+%define luajit_ver           2.1-20190626
 
 ################################################################################
 
 Summary:              Superb high performance web server
 Name:                 webkaos
-Version:              1.17.0
-Release:              1%{?dist}
+Version:              1.17.1
+Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 URL:                  https://github.com/essentialkaos/webkaos
@@ -97,7 +97,7 @@ BuildRoot:            %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u}
 Requires:             initscripts >= 8.36 kaosv >= 2.15
 Requires:             gd libXpm libxslt
 
-BuildRequires:        make perl cmake golang
+BuildRequires:        make perl cmake3 golang
 
 # http://mirror.centos.org/centos/6/sclo/x86_64/rh/devtoolset-3/
 # http://mirror.centos.org/centos/7/sclo/x86_64/rh/devtoolset-3/
@@ -202,7 +202,7 @@ export LUAJIT_INC="$LUAJIT2_DIR/include/luajit-2.1"
 mkdir boringssl/build
 
 pushd boringssl/build &> /dev/null
-  cmake ../
+  cmake3 ../
   %{__make} %{?_smp_mflags}
 popd
 
@@ -573,6 +573,13 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Sat Jun 29 2019 Anton Novojilov <andy@essentialkaos.com> - 1.17.1-0
+- Nginx updated to 1.17.1
+- BoringSSL updated to the latest version
+- LuaJIT updated to 2.1-20190626
+- Lua module updated to 0.10.15
+- Using cmake3 for BoringSSL build
+
 * Wed Jun 12 2019 Anton Novojilov <andy@essentialkaos.com> - 1.17.0-1
 - Init script improvements
 

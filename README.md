@@ -20,14 +20,14 @@
 #### From ESSENTIAL KAOS Public repo for RHEL6/CentOS6
 
 ````
-[sudo] yum install -y https://yum.kaos.st/6/release/x86_64/kaos-repo-9.1-0.el6.noarch.rpm
+[sudo] yum install -y yum install -y https://yum.kaos.st/kaos-repo-latest.el6.noarch.rpm
 [sudo] yum install webkaos
 ````
 
 #### From ESSENTIAL KAOS Public repo for RHEL7/CentOS7
 
 ````
-[sudo] yum install -y https://yum.kaos.st/7/release/x86_64/kaos-repo-9.1-0.el7.noarch.rpm
+[sudo] yum install -y yum install -y https://yum.kaos.st/kaos-repo-latest.el7.noarch.rpm
 [sudo] yum install webkaos
 ````
 
@@ -38,7 +38,7 @@
 git clone https://github.com/essentialkaos/webkaos.git
 cd webkaos/
 rpmbuilder webkaos.spec -dl SOURCES/
-rpmbuilder webkaos.spec -1 -V -di
+rpmbuilder webkaos.spec -3 -V -di
 ````
 
 ### License

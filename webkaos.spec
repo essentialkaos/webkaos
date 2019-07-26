@@ -56,7 +56,7 @@
 Summary:              Superb high performance web server
 Name:                 webkaos
 Version:              1.17.2
-Release:              0%{?dist}
+Release:              1%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 URL:                  https://github.com/essentialkaos/webkaos
@@ -91,6 +91,8 @@ Patch2:               %{name}-dynamic-tls-records.patch
 Patch3:               boringssl.patch
 Patch5:               boringssl-tls13-support.patch
 Patch6:               boringssl-c6-build-fix.patch
+# For resty-core, lua-nginx-module 0.10.16 is required but it not released yet
+Patch7:               resty-core-disable.patch
 
 BuildRoot:            %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -167,6 +169,10 @@ pushd boringssl
 %if 0%{?rhel} == 6
 %patch6 -p1
 %endif
+popd
+
+pushd lua-nginx-module-%{lua_module_ver}
+%patch7 -p1
 popd
 
 %build
@@ -573,6 +579,9 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Wed Jul 24 2019 Anton Novojilov <andy@essentialkaos.com> - 1.17.2-1
+- resty-core disabled by default
+
 * Wed Jul 24 2019 Anton Novojilov <andy@essentialkaos.com> - 1.17.2-0
 - Nginx updated to 1.17.2
 - BoringSSL updated to the latest version

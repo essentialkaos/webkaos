@@ -1,5 +1,9 @@
 ################################################################################
 
+%global crc_check pushd ../SOURCES ; sha512sum -c %{SOURCE100} ; popd
+
+################################################################################
+
 %define _posixroot        /
 %define _root             /root
 %define _bin              /bin
@@ -44,7 +48,7 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define boring_commit        ee4888c5ecde876d7a5609d1d7b9af8ce8f50338
+%define boring_commit        eca48e52edc684db1433c2cfbca02bb9468d81af
 %define lua_module_ver       0.10.15
 %define mh_module_ver        0.33
 %define pcre_ver             8.43
@@ -55,8 +59,8 @@
 
 Summary:              Superb high performance web server
 Name:                 webkaos
-Version:              1.17.2
-Release:              1%{?dist}
+Version:              1.17.3
+Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 URL:                  https://github.com/essentialkaos/webkaos
@@ -82,6 +86,8 @@ Source52:             https://github.com/openresty/headers-more-nginx-module/arc
 Source53:             https://ftp.pcre.org/pub/pcre/pcre-%{pcre_ver}.tar.gz
 Source54:             https://zlib.net/zlib-%{zlib_ver}.tar.gz
 Source55:             https://github.com/openresty/luajit2/archive/v%{luajit_ver}.tar.gz
+
+Source100:            checksum.sha512
 
 Patch0:               %{name}.patch
 Patch1:               mime.patch
@@ -148,6 +154,8 @@ Links for nginx compatibility.
 ################################################################################
 
 %prep
+%{crc_check}
+
 %setup -qn nginx-%{version}
 
 mkdir boringssl
@@ -579,6 +587,12 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Wed Aug 14 2019 Anton Novojilov <andy@essentialkaos.com> - 1.17.3-0
+- Nginx updated to 1.17.3 with fixes for CVE-2019-9511 (Data dribble),
+  CVE-2019-9513 (Resource loop) and CVE-2019-9516 (Zero‑length headers leak)
+- BoringSSL updated to the latest version
+- Added checksums for all sources
+
 * Wed Jul 24 2019 Anton Novojilov <andy@essentialkaos.com> - 1.17.2-1
 - resty-core disabled by default
 

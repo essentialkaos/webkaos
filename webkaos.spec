@@ -48,19 +48,23 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
+%define nginx_version        1.17.3
 %define boring_commit        eca48e52edc684db1433c2cfbca02bb9468d81af
 %define lua_module_ver       0.10.15
 %define mh_module_ver        0.33
 %define pcre_ver             8.43
 %define zlib_ver             1.2.11
 %define luajit_ver           2.1-20190626
+%define brotli_commit        7fab0418dedd1c4230877b357a1ca7cc7c355d84
+%define brotli_ver           1.0.7
+%define naxsi_ver            0.56
 
 ################################################################################
 
 Summary:              Superb high performance web server
 Name:                 webkaos
-Version:              1.17.3
-Release:              0%{?dist}
+Version:              %{nginx_version}
+Release:              1%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 URL:                  https://github.com/essentialkaos/webkaos
@@ -72,6 +76,7 @@ Source3:              %{name}.sysconfig
 Source4:              %{name}.conf
 Source5:              %{name}.service
 Source6:              %{name}-debug.service
+Source7:              modules.conf
 
 Source20:             ssl.conf
 Source21:             ssl-wildcard.conf
@@ -86,6 +91,9 @@ Source52:             https://github.com/openresty/headers-more-nginx-module/arc
 Source53:             https://ftp.pcre.org/pub/pcre/pcre-%{pcre_ver}.tar.gz
 Source54:             https://zlib.net/zlib-%{zlib_ver}.tar.gz
 Source55:             https://github.com/openresty/luajit2/archive/v%{luajit_ver}.tar.gz
+Source56:             https://github.com/eustas/ngx_brotli/archive/%{brotli_commit}.tar.gz
+Source57:             https://github.com/google/brotli/archive/v%{brotli_ver}.tar.gz
+Source58:             https://github.com/nbs-system/naxsi/archive/%{naxsi_ver}.tar.gz
 
 Source100:            checksum.sha512
 
@@ -153,10 +161,38 @@ Links for nginx compatibility.
 
 ################################################################################
 
+%package module-brotli
+
+Summary:           Module for Brotli compression
+Version:           0.1.3
+Release:           0%{?dist}
+
+Group:             System Environment/Daemons
+Requires:          %{name} >= %{nginx_version}
+
+%description module-brotli
+Module for Brotli compression.
+
+################################################################################
+
+%package module-naxsi
+
+Summary:           High performance, low rules maintenance WAF
+Version:           %{naxsi_ver}
+Release:           0%{?dist}
+
+Group:             System Environment/Daemons
+Requires:          %{name} >= %{nginx_version}
+
+%description module-naxsi
+NAXSI is an open-source, high performance, low rules maintenance WAF.
+
+################################################################################
+
 %prep
 %{crc_check}
 
-%setup -qn nginx-%{version}
+%setup -qn nginx-%{nginx_version}
 
 mkdir boringssl
 
@@ -166,6 +202,9 @@ tar xzvf %{SOURCE52}
 tar xzvf %{SOURCE53}
 tar xzvf %{SOURCE54}
 tar xzvf %{SOURCE55}
+tar xzvf %{SOURCE56}
+tar xzvf %{SOURCE57}
+tar xzvf %{SOURCE58}
 
 %patch0 -p1
 %patch1 -p1
@@ -228,119 +267,157 @@ popd
 
 cp boringssl/build/crypto/libcrypto.a boringssl/build/ssl/libssl.a boringssl/.openssl/lib
 
+# Brotli Source Copy ###########################################################
+
+pushd ngx_brotli-%{brotli_commit}
+  rm -rf deps/brotli
+  mv ../brotli-%{brotli_ver} deps/brotli
+popd
+
 ################################################################################
 
 ./configure \
-        --prefix=%{_sysconfdir}/%{name} \
-        --sbin-path=%{_sbindir}/%{name} \
-        --modules-path=%{_libdir}/%{name}/modules \
-        --conf-path=%{_sysconfdir}/%{name}/%{name}.conf \
-        --error-log-path=%{_logdir}/%{name}/error.log \
-        --http-log-path=%{_logdir}/%{name}/access.log \
-        --pid-path=%{_rundir}/%{name}.pid \
-        --lock-path=%{_rundir}/%{name}.lock \
-        --http-client-body-temp-path=%{service_home}/client_temp \
-        --http-proxy-temp-path=%{service_home}/proxy_temp \
-        --http-fastcgi-temp-path=%{service_home}/fastcgi_temp \
-        --http-uwsgi-temp-path=%{service_home}/uwsgi_temp \
-        --http-scgi-temp-path=%{service_home}/scgi_temp \
-        --user=%{service_user} \
-        --group=%{service_group} \
-        %{?_with_http_random_index_module} \
-        %{?_with_http_xslt_module} \
-        %{?_with_http_flv_module} \
-        --with-http_v2_module \
-        --with-http_gunzip_module \
-        --with-http_ssl_module \
-        --with-http_realip_module \
-        --with-http_addition_module \
-        --with-http_sub_module \
-        --with-http_dav_module \
-        --with-http_flv_module \
-        --with-http_mp4_module \
-        --with-http_gzip_static_module \
-        --with-http_secure_link_module \
-        --with-http_stub_status_module \
-        --with-stream \
-        --with-stream_ssl_module \
-        --with-stream_ssl_preread_module \
-        --with-mail \
-        --with-mail_ssl_module \
-        --with-file-aio \
-        --with-ipv6 \
-        --with-debug \
-        --with-zlib=zlib-%{zlib_ver} \
-        --with-pcre-jit \
-        --with-pcre=pcre-%{pcre_ver} \
-        --with-openssl=boringssl \
-        --add-module=lua-nginx-module-%{lua_module_ver} \
-        --add-module=headers-more-nginx-module-%{mh_module_ver} \
-        --with-cc-opt="-g -O2 -fPIE -fstack-protector-all -DTCP_FASTOPEN=23 -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -I ../boringssl/.openssl/include/" \
-        --with-ld-opt="-Wl,-Bsymbolic-functions -Wl,-z,relro -L ../boringssl/.openssl/lib -L ../luajit2-%{luajit_ver}/lib" \
-        --with-compat \
-        $*
+    --prefix=%{_sysconfdir}/%{name} \
+    --sbin-path=%{_sbindir}/%{name} \
+    --modules-path=%{_libdir}/%{name}/modules \
+    --conf-path=%{_sysconfdir}/%{name}/%{name}.conf \
+    --error-log-path=%{_logdir}/%{name}/error.log \
+    --http-log-path=%{_logdir}/%{name}/access.log \
+    --pid-path=%{_rundir}/%{name}.pid \
+    --lock-path=%{_rundir}/%{name}.lock \
+    --http-client-body-temp-path=%{service_home}/client_temp \
+    --http-proxy-temp-path=%{service_home}/proxy_temp \
+    --http-fastcgi-temp-path=%{service_home}/fastcgi_temp \
+    --http-uwsgi-temp-path=%{service_home}/uwsgi_temp \
+    --http-scgi-temp-path=%{service_home}/scgi_temp \
+    --user=%{service_user} \
+    --group=%{service_group} \
+    %{?_with_http_random_index_module} \
+    %{?_with_http_xslt_module} \
+    %{?_with_http_flv_module} \
+    --with-http_v2_module \
+    --with-http_gunzip_module \
+    --with-http_ssl_module \
+    --with-http_realip_module \
+    --with-http_addition_module \
+    --with-http_sub_module \
+    --with-http_dav_module \
+    --with-http_flv_module \
+    --with-http_mp4_module \
+    --with-http_gzip_static_module \
+    --with-http_secure_link_module \
+    --with-http_stub_status_module \
+    --with-stream \
+    --with-stream_ssl_module \
+    --with-stream_ssl_preread_module \
+    --with-mail \
+    --with-mail_ssl_module \
+    --with-file-aio \
+    --with-ipv6 \
+    --with-debug \
+    --with-zlib=zlib-%{zlib_ver} \
+    --with-pcre-jit \
+    --with-pcre=pcre-%{pcre_ver} \
+    --with-openssl=boringssl \
+    --add-module=lua-nginx-module-%{lua_module_ver} \
+    --add-module=headers-more-nginx-module-%{mh_module_ver} \
+    --with-cc-opt="-g -O2 -fPIE -fstack-protector-all -DTCP_FASTOPEN=23 -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -I ../boringssl/.openssl/include/" \
+    --with-ld-opt="-Wl,-Bsymbolic-functions -Wl,-z,relro -L ../boringssl/.openssl/lib -L ../luajit2-%{luajit_ver}/lib" \
+    --with-compat \
+    $*
 
 # Fix "Error 127" during build with BoringSSL
 touch boringssl/.openssl/include/openssl/ssl.h
 
 %{__make} %{?_smp_mflags}
-
-mv %{_builddir}/nginx-%{version}/objs/nginx \
-        %{_builddir}/nginx-%{version}/objs/%{name}.debug
 
 ./configure \
-        --prefix=%{_sysconfdir}/%{name} \
-        --sbin-path=%{_sbindir}/%{name} \
-        --modules-path=%{_libdir}/%{name}/modules \
-        --conf-path=%{_sysconfdir}/%{name}/%{name}.conf \
-        --error-log-path=%{_logdir}/%{name}/error.log \
-        --http-log-path=%{_logdir}/%{name}/access.log \
-        --pid-path=%{_rundir}/%{name}.pid \
-        --lock-path=%{_rundir}/%{name}.lock \
-        --http-client-body-temp-path=%{service_home}/client_temp \
-        --http-proxy-temp-path=%{service_home}/proxy_temp \
-        --http-fastcgi-temp-path=%{service_home}/fastcgi_temp \
-        --http-uwsgi-temp-path=%{service_home}/uwsgi_temp \
-        --http-scgi-temp-path=%{service_home}/scgi_temp \
-        --user=%{service_user} \
-        --group=%{service_group} \
-        %{?_with_http_random_index_module} \
-        %{?_with_http_xslt_module} \
-        %{?_with_http_flv_module} \
-        --with-http_v2_module \
-        --with-http_gunzip_module \
-        --with-http_ssl_module \
-        --with-http_realip_module \
-        --with-http_addition_module \
-        --with-http_sub_module \
-        --with-http_dav_module \
-        --with-http_mp4_module \
-        --with-http_gzip_static_module \
-        --with-http_secure_link_module \
-        --with-http_stub_status_module \
-        --with-stream \
-        --with-stream_ssl_module \
-        --with-stream_ssl_preread_module \
-        --with-mail \
-        --with-mail_ssl_module \
-        --with-file-aio \
-        --with-ipv6 \
-        --with-zlib=zlib-%{zlib_ver} \
-        --with-pcre-jit \
-        --with-pcre=pcre-%{pcre_ver} \
-        --with-openssl=boringssl \
-        --add-module=lua-nginx-module-%{lua_module_ver} \
-        --add-module=headers-more-nginx-module-%{mh_module_ver} \
-        --with-cc-opt="-g -O2 -fPIE -fstack-protector-all -DTCP_FASTOPEN=23 -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -I ../boringssl/.openssl/include/" \
-        --with-ld-opt="-Wl,-Bsymbolic-functions -Wl,-z,relro -L ../boringssl/.openssl/lib" \
-        --with-compat \
-        $*
+    --prefix=%{_sysconfdir}/%{name} \
+    --sbin-path=%{_sbindir}/%{name} \
+    --modules-path=%{_libdir}/%{name}/modules \
+    --conf-path=%{_sysconfdir}/%{name}/%{name}.conf \
+    --error-log-path=%{_logdir}/%{name}/error.log \
+    --http-log-path=%{_logdir}/%{name}/access.log \
+    --pid-path=%{_rundir}/%{name}.pid \
+    --lock-path=%{_rundir}/%{name}.lock \
+    --http-client-body-temp-path=%{service_home}/client_temp \
+    --http-proxy-temp-path=%{service_home}/proxy_temp \
+    --http-fastcgi-temp-path=%{service_home}/fastcgi_temp \
+    --http-uwsgi-temp-path=%{service_home}/uwsgi_temp \
+    --http-scgi-temp-path=%{service_home}/scgi_temp \
+    --user=%{service_user} \
+    --group=%{service_group} \
+    --with-zlib=zlib-%{zlib_ver} \
+    --with-pcre-jit \
+    --with-pcre=pcre-%{pcre_ver} \
+    --with-openssl=boringssl \
+    --add-dynamic-module=ngx_brotli-%{brotli_commit} \
+    --add-dynamic-module=naxsi-%{naxsi_ver}/naxsi_src \
+    --with-cc-opt="-I ../boringssl/.openssl/include/" \
+    --with-ld-opt="-L ../boringssl/.openssl/lib -L ../luajit2-%{luajit_ver}/lib" \
+    --with-compat \
+    $*
+
+# Fix "Error 127" during build with BoringSSL
+touch boringssl/.openssl/include/openssl/ssl.h
+
+%{__make} modules
+
+mv %{_builddir}/nginx-%{nginx_version}/objs/nginx \
+        %{_builddir}/nginx-%{nginx_version}/objs/%{name}.debug
+
+./configure \
+    --prefix=%{_sysconfdir}/%{name} \
+    --sbin-path=%{_sbindir}/%{name} \
+    --modules-path=%{_libdir}/%{name}/modules \
+    --conf-path=%{_sysconfdir}/%{name}/%{name}.conf \
+    --error-log-path=%{_logdir}/%{name}/error.log \
+    --http-log-path=%{_logdir}/%{name}/access.log \
+    --pid-path=%{_rundir}/%{name}.pid \
+    --lock-path=%{_rundir}/%{name}.lock \
+    --http-client-body-temp-path=%{service_home}/client_temp \
+    --http-proxy-temp-path=%{service_home}/proxy_temp \
+    --http-fastcgi-temp-path=%{service_home}/fastcgi_temp \
+    --http-uwsgi-temp-path=%{service_home}/uwsgi_temp \
+    --http-scgi-temp-path=%{service_home}/scgi_temp \
+    --user=%{service_user} \
+    --group=%{service_group} \
+    %{?_with_http_random_index_module} \
+    %{?_with_http_xslt_module} \
+    %{?_with_http_flv_module} \
+    --with-http_v2_module \
+    --with-http_gunzip_module \
+    --with-http_ssl_module \
+    --with-http_realip_module \
+    --with-http_addition_module \
+    --with-http_sub_module \
+    --with-http_dav_module \
+    --with-http_mp4_module \
+    --with-http_gzip_static_module \
+    --with-http_secure_link_module \
+    --with-http_stub_status_module \
+    --with-stream \
+    --with-stream_ssl_module \
+    --with-stream_ssl_preread_module \
+    --with-mail \
+    --with-mail_ssl_module \
+    --with-file-aio \
+    --with-ipv6 \
+    --with-zlib=zlib-%{zlib_ver} \
+    --with-pcre-jit \
+    --with-pcre=pcre-%{pcre_ver} \
+    --with-openssl=boringssl \
+    --add-module=lua-nginx-module-%{lua_module_ver} \
+    --add-module=headers-more-nginx-module-%{mh_module_ver} \
+    --with-cc-opt="-g -O2 -fPIE -fstack-protector-all -DTCP_FASTOPEN=23 -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -I ../boringssl/.openssl/include/" \
+    --with-ld-opt="-Wl,-Bsymbolic-functions -Wl,-z,relro -L ../boringssl/.openssl/lib" \
+    --with-compat \
+    $*
 
 # Fix "Error 127" during build with BoringSSL
 touch boringssl/.openssl/include/openssl/ssl.h
 
 %{__make} %{?_smp_mflags}
-
 
 %install
 rm -rf %{buildroot}
@@ -404,7 +481,9 @@ install -dm 755 %{buildroot}%{_sysconfdir}/%{name}/xtra
 
 # Install configs
 install -pm 644 %{SOURCE4} \
-                %{buildroot}%{_sysconfdir}/%{name}/%{name}.conf
+                %{buildroot}%{_sysconfdir}/%{name}/
+install -pm 644 %{SOURCE7} \
+                %{buildroot}%{_sysconfdir}/%{name}/
 
 # Install extra configs
 install -pm 644 %{SOURCE20} \
@@ -421,10 +500,18 @@ install -dm 755 %{buildroot}%{_sysconfdir}/sysconfig
 install -pm 644 %{SOURCE3} \
                 %{buildroot}%{_sysconfdir}/sysconfig/%{name}
 
-install -pm 644 %{_builddir}/nginx-%{version}/objs/%{name}.debug \
+install -pm 644 %{_builddir}/nginx-%{nginx_version}/objs/%{name}.debug \
                 %{buildroot}%{_sbindir}/%{name}.debug
 
 install -dm 755 %{buildroot}%{_sysconfdir}/%{name}/ssl
+
+# Module installation
+cp -rp %{_builddir}/nginx-%{nginx_version}/objs/*.so \
+       %{buildroot}%{_datadir}/%{name}/modules/
+
+# NAXSI rules installation
+install -pm 644 %{_builddir}/nginx-%{nginx_version}/naxsi-%{naxsi_ver}/naxsi_config/naxsi_core.rules \
+                %{buildroot}%{_sysconfdir}/%{name}/
 
 # Create links for compatibility with nginx
 ln -sf %{_sysconfdir}/%{name}/ %{buildroot}%{_sysconfdir}/nginx
@@ -529,6 +616,7 @@ rm -rf %{buildroot}
 %dir %{_sysconfdir}/%{name}/stream.conf.d
 
 %config(noreplace) %{_sysconfdir}/%{name}/%{name}.conf
+%config(noreplace) %{_sysconfdir}/%{name}/modules.conf
 %config %{_sysconfdir}/%{name}/xtra/common.conf
 %config %{_sysconfdir}/%{name}/xtra/ssl.conf
 %config %{_sysconfdir}/%{name}/xtra/ssl-wildcard.conf
@@ -584,9 +672,24 @@ rm -rf %{buildroot}
 %{_unitdir}/nginx-debug.service
 %endif
 
+%files module-brotli
+%defattr(-,root,root)
+%{_datadir}/%{name}/modules/ngx_http_brotli_filter_module.so
+%{_datadir}/%{name}/modules/ngx_http_brotli_static_module.so
+
+%files module-naxsi
+%defattr(-,root,root)
+%config(noreplace) %{_sysconfdir}/%{name}/naxsi_core.rules
+%{_datadir}/%{name}/modules/ngx_http_naxsi_module.so
+
 ################################################################################
 
 %changelog
+* Thu Aug 29 2019 Anton Novojilov <andy@essentialkaos.com> - 1.17.3-1
+- Improved dynamic modules support
+- Added brotli dynamic module
+- Added NAXSI dynamic module
+
 * Wed Aug 14 2019 Anton Novojilov <andy@essentialkaos.com> - 1.17.3-0
 - Nginx updated to 1.17.3 with fixes for CVE-2019-9511 (Data dribble),
   CVE-2019-9513 (Resource loop) and CVE-2019-9516 (Zero‑length headers leak)

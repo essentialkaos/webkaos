@@ -82,6 +82,7 @@ Source20:             ssl.conf
 Source21:             ssl-wildcard.conf
 Source22:             common.conf
 Source23:             bots.conf
+Source24:             brotli.conf
 
 Source30:             %{name}-index.html
 
@@ -505,9 +506,13 @@ install -pm 644 %{_builddir}/nginx-%{nginx_version}/objs/%{name}.debug \
 
 install -dm 755 %{buildroot}%{_sysconfdir}/%{name}/ssl
 
-# Module installation
+# Modules installation
 cp -rp %{_builddir}/nginx-%{nginx_version}/objs/*.so \
        %{buildroot}%{_datadir}/%{name}/modules/
+
+# Modules configs installation
+install -pm 644 %{SOURCE24} \
+                %{buildroot}%{_sysconfdir}/%{name}/xtra/
 
 # NAXSI rules installation
 install -pm 644 %{_builddir}/nginx-%{nginx_version}/naxsi-%{naxsi_ver}/naxsi_config/naxsi_core.rules \
@@ -674,6 +679,7 @@ rm -rf %{buildroot}
 
 %files module-brotli
 %defattr(-,root,root)
+%config(noreplace) %{_sysconfdir}/%{name}/xtra/brotli.conf
 %{_datadir}/%{name}/modules/ngx_http_brotli_filter_module.so
 %{_datadir}/%{name}/modules/ngx_http_brotli_static_module.so
 

@@ -10,6 +10,7 @@
 * TLS 1.3 support (RFC 8446)
 * [TCP Fast Open](https://en.wikipedia.org/wiki/TCP_Fast_Open) support (only for CentOS7/RHEL7)
 * [Lua](https://github.com/openresty/lua-nginx-module) and [Headers More](https://github.com/openresty/headers-more-nginx-module) modules from the box
+* [Brotli](https://github.com/eustas/ngx_brotli) and [NAXSI](https://github.com/nbs-system/naxsi) as a dynamic modules
 * Improved SysV script
 * Well-looking error pages
 * Improved design of index pages

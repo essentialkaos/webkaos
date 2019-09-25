@@ -48,14 +48,14 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define nginx_version        1.17.3
-%define boring_commit        eca48e52edc684db1433c2cfbca02bb9468d81af
+%define nginx_version        1.17.4
+%define boring_commit        1f1af82f409cd05450b3491865af0c770830cd76
 %define lua_module_ver       0.10.15
 %define mh_module_ver        0.33
 %define pcre_ver             8.43
 %define zlib_ver             1.2.11
-%define luajit_ver           2.1-20190626
-%define brotli_commit        7fab0418dedd1c4230877b357a1ca7cc7c355d84
+%define luajit_ver           2.1-20190912
+%define brotli_commit        e505dce68acc190cc5a1e780a3b0275e39f160ca
 %define brotli_ver           1.0.7
 %define naxsi_ver            0.56
 
@@ -64,7 +64,7 @@
 Summary:              Superb high performance web server
 Name:                 webkaos
 Version:              %{nginx_version}
-Release:              1%{?dist}
+Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 URL:                  https://github.com/essentialkaos/webkaos
@@ -92,7 +92,7 @@ Source52:             https://github.com/openresty/headers-more-nginx-module/arc
 Source53:             https://ftp.pcre.org/pub/pcre/pcre-%{pcre_ver}.tar.gz
 Source54:             https://zlib.net/zlib-%{zlib_ver}.tar.gz
 Source55:             https://github.com/openresty/luajit2/archive/v%{luajit_ver}.tar.gz
-Source56:             https://github.com/eustas/ngx_brotli/archive/%{brotli_commit}.tar.gz
+Source56:             https://github.com/google/ngx_brotli/archive/%{brotli_commit}.tar.gz
 Source57:             https://github.com/google/brotli/archive/v%{brotli_ver}.tar.gz
 Source58:             https://github.com/nbs-system/naxsi/archive/%{naxsi_ver}.tar.gz
 
@@ -166,7 +166,7 @@ Links for nginx compatibility.
 
 Summary:           Module for Brotli compression
 Version:           0.1.3
-Release:           0%{?dist}
+Release:           1%{?dist}
 
 Group:             System Environment/Daemons
 Requires:          %{name} >= %{nginx_version}
@@ -691,6 +691,11 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Wed Sep 25 2019 Anton Novojilov <andy@essentialkaos.com> - 1.17.4-0
+- Nginx updated to 1.17.4
+- BoringSSL updated to the latest version
+- Switched to official ngx_brotli repository
+
 * Thu Aug 29 2019 Anton Novojilov <andy@essentialkaos.com> - 1.17.3-1
 - Improved dynamic modules support
 - Added brotli dynamic module

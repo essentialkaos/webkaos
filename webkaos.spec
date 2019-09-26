@@ -169,7 +169,7 @@ Version:           0.1.3
 Release:           1%{?dist}
 
 Group:             System Environment/Daemons
-Requires:          %{name} >= %{nginx_version}
+Requires:          %{name} = %{nginx_version}
 
 %description module-brotli
 Module for Brotli compression.
@@ -180,10 +180,10 @@ Module for Brotli compression.
 
 Summary:           High performance, low rules maintenance WAF
 Version:           %{naxsi_ver}
-Release:           0%{?dist}
+Release:           1%{?dist}
 
 Group:             System Environment/Daemons
-Requires:          %{name} >= %{nginx_version}
+Requires:          %{name} = %{nginx_version}
 
 %description module-naxsi
 NAXSI is an open-source, high performance, low rules maintenance WAF.

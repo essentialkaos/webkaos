@@ -10,7 +10,11 @@ env:
 before_install:
   - docker pull "$IMAGE"
   - wget https://raw.githubusercontent.com/essentialkaos/perfecto/master/perfecto-docker
-  - chmod +x perfecto-docker
+  - wget -O hadolint https://github.com/hadolint/hadolint/releases/download/v1.17.2/hadolint-Linux-x86_64
+  - chmod +x perfecto-docker hadolint
+  - ./hadolint --version
 
 script:
   - ./perfecto-docker webkaos.spec
+  - ./hadolint centos6.docker
+  - ./hadolint centos7.docker

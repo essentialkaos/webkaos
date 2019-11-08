@@ -64,7 +64,7 @@
 Summary:              Superb high performance web server
 Name:                 webkaos
 Version:              %{nginx_version}
-Release:              0%{?dist}
+Release:              1%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 URL:                  https://github.com/essentialkaos/webkaos
@@ -127,6 +127,9 @@ Requires:             chkconfig
 %endif
 
 Requires(pre):        shadow-utils
+
+Provides:             %{name} = %{version}-%{release}
+Provides:             webserver = %{version}-%{release}
 
 ################################################################################
 
@@ -691,6 +694,9 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Fri Nov 08 2019 Anton Novojilov <andy@essentialkaos.com> - 1.17.4-1
+- Added webserver to Provides
+
 * Wed Sep 25 2019 Anton Novojilov <andy@essentialkaos.com> - 1.17.4-0
 - Nginx updated to 1.17.4
 - BoringSSL updated to the latest version

@@ -48,8 +48,8 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define nginx_version        1.17.4
-%define boring_commit        1f1af82f409cd05450b3491865af0c770830cd76
+%define nginx_version        1.17.5
+%define boring_commit        43890dbd693d5d972afbc676860e5adf4a44236a
 %define lua_module_ver       0.10.15
 %define mh_module_ver        0.33
 %define pcre_ver             8.43
@@ -64,7 +64,7 @@
 Summary:              Superb high performance web server
 Name:                 webkaos
 Version:              %{nginx_version}
-Release:              1%{?dist}
+Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 URL:                  https://github.com/essentialkaos/webkaos
@@ -108,6 +108,7 @@ Patch5:               boringssl-tls13-support.patch
 Patch6:               boringssl-c6-build-fix.patch
 # For resty-core, lua-nginx-module 0.10.16 is required but it not released yet
 Patch7:               resty-core-disable.patch
+Patch8:               boringssl-urand-test-disable.patch
 
 BuildRoot:            %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -169,7 +170,7 @@ Links for nginx compatibility.
 
 Summary:           Module for Brotli compression
 Version:           0.1.3
-Release:           1%{?dist}
+Release:           2%{?dist}
 
 Group:             System Environment/Daemons
 Requires:          %{name} = %{nginx_version}
@@ -183,7 +184,7 @@ Module for Brotli compression.
 
 Summary:           High performance, low rules maintenance WAF
 Version:           %{naxsi_ver}
-Release:           1%{?dist}
+Release:           2%{?dist}
 
 Group:             System Environment/Daemons
 Requires:          %{name} = %{nginx_version}
@@ -217,6 +218,7 @@ tar xzvf %{SOURCE58}
 
 pushd boringssl
 %patch5 -p1
+%patch8 -p1
 %if 0%{?rhel} == 6
 %patch6 -p1
 %endif
@@ -694,6 +696,11 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Fri Nov 08 2019 Anton Novojilov <andy@essentialkaos.com> - 1.17.5-0
+- Nginx updated to 1.17.5
+- BoringSSL updated to the latest version
+- Removed ssl_dhparam from default configuration
+
 * Fri Nov 08 2019 Anton Novojilov <andy@essentialkaos.com> - 1.17.4-1
 - Added webserver to Provides
 

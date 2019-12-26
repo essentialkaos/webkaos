@@ -45,15 +45,15 @@ command "-" "Brotli module"
   exist {prefix_dir}/xtra/brotli.conf
   exist {modules_dir}/ngx_http_brotli_filter_module.so
   exist {modules_dir}/ngx_http_brotli_static_module.so
-  perms {prefix_dir}/xtra/brotli.conf 644
-  perms {modules_dir}/ngx_http_brotli_filter_module.so 755
-  perms {modules_dir}/ngx_http_brotli_static_module.so 755
+  mode {prefix_dir}/xtra/brotli.conf 644
+  mode {modules_dir}/ngx_http_brotli_filter_module.so 755
+  mode {modules_dir}/ngx_http_brotli_static_module.so 755
 
 command "-" "NAXSI module"
   exist {prefix_dir}/naxsi_core.rules
   exist {modules_dir}/ngx_http_naxsi_module.so
-  perms {prefix_dir}/naxsi_core.rules 644
-  perms {modules_dir}/ngx_http_naxsi_module.so 755
+  mode {prefix_dir}/naxsi_core.rules 644
+  mode {modules_dir}/ngx_http_naxsi_module.so 755
 
 command "service {service_name} start" "Start service"
   wait-pid {pid_file} 180

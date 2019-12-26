@@ -32,7 +32,7 @@ command "-" "Nginx compatibility package"
   exist /etc/nginx
   exist /var/log/nginx
   exist /etc/nginx/nginx.conf
-  exist /sbin/nginx
+  exist /usr/sbin/nginx
   service-present nginx
   service-present nginx-debug
 

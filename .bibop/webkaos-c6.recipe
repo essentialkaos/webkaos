@@ -1,14 +1,17 @@
 # Bibop recipe for webkaos (CentOS 6)
-# See more: https://github.com/essentialkaos/bibop
+# See more: https://kaos.sh/bibop
 
-pkg webkaos
+pkg webkaos webkaos-debug webkaos-nginx webkaos-module-brotli webkaos-module-naxsi
 
 require-root yes
 unsafe-actions yes
 
 var service_name webkaos
 var user_name webkaos
-var config /etc/webkaos/webkaos.conf
+var prefix_dir /etc/webkaos
+var config {prefix_dir}/webkaos.conf
+var modules_config {prefix_dir}/modules.conf
+var modules_dir /usr/share/webkaos/modules
 var pid_file /var/run/webkaos.pid
 var dh_param /etc/webkaos/ssl/dhparam.pem
 var log_dir /var/log/webkaos
@@ -21,12 +24,36 @@ command "-" "System environment validation"
   exist {config}
   exist {log_dir}
 
+command "-" "Debug version"
+  exist /usr/sbin/webkaos.debug
+
+command "-" "Nginx compatibility package"
+  exist /etc/nginx
+  exist /var/log/nginx
+  exist /etc/nginx/nginx.conf
+  exist /usr/sbin/nginx
+  service-present nginx
+
 command "-" "Configuration backup"
   backup {config}
 
 command "-" "Add test DH params file"
   copy dhparam.pem {dh_param}
   chmod {dh_param} 600
+
+command "-" "Brotli module"
+  exist {prefix_dir}/xtra/brotli.conf
+  exist {modules_dir}/ngx_http_brotli_filter_module.so
+  exist {modules_dir}/ngx_http_brotli_static_module.so
+  mode {prefix_dir}/xtra/brotli.conf 644
+  mode {modules_dir}/ngx_http_brotli_filter_module.so 755
+  mode {modules_dir}/ngx_http_brotli_static_module.so 755
+
+command "-" "NAXSI module"
+  exist {prefix_dir}/naxsi_core.rules
+  exist {modules_dir}/ngx_http_naxsi_module.so
+  mode {prefix_dir}/naxsi_core.rules 644
+  mode {modules_dir}/ngx_http_naxsi_module.so 755
 
 command "service {service_name} start" "Start service"
   wait-pid {pid_file} 180

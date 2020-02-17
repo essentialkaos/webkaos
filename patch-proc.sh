@@ -29,15 +29,21 @@ CL_DARK="\e[${DARK}m"
 ###############################################################################
 
 main() {
-  local cmd="$1"
+  if [[ $# -ne 4 ]] ; then
+    usage
+    exit 0
+  fi
 
-  shift
+  check "$@"
 
-  case $cmd in
-    "check") check "$@" ;;
-    "copy")   copy "$@" ;;
-    *)            usage ;;  
-  esac
+  local choice
+
+  show "Copy unchanged files? (y/N):" $BOLD
+  read -p "> " choice
+
+  if [[ "$choice" == "Y" || "$choice" == "y" ]] ; then
+    copy "$@"
+  fi
 }
 
 check() {
@@ -139,11 +145,6 @@ showDiff() {
 }
 
 checkArgs() {
-  if [[ $# -ne 4 ]] ; then
-    show "Not enough arguments" $YELLOW
-    exit 1
-  fi
-
   local patch_file data_dir old_ver new_ver
   local old_ver_dir new_ver_dir old_ver_pt_dir new_ver_pt_dir
 
@@ -196,20 +197,12 @@ show() {
 
 usage() {
   show ""
-  show "${CL_BOLD}Usage:${CL_NORM} ./patch-proc.sh ${CL_YELLOW}{command}${CL_NORM} webkaos.patch data-dir prev-ver new-ver"
-  show ""
-  show "Commands" $BOLD
-  show ""
-  show "  ${CL_YELLOW}check${CL_NORM}   Check webkaos patch"
-  show "  ${CL_YELLOW}copy${CL_NORM}    Copy unchanged files from previous patched version"
+  show "${CL_BOLD}Usage:${CL_NORM} ./patch-proc.sh patch data-dir prev-ver new-ver"
   show ""
   show "Examples" $BOLD
   show ""
-  show "  ./patch-proc.sh check SOURCES/webkaos.patch /some/dir 1.11.5 1.11.6"
-  show "  Check patch compatibility with newer version" $DARK
-  show ""
-  show "  ./patch-proc.sh copy SOURCES/webkaos.patch /some/dir 1.11.5 1.11.6"
-  show "  Copy unchanged files from previous patched version" $DARK
+  show "  ./patch-proc.sh SOURCES/webkaos.patch /some/dir 1.17.5 1.17.6"
+  show "  Check diff and copy unchanged files" $DARK
   show ""
 }
 

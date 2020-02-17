@@ -48,13 +48,13 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define nginx_version        1.17.7
-%define boring_commit        43890dbd693d5d972afbc676860e5adf4a44236a
+%define nginx_version        1.17.8
+%define boring_commit        a12a2497ffc95a4f75e50d6d7e861e7bee7b8a5e
 %define lua_module_ver       0.10.15
 %define mh_module_ver        0.33
-%define pcre_ver             8.43
+%define pcre_ver             8.44
 %define zlib_ver             1.2.11
-%define luajit_ver           2.1-20190912
+%define luajit_ver           2.1-20200102
 %define brotli_commit        e505dce68acc190cc5a1e780a3b0275e39f160ca
 %define brotli_ver           1.0.7
 %define naxsi_ver            0.56
@@ -116,10 +116,7 @@ Requires:             initscripts >= 8.36 kaosv >= 2.15
 Requires:             gd libXpm libxslt
 
 BuildRequires:        make perl cmake3 golang
-
-# http://mirror.centos.org/centos/6/sclo/x86_64/rh/devtoolset-3/
-# http://mirror.centos.org/centos/7/sclo/x86_64/rh/devtoolset-3/
-BuildRequires:        devtoolset-3-gcc-c++ devtoolset-3-binutils
+BuildRequires:        devtoolset-7-gcc-c++ devtoolset-7-binutils
 
 %if 0%{?rhel} >= 7
 Requires:             systemd
@@ -170,7 +167,7 @@ Links for nginx compatibility.
 
 Summary:           Module for Brotli compression
 Version:           0.1.3
-Release:           4%{?dist}
+Release:           5%{?dist}
 
 Group:             System Environment/Daemons
 Requires:          %{name} = %{nginx_version}
@@ -184,7 +181,7 @@ Module for Brotli compression.
 
 Summary:           High performance, low rules maintenance WAF
 Version:           %{naxsi_ver}
-Release:           4%{?dist}
+Release:           5%{?dist}
 
 Group:             System Environment/Daemons
 Requires:          %{name} = %{nginx_version}
@@ -239,8 +236,8 @@ mv README     NGINX-README
 mv lua-nginx-module-%{lua_module_ver}/README.markdown ./LUAMODULE-README.markdown
 mv headers-more-nginx-module-%{mh_module_ver}/README.markdown ./HEADERSMORE-README.markdown
 
-# Use gcc and gcc-c++ from DevToolSet 3
-export PATH="/opt/rh/devtoolset-3/root/usr/bin:$PATH"
+# Use gcc and gcc-c++ from DevToolSet 7
+export PATH="/opt/rh/devtoolset-7/root/usr/bin:$PATH"
 
 # LuaJIT2 Build ################################################################
 
@@ -696,6 +693,13 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Tue Feb 18 2020 Anton Novojilov <andy@essentialkaos.com> - 1.17.8-0
+- Nginx updated to 1.17.8
+- LuaJIT updated to 2.1-20200102
+- PCRE updated to 8.44
+- BoringSSL updated to the latest version
+- Using DevToolSet 7 for build
+
 * Wed Dec 25 2019 Anton Novojilov <andy@essentialkaos.com> - 1.17.7-0
 - Nginx updated to 1.17.7
 

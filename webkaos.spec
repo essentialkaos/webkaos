@@ -48,8 +48,8 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define nginx_version        1.17.8
-%define boring_commit        a12a2497ffc95a4f75e50d6d7e861e7bee7b8a5e
+%define nginx_version        1.17.9
+%define boring_commit        0b710a305b42b67522003a314dea3e3868485665
 %define lua_module_ver       0.10.15
 %define mh_module_ver        0.33
 %define pcre_ver             8.44
@@ -693,6 +693,10 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Sun Mar 08 2020 Anton Novojilov <andy@essentialkaos.com> - 1.17.9-0
+- Nginx updated to 1.17.9
+- BoringSSL updated to the latest version
+
 * Tue Feb 18 2020 Anton Novojilov <andy@essentialkaos.com> - 1.17.8-0
 - Nginx updated to 1.17.8
 - LuaJIT updated to 2.1-20200102

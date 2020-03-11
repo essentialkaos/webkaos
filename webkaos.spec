@@ -64,7 +64,7 @@
 Summary:              Superb high performance web server
 Name:                 webkaos
 Version:              %{nginx_version}
-Release:              0%{?dist}
+Release:              1%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 URL:                  https://github.com/essentialkaos/webkaos
@@ -310,6 +310,7 @@ popd
     --with-http_gzip_static_module \
     --with-http_secure_link_module \
     --with-http_stub_status_module \
+    --with-http_auth_request_module \
     --with-stream \
     --with-stream_ssl_module \
     --with-stream_ssl_preread_module \
@@ -399,6 +400,7 @@ mv %{_builddir}/nginx-%{nginx_version}/objs/nginx \
     --with-http_gzip_static_module \
     --with-http_secure_link_module \
     --with-http_stub_status_module \
+    --with-http_auth_request_module \
     --with-stream \
     --with-stream_ssl_module \
     --with-stream_ssl_preread_module \
@@ -693,6 +695,9 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Wed Mar 11 2020 Anton Novojilov <andy@essentialkaos.com> - 1.17.9-1
+- Added http_auth_request_module
+
 * Sun Mar 08 2020 Anton Novojilov <andy@essentialkaos.com> - 1.17.9-0
 - Nginx updated to 1.17.9
 - BoringSSL updated to the latest version

@@ -175,7 +175,7 @@ Module for Brotli compression.
 
 Summary:           High performance, low rules maintenance WAF
 Version:           %{naxsi_ver}
-Release:           6%{?dist}
+Release:           7%{?dist}
 
 Group:             System Environment/Daemons
 Requires:          %{name} = %{nginx_version}

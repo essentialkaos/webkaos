@@ -48,14 +48,14 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define nginx_version        1.17.9
-%define boring_commit        0b710a305b42b67522003a314dea3e3868485665
+%define nginx_version        1.17.10
+%define boring_commit        2309f645e509507a1cc8f9845771110fcf986fd9
 %define lua_module_ver       0.10.15
 %define mh_module_ver        0.33
 %define pcre_ver             8.44
 %define zlib_ver             1.2.11
 %define luajit_ver           2.1-20200102
-%define brotli_commit        e505dce68acc190cc5a1e780a3b0275e39f160ca
+%define brotli_commit        25f86f0bac1101b6512135eac5f93c49c63609e3
 %define brotli_ver           1.0.7
 %define naxsi_ver            0.56
 
@@ -64,7 +64,7 @@
 Summary:              Superb high performance web server
 Name:                 webkaos
 Version:              %{nginx_version}
-Release:              1%{?dist}
+Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 URL:                  https://github.com/essentialkaos/webkaos
@@ -105,25 +105,19 @@ Patch2:               %{name}-dynamic-tls-records.patch
 # https://github.com/ajhaydock/BoringNginx/blob/master/patches
 Patch3:               boringssl.patch
 Patch5:               boringssl-tls13-support.patch
-Patch6:               boringssl-c6-build-fix.patch
 # For resty-core, lua-nginx-module 0.10.16 is required but it not released yet
 Patch7:               resty-core-disable.patch
 Patch8:               boringssl-urand-test-disable.patch
 
 BuildRoot:            %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-Requires:             initscripts >= 8.36 kaosv >= 2.15
-Requires:             gd libXpm libxslt
-
 BuildRequires:        make perl cmake3 golang
 BuildRequires:        devtoolset-7-gcc-c++ devtoolset-7-binutils
 
-%if 0%{?rhel} >= 7
-Requires:             systemd
-%else
-Requires:             chkconfig
-%endif
+Requires:             initscripts >= 8.36 kaosv >= 2.16
+Requires:             gd libXpm libxslt
 
+Requires:             systemd
 Requires(pre):        shadow-utils
 
 Provides:             %{name} = %{version}-%{release}
@@ -166,8 +160,8 @@ Links for nginx compatibility.
 %package module-brotli
 
 Summary:           Module for Brotli compression
-Version:           0.1.3
-Release:           6%{?dist}
+Version:           0.1.4
+Release:           0%{?dist}
 
 Group:             System Environment/Daemons
 Requires:          %{name} = %{nginx_version}
@@ -216,9 +210,6 @@ tar xzvf %{SOURCE58}
 pushd boringssl
 %patch5 -p1
 %patch8 -p1
-%if 0%{?rhel} == 6
-%patch6 -p1
-%endif
 popd
 
 pushd lua-nginx-module-%{lua_module_ver}
@@ -465,15 +456,12 @@ install -dm 755 %{buildroot}%{_initrddir}
 install -pm 755 %{SOURCE2} \
                 %{buildroot}%{_initrddir}/%{service_name}
 
-%if 0%{?rhel} >= 7
-# Install systemd stuff
 install -dm 755 %{buildroot}%{_unitdir}
 
 install -pm 644 %{SOURCE5} \
                 %{buildroot}%{_unitdir}/
 install -pm 644 %{SOURCE6} \
                 %{buildroot}%{_unitdir}/
-%endif
 
 # Install log rotation stuff
 install -dm 755 %{buildroot}%{_sysconfdir}/logrotate.d
@@ -529,10 +517,8 @@ ln -sf %{_logdir}/%{name}/ %{buildroot}%{_logdir}/nginx
 ln -sf %{_sbindir}/%{name} %{buildroot}%{_sbindir}/nginx
 ln -sf %{_initrddir}/%{service_name} %{buildroot}%{_initrddir}/nginx
 
-%if 0%{?rhel} >= 7
 ln -sf %{_unitdir}/%{name}.service %{buildroot}%{_unitdir}/nginx.service
 ln -sf %{_unitdir}/%{name}-debug.service %{buildroot}%{_unitdir}/nginx-debug.service
-%endif
 
 ################################################################################
 
@@ -543,32 +529,14 @@ exit 0
 
 %post
 # Ensure secure permissions (CVE-2013-0337)
-chown root:root %{_logdir}/%{name}
+chown -h root:root %{_logdir}/%{name}
 
 if [[ $1 -eq 1 ]] ; then
-  %if 0%{?rhel} >= 7
-    %{__sysctl} enable %{name}.service &>/dev/null || :
-  %else
-    %{__chkconfig} --add %{name} &>/dev/null || :
-  %endif
+  %{__sysctl} enable %{name}.service &>/dev/null || :
 
   # Generate unique nonce for common.conf
   sed -i "s/{RANDOM}/`mktemp -u XXXXXXXXXXXX`/" \
          %{_sysconfdir}/%{name}/xtra/common.conf
-
-  if [[ -d %{_logdir}/%{name} ]] ; then
-    if [[ ! -e %{_logdir}/%{name}/access.log ]]; then
-      touch %{_logdir}/%{name}/access.log
-      chmod 640 %{_logdir}/%{name}/access.log
-      chown %{service_user}: %{_logdir}/%{name}/access.log
-    fi
-
-    if [[ ! -e %{_logdir}/%{name}/error.log ]] ; then
-      touch %{_logdir}/%{name}/error.log
-      chmod 640 %{_logdir}/%{name}/error.log
-      chown %{service_user}: %{_logdir}/%{name}/error.log
-    fi
-  fi
 fi
 
 # Increasing bucket size for x64
@@ -588,23 +556,13 @@ fi
 
 %preun
 if [[ $1 -eq 0 ]] ; then
-%if 0%{?rhel} >= 7
   %{__sysctl} --no-reload disable %{name}.service &>/dev/null || :
   %{__sysctl} stop %{name}.service &>/dev/null || :
-%else
-  %{__service} %{service_name} stop &>/dev/null || :
-  %{__chkconfig} --del %{service_name}
-%endif
 fi
 
 %postun
 if [[ $1 -ge 1 ]] ; then
-%if 0%{?rhel} >= 7
-  %{__sysctl} daemon-reload &>/dev/null || :
-%endif
-%{__service} %{service_name} upgrade &>/dev/null || :
-fi
-
+%{__sysctl} daemon-reload &>/dev/null || :
 
 %clean
 rm -rf %{buildroot}
@@ -645,10 +603,7 @@ rm -rf %{buildroot}
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 
 %{_initrddir}/%{service_name}
-
-%if 0%{?rhel} >= 7
 %{_unitdir}/%{name}.service
-%endif
 
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/html
@@ -665,9 +620,7 @@ rm -rf %{buildroot}
 %files debug
 %defattr(-,root,root)
 %attr(0755,root,root) %{_sbindir}/%{name}.debug
-%if 0%{?rhel} >= 7
 %{_unitdir}/%{name}-debug.service
-%endif
 
 %files nginx
 %defattr(-,root,root)
@@ -676,10 +629,8 @@ rm -rf %{buildroot}
 %{_logdir}/nginx
 %{_sbindir}/nginx
 %{_initrddir}/nginx
-%if 0%{?rhel} >= 7
 %{_unitdir}/nginx.service
 %{_unitdir}/nginx-debug.service
-%endif
 
 %files module-brotli
 %defattr(-,root,root)
@@ -695,6 +646,13 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Wed May 27 2020 Anton Novojilov <andy@essentialkaos.com> - 1.17.10-0
+- Nginx updated to 1.17.10
+- BoringSSL updated to the latest version
+- brotli module updated to the latest stable release
+- Improved init script
+- Dropped CentOS 6 support
+
 * Wed Mar 11 2020 Anton Novojilov <andy@essentialkaos.com> - 1.17.9-1
 - Added http_auth_request_module
 

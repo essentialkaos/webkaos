@@ -16,5 +16,4 @@ before_install:
 
 script:
   - ./perfecto-docker webkaos.spec
-  - ./hadolint centos6.docker
   - ./hadolint centos7.docker

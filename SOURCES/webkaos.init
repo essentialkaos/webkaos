@@ -22,7 +22,7 @@
 
 source /etc/init.d/kaosv
 
-kv.require "2.6"
+kv.require "2.16"
 
 ###############################################################################
 
@@ -140,7 +140,7 @@ gendhp() {
     return $ACTION_ERROR
   fi
 
-  chmod 600 $dh_param &> /dev/null
+  kv.chmod 600 $dh_param &> /dev/null
 
   if [[ $? -ne 0 ]] ; then
     kv.showStatusMessage "$ACTION_ERROR"
@@ -248,7 +248,7 @@ preStartServiceHandler() {
   local file file_perms
 
   for file in $(ls -1 $ssl_dir) ; do
-    file_perms=$(getFilePerms $ssl_dir/$file)
+    file_perms=$(getFileMode $ssl_dir/$file)
 
     if [[ "$file_perms" != "600" && "$file_perms" != "400" ]] ; then
       kv.warn "File $ssl_dir/$file have weak permissions. Please change permissions to 400 or 600."
@@ -259,7 +259,7 @@ preStartServiceHandler() {
 }
 
 startServiceHandler() {
-  updateOwner
+  updateOwnerAndMode
 
   if [[ "$1" == "debug" || "$1" == "true" ]] ; then
     if [[ -x ${binary}.debug ]] ; then
@@ -334,18 +334,34 @@ testServiceConfig() {
   [[ $status -eq $ACTION_OK ]] && return $ACTION_OK || return $ACTION_ERROR
 }
 
-updateOwner() {
+updateOwnerAndMode() {
   local user=$(getUserFromConfig)
 
-  [[ -z "$user" ]] && return
+  if [[ -z "$user" ]] ; then
+    kv.log "Can't update owner and mode - can't find user info in webkaos.conf"
+    return
+  fi
 
   if [[ $cache_dir && -d $cache_dir ]] ; then
-    chown -R $user: $cache_dir -R
+    kv.chown -R "$user:" $cache_dir
   fi
 
   if [[ $log_dir && -d $log_dir ]] ; then
-    chown -R $user: $log_dir -R
+    kv.chown -R "$user:" $log_dir/*
   fi
+
+  if [[ ! -e "${log_dir}/access.log" ]] ; then
+    touch "${log_dir}/access.log"
+    kv.chown "$user:" "${log_dir}/access.log"
+  fi
+
+  if [[ ! -e "${log_dir}/error.log" ]] ; then
+    touch "${log_dir}/error.log"
+    kv.chown "$user:" "${log_dir}/error.log"
+  fi
+
+  kv.chmod 640 "${log_dir}/access.log"
+  kv.chmod 640 "${log_dir}/error.log"
 }
 
 getUserFromConfig() {
@@ -360,8 +376,8 @@ isDHPGenRequired() {
   return 1
 }
 
-getFilePerms() {
-  stat -c '%a' $1
+getFileMode() {
+  stat -c '%a' "$1"
 }
 
 ###############################################################################

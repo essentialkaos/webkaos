@@ -8,7 +8,7 @@
 * [Dynamic TLS Records](https://blog.cloudflare.com/optimizing-tls-over-tcp-to-reduce-latency/) support
 * The latest version of [BoringSSL](https://boringssl.googlesource.com/boringssl/) with some state-of-the-art crypto features
 * TLS 1.3 support (_RFC 8446_)
-* [TCP Fast Open](https://en.wikipedia.org/wiki/TCP_Fast_Open) support (_only for CentOS7/RHEL7_)
+* [TCP Fast Open](https://en.wikipedia.org/wiki/TCP_Fast_Open) support
 * [Lua](https://github.com/openresty/lua-nginx-module) and [Headers More](https://github.com/openresty/headers-more-nginx-module) modules from the box
 * [Brotli](https://github.com/eustas/ngx_brotli) and [NAXSI](https://github.com/nbs-system/naxsi) as dynamic modules
 * Improved SysV script
@@ -17,13 +17,6 @@
 * Performance tuning for highload
 
 ### Installation
-
-#### From ESSENTIAL KAOS Public repo for RHEL6/CentOS6
-
-````
-[sudo] yum install -y yum install -y https://yum.kaos.st/kaos-repo-latest.el6.noarch.rpm
-[sudo] yum install webkaos
-````
 
 #### From ESSENTIAL KAOS Public repo for RHEL7/CentOS7
 

@@ -1,7 +1,7 @@
-diff -urN nginx-1.15.8-orig/src/event/ngx_event_openssl.c nginx-1.15.8-dynamic/src/event/ngx_event_openssl.c
---- nginx-1.15.8-orig/src/event/ngx_event_openssl.c	2018-12-25 17:53:03.000000000 +0300
-+++ nginx-1.15.8-dynamic/src/event/ngx_event_openssl.c	2019-02-28 01:02:51.000000000 +0300
-@@ -1272,6 +1272,7 @@
+diff -urN nginx-1.19.0-orig/src/event/ngx_event_openssl.c nginx-1.19.0/src/event/ngx_event_openssl.c
+--- nginx-1.19.0-orig/src/event/ngx_event_openssl.c	2020-05-26 18:00:20.000000000 +0300
++++ nginx-1.19.0/src/event/ngx_event_openssl.c	2020-05-28 13:44:35.000000000 +0300
+@@ -1515,6 +1515,7 @@
  
      sc->buffer = ((flags & NGX_SSL_BUFFER) != 0);
      sc->buffer_size = ssl->buffer_size;
@@ -9,10 +9,10 @@ diff -urN nginx-1.15.8-orig/src/event/ngx_event_openssl.c nginx-1.15.8-dynamic/s
  
      sc->session_ctx = ssl->ctx;
  
-@@ -2124,6 +2125,41 @@
+@@ -2442,6 +2443,40 @@
+     flush = (in == NULL) ? 1 : buf->flush;
  
      for ( ;; ) {
- 
 +        /* Dynamic record resizing:
 +           We want the initial records to fit into one TCP segment
 +           so we don't get TCP HoL blocking due to TCP Slow Start.
@@ -47,11 +47,10 @@ diff -urN nginx-1.15.8-orig/src/event/ngx_event_openssl.c nginx-1.15.8-dynamic/s
 +                }
 +            }
 +        }
-+
+ 
          while (in && buf->last < buf->end && send < limit) {
              if (in->buf->last_buf || in->buf->flush) {
-                 flush = 1;
-@@ -2231,6 +2267,9 @@
+@@ -2550,6 +2585,9 @@
  
      if (n > 0) {
  
@@ -61,12 +60,12 @@ diff -urN nginx-1.15.8-orig/src/event/ngx_event_openssl.c nginx-1.15.8-dynamic/s
          if (c->ssl->saved_read_handler) {
  
              c->read->handler = c->ssl->saved_read_handler;
-diff -urN nginx-1.15.8-orig/src/event/ngx_event_openssl.h nginx-1.15.8-dynamic/src/event/ngx_event_openssl.h
---- nginx-1.15.8-orig/src/event/ngx_event_openssl.h	2018-12-25 17:53:03.000000000 +0300
-+++ nginx-1.15.8-dynamic/src/event/ngx_event_openssl.h	2019-02-28 01:18:55.000000000 +0300
-@@ -58,6 +58,12 @@
- #define ngx_ssl_session_t       SSL_SESSION
+diff -urN nginx-1.19.0-orig/src/event/ngx_event_openssl.h nginx-1.19.0/src/event/ngx_event_openssl.h
+--- nginx-1.19.0-orig/src/event/ngx_event_openssl.h	2020-05-26 18:00:20.000000000 +0300
++++ nginx-1.19.0/src/event/ngx_event_openssl.h	2020-05-28 13:00:33.000000000 +0300
+@@ -59,6 +59,14 @@
  #define ngx_ssl_conn_t          SSL
+ 
  
 +typedef struct {
 +    ngx_msec_t                  timeout;
@@ -74,10 +73,12 @@ diff -urN nginx-1.15.8-orig/src/event/ngx_event_openssl.h nginx-1.15.8-dynamic/s
 +    size_t                      size_lo;
 +    size_t                      size_hi;
 +} ngx_ssl_dyn_rec_t;
- 
++
++
  #if (OPENSSL_VERSION_NUMBER < 0x10002000L)
  #define SSL_is_server(s)        (s)->server
-@@ -68,6 +74,7 @@
+ #endif
+@@ -71,6 +79,7 @@
      SSL_CTX                    *ctx;
      ngx_log_t                  *log;
      size_t                      buffer_size;
@@ -85,18 +86,17 @@ diff -urN nginx-1.15.8-orig/src/event/ngx_event_openssl.h nginx-1.15.8-dynamic/s
  };
  
  
-@@ -99,6 +106,10 @@
-     unsigned                    in_early:1;
+@@ -105,6 +114,9 @@
+     unsigned                    in_ocsp:1;
      unsigned                    early_preread:1;
      unsigned                    write_blocked:1;
-+
 +    ngx_ssl_dyn_rec_t           dyn_rec;
 +    ngx_msec_t                  dyn_rec_last_write;
 +    ngx_uint_t                  dyn_rec_records_sent;
  };
  
  
-@@ -108,7 +119,7 @@
+@@ -114,7 +126,7 @@
  #define NGX_SSL_DFLT_BUILTIN_SCACHE  -5
  
  
@@ -105,10 +105,10 @@ diff -urN nginx-1.15.8-orig/src/event/ngx_event_openssl.h nginx-1.15.8-dynamic/s
  
  typedef struct ngx_ssl_sess_id_s  ngx_ssl_sess_id_t;
  
-diff -urN nginx-1.15.8-orig/src/http/modules/ngx_http_ssl_module.c nginx-1.15.8-dynamic/src/http/modules/ngx_http_ssl_module.c
---- nginx-1.15.8-orig/src/http/modules/ngx_http_ssl_module.c	2018-12-25 17:53:03.000000000 +0300
-+++ nginx-1.15.8-dynamic/src/http/modules/ngx_http_ssl_module.c	2019-02-28 01:12:04.000000000 +0300
-@@ -246,6 +246,41 @@
+diff -urN nginx-1.19.0-orig/src/http/modules/ngx_http_ssl_module.c nginx-1.19.0/src/http/modules/ngx_http_ssl_module.c
+--- nginx-1.19.0-orig/src/http/modules/ngx_http_ssl_module.c	2020-05-26 18:00:20.000000000 +0300
++++ nginx-1.19.0/src/http/modules/ngx_http_ssl_module.c	2020-05-28 13:03:47.000000000 +0300
+@@ -280,6 +280,41 @@
        offsetof(ngx_http_ssl_srv_conf_t, early_data),
        NULL },
  
@@ -150,8 +150,8 @@ diff -urN nginx-1.15.8-orig/src/http/modules/ngx_http_ssl_module.c nginx-1.15.8-
        ngx_null_command
  };
  
-@@ -576,6 +611,11 @@
-     sscf->session_ticket_keys = NGX_CONF_UNSET_PTR;
+@@ -614,6 +649,11 @@
+     sscf->ocsp_cache_zone = NGX_CONF_UNSET_PTR;
      sscf->stapling = NGX_CONF_UNSET;
      sscf->stapling_verify = NGX_CONF_UNSET;
 +    sscf->dyn_rec_enable = NGX_CONF_UNSET;
@@ -162,7 +162,7 @@ diff -urN nginx-1.15.8-orig/src/http/modules/ngx_http_ssl_module.c nginx-1.15.8-
  
      return sscf;
  }
-@@ -643,6 +683,20 @@
+@@ -686,6 +726,20 @@
      ngx_conf_merge_str_value(conf->stapling_responder,
                           prev->stapling_responder, "");
  
@@ -183,7 +183,7 @@ diff -urN nginx-1.15.8-orig/src/http/modules/ngx_http_ssl_module.c nginx-1.15.8-
      conf->ssl.log = cf->log;
  
      if (conf->enable) {
-@@ -827,6 +881,28 @@
+@@ -913,6 +967,28 @@
          return NGX_CONF_ERROR;
      }
  
@@ -212,10 +212,10 @@ diff -urN nginx-1.15.8-orig/src/http/modules/ngx_http_ssl_module.c nginx-1.15.8-
      return NGX_CONF_OK;
  }
  
-diff -urN nginx-1.15.8-orig/src/http/modules/ngx_http_ssl_module.h nginx-1.15.8-dynamic/src/http/modules/ngx_http_ssl_module.h
---- nginx-1.15.8-orig/src/http/modules/ngx_http_ssl_module.h	2018-12-25 17:53:03.000000000 +0300
-+++ nginx-1.15.8-dynamic/src/http/modules/ngx_http_ssl_module.h	2019-02-28 01:12:51.000000000 +0300
-@@ -58,6 +58,12 @@
+diff -urN nginx-1.19.0-orig/src/http/modules/ngx_http_ssl_module.h nginx-1.19.0/src/http/modules/ngx_http_ssl_module.h
+--- nginx-1.19.0-orig/src/http/modules/ngx_http_ssl_module.h	2020-05-26 18:00:20.000000000 +0300
++++ nginx-1.19.0/src/http/modules/ngx_http_ssl_module.h	2020-05-28 13:09:32.000000000 +0300
+@@ -65,6 +65,12 @@
  
      u_char                         *file;
      ngx_uint_t                      line;

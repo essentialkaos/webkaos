@@ -294,7 +294,7 @@ stopServiceHandler() {
 }
 
 upgradeService() {
-  updateOwner
+  updateOwnerAndMode
 
   kv.sendSignal "$SIGNAL_USR2"
 

@@ -2,7 +2,7 @@
 
 FROM centos:7
 
-ENV WK_VERSION 1.17.9
+ENV WK_VERSION 1.19.0
 
 LABEL name="WEBKAOS Image on CentOS 7" \
       vendor="ESSENTIAL KAOS" \

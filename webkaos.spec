@@ -64,7 +64,7 @@
 Summary:              Superb high performance web server
 Name:                 webkaos
 Version:              %{nginx_version}
-Release:              0%{?dist}
+Release:              1%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 URL:                  https://github.com/essentialkaos/webkaos
@@ -563,6 +563,7 @@ fi
 %postun
 if [[ $1 -ge 1 ]] ; then
 %{__sysctl} daemon-reload &>/dev/null || :
+fi
 
 %clean
 rm -rf %{buildroot}
@@ -646,6 +647,10 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Sat Jun 13 2020 Anton Novojilov <andy@essentialkaos.com> - 1.19.0-1
+- Fixed bug with unclosed if condition in postun scriptlet
+- Added dark mode support to error pages
+
 * Wed May 27 2020 Anton Novojilov <andy@essentialkaos.com> - 1.19.0-0
 - Nginx updated to 1.19.0
 - Fixed minor bug in init script

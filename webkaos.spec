@@ -1,5 +1,9 @@
 ################################################################################
 
+# rpmbuilder:qa-rpaths 0x0001,0x0002
+
+################################################################################
+
 %global crc_check pushd ../SOURCES ; sha512sum -c %{SOURCE100} ; popd
 
 ################################################################################
@@ -48,26 +52,26 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define nginx_version        1.19.0
-%define boring_commit        2309f645e509507a1cc8f9845771110fcf986fd9
+%define nginx_version        1.19.3
+%define boring_commit        777e1ff3b1443788c5fdb982b3b822aac5448d9e
 %define lua_module_ver       0.10.15
 %define mh_module_ver        0.33
 %define pcre_ver             8.44
 %define zlib_ver             1.2.11
-%define luajit_ver           2.1-20200102
-%define brotli_commit        25f86f0bac1101b6512135eac5f93c49c63609e3
-%define brotli_ver           1.0.7
-%define naxsi_ver            0.56
+%define luajit_ver           2.1-20201012-2
+%define brotli_commit        9aec15e2aa6feea2113119ba06460af70ab3ea62
+%define brotli_ver           1.0.9
+%define naxsi_ver            1.1a
 
 ################################################################################
 
 Summary:              Superb high performance web server
 Name:                 webkaos
 Version:              %{nginx_version}
-Release:              1%{?dist}
+Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
-URL:                  https://github.com/essentialkaos/webkaos
+URL:                  https://kaos.sh/webkaos
 
 Source0:              https://nginx.org/download/nginx-%{version}.tar.gz
 Source1:              %{name}.logrotate
@@ -160,8 +164,8 @@ Links for nginx compatibility.
 %package module-brotli
 
 Summary:           Module for Brotli compression
-Version:           0.1.4
-Release:           1%{?dist}
+Version:           0.1.5
+Release:           0%{?dist}
 
 Group:             System Environment/Daemons
 Requires:          %{name} = %{nginx_version}
@@ -175,7 +179,7 @@ Module for Brotli compression.
 
 Summary:           High performance, low rules maintenance WAF
 Version:           %{naxsi_ver}
-Release:           8%{?dist}
+Release:           0%{?dist}
 
 Group:             System Environment/Daemons
 Requires:          %{name} = %{nginx_version}
@@ -224,8 +228,8 @@ mv CHANGES.ru NGINX-CHANGES.ru
 mv LICENSE    NGINX-LICENSE
 mv README     NGINX-README
 
-mv lua-nginx-module-%{lua_module_ver}/README.markdown ./LUAMODULE-README.markdown
-mv headers-more-nginx-module-%{mh_module_ver}/README.markdown ./HEADERSMORE-README.markdown
+mv lua-nginx-module-%{lua_module_ver}/README.markdown ./LUA-MODULE-README.markdown
+mv headers-more-nginx-module-%{mh_module_ver}/README.markdown ./HEADERS-MORE-MODULE-README.markdown
 
 # Use gcc and gcc-c++ from DevToolSet 7
 export PATH="/opt/rh/devtoolset-7/root/usr/bin:$PATH"
@@ -236,13 +240,13 @@ export LUAJIT2_DIR=$(pwd)/luajit2-%{luajit_ver}
 
 pushd luajit2-%{luajit_ver}
   %{__make} %{?_smp_mflags}
-  %{__make} install DESTDIR=$LUAJIT2_DIR \
+  %{__make} install DESTDIR=$LUAJIT2_DIR/build \
                     PREFIX=/ \
-                    INSTALL_LIB=$LUAJIT2_DIR/lib
+                    INSTALL_LIB=$LUAJIT2_DIR/build/lib
 popd
 
-export LUAJIT_LIB="$LUAJIT2_DIR/lib"
-export LUAJIT_INC="$LUAJIT2_DIR/include/luajit-2.1"
+export LUAJIT_LIB="$LUAJIT2_DIR/build/lib"
+export LUAJIT_INC="$LUAJIT2_DIR/build/include/luajit-2.1"
 
 # BoringSSL Build ##############################################################
 
@@ -317,7 +321,7 @@ popd
     --add-module=lua-nginx-module-%{lua_module_ver} \
     --add-module=headers-more-nginx-module-%{mh_module_ver} \
     --with-cc-opt="-g -O2 -fPIE -fstack-protector-all -DTCP_FASTOPEN=23 -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -I ../boringssl/.openssl/include/" \
-    --with-ld-opt="-Wl,-Bsymbolic-functions -Wl,-z,relro -L ../boringssl/.openssl/lib -L ../luajit2-%{luajit_ver}/lib" \
+    --with-ld-opt="-Wl,-Bsymbolic-functions -Wl,-z,relro -L ../boringssl/.openssl/lib -L ../luajit2-%{luajit_ver}/lib -Wl,-rpath -Wl,%{_datadir}/%{name}/luajit/lib" \
     --with-compat \
     $*
 
@@ -406,7 +410,7 @@ mv %{_builddir}/nginx-%{nginx_version}/objs/nginx \
     --add-module=lua-nginx-module-%{lua_module_ver} \
     --add-module=headers-more-nginx-module-%{mh_module_ver} \
     --with-cc-opt="-g -O2 -fPIE -fstack-protector-all -DTCP_FASTOPEN=23 -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -I ../boringssl/.openssl/include/" \
-    --with-ld-opt="-Wl,-Bsymbolic-functions -Wl,-z,relro -L ../boringssl/.openssl/lib" \
+    --with-ld-opt="-Wl,-Bsymbolic-functions -Wl,-z,relro -L ../boringssl/.openssl/lib -L ../luajit2-%{luajit_ver}/lib -Wl,-rpath -Wl,%{_datadir}/%{name}/luajit/lib" \
     --with-compat \
     $*
 
@@ -498,6 +502,12 @@ install -pm 644 %{_builddir}/nginx-%{nginx_version}/objs/%{name}.debug \
 
 install -dm 755 %{buildroot}%{_sysconfdir}/%{name}/ssl
 
+# Install LuaJIT
+install -dm 755 %{buildroot}%{_datadir}/%{name}/luajit
+
+cp -rp luajit2-%{luajit_ver}/build/* \
+       %{buildroot}%{_datadir}/%{name}/luajit/
+
 # Modules installation
 cp -rp %{_builddir}/nginx-%{nginx_version}/objs/*.so \
        %{buildroot}%{_datadir}/%{name}/modules/
@@ -573,8 +583,7 @@ rm -rf %{buildroot}
 %files
 %defattr(-,root,root)
 %doc NGINX-CHANGES NGINX-CHANGES.ru NGINX-LICENSE NGINX-README
-%doc LUAMODULE-README.markdown
-%doc HEADERSMORE-README.markdown
+%doc *-README.markdown
 
 %{_sbindir}/%{name}
 
@@ -609,6 +618,7 @@ rm -rf %{buildroot}
 %dir %{_datadir}/%{name}
 %dir %{_datadir}/%{name}/html
 %{_datadir}/%{name}/html/*
+%{_datadir}/%{name}/luajit/*
 
 %dir %{_datadir}/%{name}/modules
 %{_sysconfdir}/%{name}/modules
@@ -647,6 +657,14 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Mon Oct 26 2020 Anton Novojilov <andy@essentialkaos.com> - 1.19.3-0
+- Nginx updated to 1.19.3
+- BoringSSL updated to the latest version
+- brotli module updated to the latest stable release
+- LuaJIT updated to 2.1-20201012-2
+- NAXSI module updated to 1.1a
+- Fixed bug with using system LuaJIT instead of OpenResty's fork
+
 * Sat Jun 13 2020 Anton Novojilov <andy@essentialkaos.com> - 1.19.0-1
 - Fixed bug with unclosed if condition in postun scriptlet
 - Added dark mode support to error pages

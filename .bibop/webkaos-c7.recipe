@@ -36,18 +36,25 @@ command "-" "Nginx compatibility package"
   service-present nginx
   service-present nginx-debug
 
-command "-" "Configuration backup"
+command "-" "Original configuration backup"
   backup {config}
   backup {modules_config}
 
 command "-" "Add modules configuration"
   copy modules.conf {modules_config}
 
+command "-" "Replace original configuration"
+  copy webkaos.conf {config}
+
 command "-" "Add test DH params file"
   copy dhparam.pem {dh_param}
   chmod {dh_param} 600
 
-command "-" "Brotli module"
+command "-" "Clear old log files"
+  truncate {log_dir}/access.log
+  truncate {log_dir}/error.log
+
+command "-" "Check brotli module"
   exist {prefix_dir}/xtra/brotli.conf
   exist {modules_dir}/ngx_http_brotli_filter_module.so
   exist {modules_dir}/ngx_http_brotli_static_module.so
@@ -55,18 +62,23 @@ command "-" "Brotli module"
   mode {modules_dir}/ngx_http_brotli_filter_module.so 755
   mode {modules_dir}/ngx_http_brotli_static_module.so 755
 
-command "-" "NAXSI module"
+command "-" "Check NAXSI module"
   exist {prefix_dir}/naxsi_core.rules
   exist {modules_dir}/ngx_http_naxsi_module.so
   mode {prefix_dir}/naxsi_core.rules 644
   mode {modules_dir}/ngx_http_naxsi_module.so 755
 
 command "systemctl start {service_name}" "Start service"
-  wait-pid {pid_file} 180
+  wait-pid {pid_file} 5
   service-works {service_name}
+
+command "-" "Make HTTP requests"
   http-status GET "http://127.0.0.1:80" 200
   http-header GET "http://127.0.0.1:80" server webkaos
+  http-contains GET "http://127.0.0.1:80/lua" "LUA MODULE WORKS"
   !empty {log_dir}/access.log
+
+command "-" "Save PID file checksum"
   checksum-read {pid_file} pid_sha
 
 command "service {service_name} upgrade" "Binary upgrade"
@@ -89,8 +101,8 @@ command "service {service_name} reload" "Broken config reload"
 command "service {service_name} restart" "Restart with broken config"
   !exit 0
 
-command "-" "Configuration restore"
-  backup-restore {config}
+command "-" "Restore working configuration"
+  copy webkaos.conf {config}
 
 command "service {service_name} reload" "Reload with original config"
   exit 0
@@ -100,6 +112,29 @@ command "systemctl stop {service_name}" "Stop service"
   !service-works {service_name}
   !connect tcp ":http"
   !exist {pid_file}
+
+command "-" "Clear old log files"
+  truncate {log_dir}/access.log
+  truncate {log_dir}/error.log
+
+command "systemctl start {service_name}-debug" "Start debug version of service"
+  wait-pid {pid_file} 5
+  service-works {service_name}-debug
+
+command "-" "Make HTTP requests"
+  http-status GET "http://127.0.0.1:80" 200
+  http-header GET "http://127.0.0.1:80" server webkaos
+  http-contains GET "http://127.0.0.1:80/lua" "LUA MODULE WORKS"
+
+command "systemctl stop {service_name}-debug" "Stop debug version of service"
+  !wait-pid {pid_file} 5
+  !service-works {service_name}-debug
+  !connect tcp ":http"
+  !exist {pid_file}
+
+command "-" "Configuration restore"
+  backup-restore {config}
+  backup-restore {modules_config}
 
 command "-" "DH param cleanup"
   remove {dh_param}

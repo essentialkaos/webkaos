@@ -79,10 +79,10 @@ check() {
     new_ver_hash=$(getHash "$new_ver_dir/$source_file")
 
     if [[ "$old_ver_hash" == "$new_ver_hash" ]] ; then
-      show " ${CL_GREEN}✔ ${CL_NORM}$source_file"
+      show " ${CL_GREEN}✔  ${CL_NORM}$source_file"
     else
       diff_size=$(getDiffSize "$old_ver_dir/$source_file" "$new_ver_dir/$source_file")
-      show " ${CL_RED}✖ ${CL_NORM}${CL_BOLD}$source_file ${CL_DARK}(± $diff_size lines)${CL_NORM}"
+      show " ${CL_RED}✖  ${CL_NORM}${CL_BOLD}$source_file ${CL_DARK}(± $diff_size lines)${CL_NORM}"
       showDiff "$old_ver_dir/$source_file" "$new_ver_dir/$source_file"
     fi
   done
@@ -148,9 +148,25 @@ checkArgs() {
   local patch_file data_dir old_ver new_ver
   local old_ver_dir new_ver_dir old_ver_pt_dir new_ver_pt_dir
 
+  patch_file="$1"
   data_dir="$2"
   old_ver="$3"
   new_ver="$4"
+
+  if ! head -1 "$patch_file" | grep -q -o 'diff -urN' ; then
+    error "File $patch_file is not a patch file"
+    exit 1
+  fi
+
+  if [[ $(echo "$old_ver" | tr -d '[:digit:].') != "" ]] ; then
+    error "$old_ver is not a valid Nginx version"
+    exit 1
+  fi
+
+  if [[ $(echo "$new_ver" | tr -d '[:digit:].') != "" ]] ; then
+    error "$new_ver is not a valid Nginx version"
+    exit 1
+  fi
 
   old_ver_dir="${data_dir}/nginx-${old_ver}-orig"
   new_ver_dir="${data_dir}/nginx-${new_ver}-orig"
@@ -158,27 +174,27 @@ checkArgs() {
   new_ver_pt_dir="${data_dir}/nginx-${new_ver}"
 
   if [[ ! -e "$data_dir" ]] ; then
-    show "Directory $data_dir doesn't exist" $RED
+    error "Directory $data_dir doesn't exist"
     exit 1
   fi
 
   if [[ ! -e "$old_ver_dir" ]] ; then
-    show "Directory $old_ver_dir doesn't exist" $RED
+    error "Directory $old_ver_dir doesn't exist"
     exit 1
   fi
 
   if [[ ! -e "$new_ver_dir" ]] ; then
-    show "Directory $new_ver_dir doesn't exist" $RED
+    error "Directory $new_ver_dir doesn't exist"
     exit 1
   fi
 
   if [[ ! -e "$old_ver_pt_dir" ]] ; then
-    show "Directory $old_ver_pt_dir doesn't exist" $RED
+    error "Directory $old_ver_pt_dir doesn't exist"
     exit 1
   fi
 
   if [[ ! -e "$new_ver_pt_dir" ]] ; then
-    show "Directory $new_ver_pt_dir doesn't exist" $RED
+    error "Directory $new_ver_pt_dir doesn't exist"
     exit 1
   fi
 }
@@ -193,6 +209,10 @@ show() {
   else
     echo -e "$*"
   fi
+}
+
+error() {
+  show "$*" $RED 1>&2
 }
 
 usage() {

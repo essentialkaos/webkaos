@@ -52,16 +52,16 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define nginx_version        1.19.3
-%define boring_commit        777e1ff3b1443788c5fdb982b3b822aac5448d9e
+%define nginx_version        1.19.4
+%define boring_commit        c3f4612d83f345ef0bb0024ce6086a6a773324ca
 %define lua_module_ver       0.10.15
 %define mh_module_ver        0.33
 %define pcre_ver             8.44
 %define zlib_ver             1.2.11
-%define luajit_ver           2.1-20201012-2
+%define luajit_ver           2.1-20201027
 %define brotli_commit        9aec15e2aa6feea2113119ba06460af70ab3ea62
 %define brotli_ver           1.0.9
-%define naxsi_ver            1.1a
+%define naxsi_ver            1.3
 
 ################################################################################
 
@@ -165,7 +165,7 @@ Links for nginx compatibility.
 
 Summary:           Module for Brotli compression
 Version:           0.1.5
-Release:           0%{?dist}
+Release:           1%{?dist}
 
 Group:             System Environment/Daemons
 Requires:          %{name} = %{nginx_version}
@@ -657,6 +657,12 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Wed Dec 02 2020 Anton Novojilov <andy@essentialkaos.com> - 1.19.4-0
+- Nginx updated to 1.19.4
+- BoringSSL updated to the latest version
+- LuaJIT updated to 2.1-20201027
+- NAXSI module updated to 1.3
+
 * Mon Oct 26 2020 Anton Novojilov <andy@essentialkaos.com> - 1.19.3-0
 - Nginx updated to 1.19.3
 - BoringSSL updated to the latest version

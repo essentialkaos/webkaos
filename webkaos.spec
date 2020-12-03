@@ -52,7 +52,7 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define nginx_version        1.19.4
+%define nginx_version        1.19.5
 %define boring_commit        c3f4612d83f345ef0bb0024ce6086a6a773324ca
 %define lua_module_ver       0.10.15
 %define mh_module_ver        0.33
@@ -165,7 +165,7 @@ Links for nginx compatibility.
 
 Summary:           Module for Brotli compression
 Version:           0.1.5
-Release:           1%{?dist}
+Release:           2%{?dist}
 
 Group:             System Environment/Daemons
 Requires:          %{name} = %{nginx_version}
@@ -179,7 +179,7 @@ Module for Brotli compression.
 
 Summary:           High performance, low rules maintenance WAF
 Version:           %{naxsi_ver}
-Release:           0%{?dist}
+Release:           1%{?dist}
 
 Group:             System Environment/Daemons
 Requires:          %{name} = %{nginx_version}
@@ -657,6 +657,9 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Thu Dec 03 2020 Anton Novojilov <andy@essentialkaos.com> - 1.19.5-0
+- Nginx updated to 1.19.5
+
 * Wed Dec 02 2020 Anton Novojilov <andy@essentialkaos.com> - 1.19.4-0
 - Nginx updated to 1.19.4
 - BoringSSL updated to the latest version

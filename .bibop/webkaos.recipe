@@ -1,10 +1,11 @@
-# Bibop recipe for webkaos (CentOS 7)
+# Bibop recipe for webkaos (CentOS 7+)
 # See more: https://kaos.sh/bibop
 
 pkg webkaos webkaos-debug webkaos-nginx webkaos-module-brotli webkaos-module-naxsi
 
 require-root yes
 unsafe-actions yes
+https-skip-verify yes
 
 var service_name webkaos
 var user_name webkaos
@@ -13,7 +14,8 @@ var config {prefix_dir}/webkaos.conf
 var modules_config {prefix_dir}/modules.conf
 var modules_dir /usr/share/webkaos/modules
 var pid_file /var/run/webkaos.pid
-var dh_param /etc/webkaos/ssl/dhparam.pem
+var ssl_dir {prefix_dir}/ssl
+var dh_param {ssl_dir}/dhparam.pem
 var log_dir /var/log/webkaos
 
 command "-" "System environment validation"
@@ -50,7 +52,15 @@ command "-" "Add test DH params file"
   copy dhparam.pem {dh_param}
   chmod {dh_param} 600
 
+command "-" "Add self-signed certificate"
+  copy ssl.key {ssl_dir}/ssl.key
+  copy ssl.crt {ssl_dir}/ssl.crt
+  chmod {ssl_dir}/ssl.key 600
+  chmod {ssl_dir}/ssl.crt 600
+
 command "-" "Clear old log files"
+  touch {log_dir}/access.log
+  touch {log_dir}/error.log
   truncate {log_dir}/access.log
   truncate {log_dir}/error.log
 
@@ -73,10 +83,18 @@ command "systemctl start {service_name}" "Start service"
   service-works {service_name}
 
 command "-" "Make HTTP requests"
-  http-status GET "http://127.0.0.1:80" 200
-  http-header GET "http://127.0.0.1:80" server webkaos
-  http-contains GET "http://127.0.0.1:80/lua" "LUA MODULE WORKS"
+  http-status GET "http://127.0.0.1" 200
+  http-header GET "http://127.0.0.1" server webkaos
+  http-contains GET "http://127.0.0.1/lua" "LUA MODULE WORKS"
   !empty {log_dir}/access.log
+  truncate {log_dir}/access.log
+
+command "-" "Make HTTPS requests"
+  http-status GET "https://127.0.0.1" 200
+  http-header GET "https://127.0.0.1" server webkaos
+  http-contains GET "https://127.0.0.1/lua" "LUA MODULE WORKS"
+  !empty {log_dir}/access.log
+  truncate {log_dir}/access.log
 
 command "-" "Save PID file checksum"
   checksum-read {pid_file} pid_sha
@@ -85,7 +103,7 @@ command "service {service_name} upgrade" "Binary upgrade"
   wait 3
   exist {pid_file}
   service-works {service_name}
-  http-status GET "http://127.0.0.1:80" 200
+  http-status GET "http://127.0.0.1" 200
   !checksum {pid_file} {pid_sha}
 
 command "-" "Update configuration to broken one"
@@ -122,9 +140,18 @@ command "systemctl start {service_name}-debug" "Start debug version of service"
   service-works {service_name}-debug
 
 command "-" "Make HTTP requests"
-  http-status GET "http://127.0.0.1:80" 200
-  http-header GET "http://127.0.0.1:80" server webkaos
-  http-contains GET "http://127.0.0.1:80/lua" "LUA MODULE WORKS"
+  http-status GET "http://127.0.0.1" 200
+  http-header GET "http://127.0.0.1" server webkaos
+  http-contains GET "http://127.0.0.1/lua" "LUA MODULE WORKS"
+  !empty {log_dir}/access.log
+  truncate {log_dir}/access.log
+
+command "-" "Make HTTPS requests"
+  http-status GET "https://127.0.0.1" 200
+  http-header GET "https://127.0.0.1" server webkaos
+  http-contains GET "https://127.0.0.1/lua" "LUA MODULE WORKS"
+  !empty {log_dir}/access.log
+  truncate {log_dir}/access.log
 
 command "systemctl stop {service_name}-debug" "Stop debug version of service"
   !wait-pid {pid_file} 5
@@ -138,3 +165,7 @@ command "-" "Configuration restore"
 
 command "-" "DH param cleanup"
   remove {dh_param}
+
+command "-" "Self-signed certificate cleanup"
+  remove {ssl_dir}/ssl.key
+  remove {ssl_dir}/ssl.crt

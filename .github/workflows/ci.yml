@@ -59,3 +59,20 @@ jobs:
       - name: Check Docker files
         run: |
           ./hadolint centos7.docker
+
+  Bibop:
+    name: Bibop Recipe Validation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v2
+
+      - name: Install bibop
+        run: bash <(curl -fsSL https://apps.kaos.st/get) bibop
+
+      - name: Print bibop version
+        run: ./bibop --version
+
+      - name: Validate bibop recipe
+        run: ./bibop -D .bibop/webkaos.recipe

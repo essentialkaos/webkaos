@@ -52,13 +52,16 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define nginx_version        1.19.5
-%define boring_commit        c3f4612d83f345ef0bb0024ce6086a6a773324ca
-%define lua_module_ver       0.10.15
+%define nginx_version        1.19.7
+%define boring_commit        04b3213d43492b6c9e0434d8e2a4530a9938f958
+%define lua_module_ver       0.10.19
+%define lua_resty_core_ver   0.1.21
+%define lua_resty_lru_ver    0.10
 %define mh_module_ver        0.33
 %define pcre_ver             8.44
 %define zlib_ver             1.2.11
-%define luajit_ver           2.1-20201027
+%define luajit_ver           2.1-20201229
+%define luajit_raw_ver       2.1.0-beta3
 %define brotli_commit        9aec15e2aa6feea2113119ba06460af70ab3ea62
 %define brotli_ver           1.0.9
 %define naxsi_ver            1.3
@@ -99,6 +102,8 @@ Source55:             https://github.com/openresty/luajit2/archive/v%{luajit_ver
 Source56:             https://github.com/google/ngx_brotli/archive/%{brotli_commit}.tar.gz
 Source57:             https://github.com/google/brotli/archive/v%{brotli_ver}.tar.gz
 Source58:             https://github.com/nbs-system/naxsi/archive/%{naxsi_ver}.tar.gz
+Source59:             https://github.com/openresty/lua-resty-core/archive/v%{lua_resty_core_ver}.tar.gz
+Source60:             https://github.com/openresty/lua-resty-lrucache/archive/v%{lua_resty_lru_ver}.tar.gz
 
 Source100:            checksum.sha512
 
@@ -109,8 +114,6 @@ Patch2:               %{name}-dynamic-tls-records.patch
 # https://github.com/ajhaydock/BoringNginx/blob/master/patches
 Patch3:               boringssl.patch
 Patch5:               boringssl-tls13-support.patch
-# For resty-core, lua-nginx-module 0.10.16 is required but it not released yet
-Patch7:               resty-core-disable.patch
 Patch8:               boringssl-urand-test-disable.patch
 
 BuildRoot:            %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -165,7 +168,7 @@ Links for nginx compatibility.
 
 Summary:           Module for Brotli compression
 Version:           0.1.5
-Release:           2%{?dist}
+Release:           3%{?dist}
 
 Group:             System Environment/Daemons
 Requires:          %{name} = %{nginx_version}
@@ -179,7 +182,7 @@ Module for Brotli compression.
 
 Summary:           High performance, low rules maintenance WAF
 Version:           %{naxsi_ver}
-Release:           1%{?dist}
+Release:           2%{?dist}
 
 Group:             System Environment/Daemons
 Requires:          %{name} = %{nginx_version}
@@ -205,6 +208,8 @@ tar xzvf %{SOURCE55}
 tar xzvf %{SOURCE56}
 tar xzvf %{SOURCE57}
 tar xzvf %{SOURCE58}
+tar xzvf %{SOURCE59}
+tar xzvf %{SOURCE60}
 
 %patch0 -p1
 %patch1 -p1
@@ -214,10 +219,6 @@ tar xzvf %{SOURCE58}
 pushd boringssl
 %patch5 -p1
 %patch8 -p1
-popd
-
-pushd lua-nginx-module-%{lua_module_ver}
-%patch7 -p1
 popd
 
 %build
@@ -239,14 +240,13 @@ export PATH="/opt/rh/devtoolset-7/root/usr/bin:$PATH"
 export LUAJIT2_DIR=$(pwd)/luajit2-%{luajit_ver}
 
 pushd luajit2-%{luajit_ver}
-  %{__make} %{?_smp_mflags}
+  %{__make} %{?_smp_mflags} PREFIX=%{_datadir}/%{name}/luajit
   %{__make} install DESTDIR=$LUAJIT2_DIR/build \
-                    PREFIX=/ \
-                    INSTALL_LIB=$LUAJIT2_DIR/build/lib
+                    PREFIX=%{_datadir}/%{name}/luajit
 popd
 
-export LUAJIT_LIB="$LUAJIT2_DIR/build/lib"
-export LUAJIT_INC="$LUAJIT2_DIR/build/include/luajit-2.1"
+export LUAJIT_LIB="$LUAJIT2_DIR/build%{_datadir}/%{name}/luajit/lib"
+export LUAJIT_INC="$LUAJIT2_DIR/build%{_datadir}/%{name}/luajit/include/luajit-2.1"
 
 # BoringSSL Build ##############################################################
 
@@ -505,8 +505,18 @@ install -dm 755 %{buildroot}%{_sysconfdir}/%{name}/ssl
 # Install LuaJIT
 install -dm 755 %{buildroot}%{_datadir}/%{name}/luajit
 
-cp -rp luajit2-%{luajit_ver}/build/* \
+cp -rp luajit2-%{luajit_ver}/build%{_datadir}/%{name}/luajit/* \
        %{buildroot}%{_datadir}/%{name}/luajit/
+
+rm -f %{buildroot}%{_datadir}/%{name}/luajit/lib/*.a
+rm -rf %{buildroot}%{_datadir}/%{name}/luajit/bin
+
+cp -rp lua-resty-core-%{lua_resty_core_ver}/lib/* \
+       %{buildroot}%{_datadir}/%{name}/luajit/share/luajit-%{luajit_raw_ver}/
+cp -rp lua-resty-lrucache-%{lua_resty_lru_ver}/lib/resty/* \
+       %{buildroot}%{_datadir}/%{name}/luajit/share/luajit-%{luajit_raw_ver}/resty/
+
+find %{buildroot}%{_datadir}/%{name}/luajit/share/luajit-%{luajit_raw_ver}/ -name '*.md' -delete
 
 # Modules installation
 cp -rp %{_builddir}/nginx-%{nginx_version}/objs/*.so \
@@ -657,6 +667,12 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Tue Mar 09 2021 Anton Novojilov <andy@essentialkaos.com> - 1.19.7-0
+- Nginx updated to 1.19.7
+- BoringSSL updated to the latest version
+- LuaJIT updated to 2.1-20201027
+- Lua module updated to 0.10.19
+
 * Thu Dec 03 2020 Anton Novojilov <andy@essentialkaos.com> - 1.19.5-0
 - Nginx updated to 1.19.5
 

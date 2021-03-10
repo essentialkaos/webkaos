@@ -18,6 +18,9 @@ var ssl_dir {prefix_dir}/ssl
 var dh_param {ssl_dir}/dhparam.pem
 var log_dir /var/log/webkaos
 
+var lua_ver 2.1.0-beta3
+var lua_dir /usr/share/webkaos/luajit/share/luajit-{lua_ver}
+
 command "-" "System environment validation"
   user-exist {user_name}
   group-exist {user_name}
@@ -29,6 +32,84 @@ command "-" "System environment validation"
 command "-" "Debug version"
   exist /usr/sbin/webkaos.debug
   service-present webkaos-debug
+
+command "-" "Check linking with LuaJIT"
+  lib-linked /usr/sbin/webkaos "libluajit-5.1.so.*"
+
+command "-" "Check Resty core and lrucache"
+  dir {lua_dir}/ngx
+  dir {lua_dir}/ngx/ssl
+  dir {lua_dir}/resty
+  dir {lua_dir}/resty/core
+  dir {lua_dir}/resty/lrucache
+
+  exist {lua_dir}/ngx/balancer.lua
+  exist {lua_dir}/ngx/base64.lua
+  exist {lua_dir}/ngx/errlog.lua
+  exist {lua_dir}/ngx/ocsp.lua
+  exist {lua_dir}/ngx/pipe.lua
+  exist {lua_dir}/ngx/process.lua
+  exist {lua_dir}/ngx/re.lua
+  exist {lua_dir}/ngx/req.lua
+  exist {lua_dir}/ngx/resp.lua
+  exist {lua_dir}/ngx/semaphore.lua
+  exist {lua_dir}/ngx/ssl.lua
+  exist {lua_dir}/ngx/ssl/session.lua
+  exist {lua_dir}/resty/core.lua
+  exist {lua_dir}/resty/lrucache.lua
+  exist {lua_dir}/resty/core/base.lua
+  exist {lua_dir}/resty/core/base64.lua
+  exist {lua_dir}/resty/core/ctx.lua
+  exist {lua_dir}/resty/core/exit.lua
+  exist {lua_dir}/resty/core/hash.lua
+  exist {lua_dir}/resty/core/misc.lua
+  exist {lua_dir}/resty/core/ndk.lua
+  exist {lua_dir}/resty/core/phase.lua
+  exist {lua_dir}/resty/core/regex.lua
+  exist {lua_dir}/resty/core/request.lua
+  exist {lua_dir}/resty/core/response.lua
+  exist {lua_dir}/resty/core/shdict.lua
+  exist {lua_dir}/resty/core/socket.lua
+  exist {lua_dir}/resty/core/time.lua
+  exist {lua_dir}/resty/core/uri.lua
+  exist {lua_dir}/resty/core/utils.lua
+  exist {lua_dir}/resty/core/var.lua
+  exist {lua_dir}/resty/core/worker.lua
+  exist {lua_dir}/resty/lrucache/pureffi.lua
+
+  mode {lua_dir}/ngx/balancer.lua 644
+  mode {lua_dir}/ngx/base64.lua 644
+  mode {lua_dir}/ngx/errlog.lua 644
+  mode {lua_dir}/ngx/ocsp.lua 644
+  mode {lua_dir}/ngx/pipe.lua 644
+  mode {lua_dir}/ngx/process.lua 644
+  mode {lua_dir}/ngx/re.lua 644
+  mode {lua_dir}/ngx/req.lua 644
+  mode {lua_dir}/ngx/resp.lua 644
+  mode {lua_dir}/ngx/semaphore.lua 644
+  mode {lua_dir}/ngx/ssl.lua 644
+  mode {lua_dir}/ngx/ssl/session.lua 644
+  mode {lua_dir}/resty/core.lua 644
+  mode {lua_dir}/resty/lrucache.lua 644
+  mode {lua_dir}/resty/core/base.lua 644
+  mode {lua_dir}/resty/core/base64.lua 644
+  mode {lua_dir}/resty/core/ctx.lua 644
+  mode {lua_dir}/resty/core/exit.lua 644
+  mode {lua_dir}/resty/core/hash.lua 644
+  mode {lua_dir}/resty/core/misc.lua 644
+  mode {lua_dir}/resty/core/ndk.lua 644
+  mode {lua_dir}/resty/core/phase.lua 644
+  mode {lua_dir}/resty/core/regex.lua 644
+  mode {lua_dir}/resty/core/request.lua 644
+  mode {lua_dir}/resty/core/response.lua 644
+  mode {lua_dir}/resty/core/shdict.lua 644
+  mode {lua_dir}/resty/core/socket.lua 644
+  mode {lua_dir}/resty/core/time.lua 644
+  mode {lua_dir}/resty/core/uri.lua 644
+  mode {lua_dir}/resty/core/utils.lua 644
+  mode {lua_dir}/resty/core/var.lua 644
+  mode {lua_dir}/resty/core/worker.lua 644
+  mode {lua_dir}/resty/lrucache/pureffi.lua 644
 
 command "-" "Nginx compatibility package"
   exist /etc/nginx

@@ -11,6 +11,7 @@ var service_name webkaos
 var user_name webkaos
 var prefix_dir /etc/webkaos
 var config {prefix_dir}/webkaos.conf
+var binary /usr/sbin/webkaos
 var modules_config {prefix_dir}/modules.conf
 var modules_dir /usr/share/webkaos/modules
 var pid_file /var/run/webkaos.pid
@@ -30,11 +31,12 @@ command "-" "System environment validation"
   exist {log_dir}
 
 command "-" "Debug version"
-  exist /usr/sbin/webkaos.debug
+  exist {binary}.debug
   service-present webkaos-debug
 
 command "-" "Check linking with LuaJIT"
-  lib-linked /usr/sbin/webkaos "libluajit-5.1.so.*"
+  lib-rpath {binary} /usr/share/webkaos/luajit/lib
+  lib-linked {binary} "libluajit-5.1.so.*"
 
 command "-" "Check Resty core and lrucache"
   dir {lua_dir}/ngx

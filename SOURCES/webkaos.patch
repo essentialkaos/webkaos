@@ -108,7 +108,7 @@ diff -urN nginx-1.19.7-orig/src/http/modules/ngx_http_autoindex_module.c nginx-1
      static u_char  header[] =
 -        "</title></head>" CRLF
 +        "</title>" CRLF
-+        "<style>html,body{background-color:#FFF;color:#666;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;margin:12px}pre{font:300 .9em/1.4em 'Consolas','Droid Sans Mono','Menlo','Courier New',Courier,monospace}hr{border:none;background-color:#CCC;height:1px}h1{font-weight:200;color:#888;font-size:2.2em}a{color:#333}a:hover{color:#666}#dir{font-weight:bold}h1 span{color:#444}</style>" CRLF
++        "<style>html,body{background-color:#FFF;color:#666;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;margin:12px}pre{font:300 .9em/1.4em 'JetBrains Mono','Consolas','Droid Sans Mono','Menlo','Courier New',Courier,monospace}hr{border:none;background-color:#CCC;height:1px}h1{font-weight:200;color:#888;font-size:2.2em}a{color:#333}a:hover{color:#666}#dir{font-weight:bold}h1 span{color:#444}</style>" CRLF
 +        "</head>" CRLF
          "<body>" CRLF
 -        "<h1>Index of "

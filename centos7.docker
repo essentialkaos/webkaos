@@ -2,13 +2,13 @@
 
 FROM centos:7
 
-ENV WK_VERSION 1.19.9
+ENV WK_VERSION 1.21.0
 
 LABEL name="WEBKAOS Image on CentOS 7" \
       vendor="ESSENTIAL KAOS" \
       maintainer="Anton Novojilov" \
       license="EKOL" \
-      version="2020.05.01"
+      version="2020.06.01"
 
 # hadolint ignore=DL3031,DL3033
 RUN yum -y -q install https://yum.kaos.st/kaos-repo-latest.el7.noarch.rpm && \
@@ -17,8 +17,8 @@ RUN yum -y -q install https://yum.kaos.st/kaos-repo-latest.el7.noarch.rpm && \
     yum clean all && \
     rm -rf /var/cache/yum
 
-RUN ln -sf /dev/stdout /var/log/webkaos/access.log \
-    && ln -sf /dev/stderr /var/log/webkaos/error.log
+RUN ln -sf /dev/stdout /var/log/webkaos/access.log && \
+    ln -sf /dev/stderr /var/log/webkaos/error.log
 
 EXPOSE 80
 

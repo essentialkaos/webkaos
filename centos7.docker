@@ -1,6 +1,6 @@
 ## WEBKAOS IMAGE ###############################################################
 
-FROM centos:7
+FROM essentialkaos/centos:7
 
 ENV WK_VERSION 1.21.0
 
@@ -8,11 +8,10 @@ LABEL name="WEBKAOS Image on CentOS 7" \
       vendor="ESSENTIAL KAOS" \
       maintainer="Anton Novojilov" \
       license="EKOL" \
-      version="2020.06.01"
+      version="2020.07.21"
 
 # hadolint ignore=DL3031,DL3033
 RUN yum -y -q install https://yum.kaos.st/kaos-repo-latest.el7.noarch.rpm && \
-    yum -y update && \
     yum -y -q install webkaos-${WK_VERSION} webkaos-module-brotli && \
     yum clean all && \
     rm -rf /var/cache/yum

@@ -242,13 +242,13 @@ command "systemctl stop {service_name}-debug" "Stop debug version of service"
   !connect tcp ":http"
   !exist {pid_file}
 
-command "-" "Configuration restore"
+command:teardown "-" "Configuration restore"
   backup-restore {config}
   backup-restore {modules_config}
 
-command "-" "DH param cleanup"
+command:teardown "-" "DH param cleanup"
   remove {dh_param}
 
-command "-" "Self-signed certificate cleanup"
+command:teardown "-" "Self-signed certificate cleanup"
   remove {ssl_dir}/ssl.key
   remove {ssl_dir}/ssl.crt

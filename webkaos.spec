@@ -52,13 +52,13 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define nginx_version        1.21.0
-%define boring_commit        4749d8fb89ba5d765e0afa1799805b5096cb337b
+%define nginx_version        1.21.3
+%define boring_commit        25773430c07075a368416c3646fa4b07daf4968a
 %define lua_module_ver       0.10.19
-%define lua_resty_core_ver   0.1.21
-%define lua_resty_lru_ver    0.10
+%define lua_resty_core_ver   0.1.22
+%define lua_resty_lru_ver    0.11
 %define mh_module_ver        0.33
-%define pcre_ver             8.44
+%define pcre_ver             8.45
 %define zlib_ver             1.2.11
 %define luajit_ver           2.1-20210510
 %define luajit_raw_ver       2.1.0-beta3
@@ -92,6 +92,8 @@ Source23:             bots.conf
 Source24:             brotli.conf
 
 Source30:             %{name}-index.html
+Source31:             default.key
+Source32:             default.crt
 
 Source50:             https://github.com/openresty/lua-nginx-module/archive/v%{lua_module_ver}.tar.gz
 Source51:             https://boringssl.googlesource.com/boringssl/+archive/%{boring_commit}.tar.gz
@@ -168,7 +170,7 @@ Links for nginx compatibility.
 
 Summary:           Module for Brotli compression
 Version:           0.1.5
-Release:           5%{?dist}
+Release:           6%{?dist}
 
 Group:             System Environment/Daemons
 Requires:          %{name} = %{nginx_version}
@@ -182,7 +184,7 @@ Module for Brotli compression.
 
 Summary:           High performance, low rules maintenance WAF
 Version:           %{naxsi_ver}
-Release:           4%{?dist}
+Release:           5%{?dist}
 
 Group:             System Environment/Daemons
 Requires:          %{name} = %{nginx_version}
@@ -500,7 +502,13 @@ install -pm 644 %{SOURCE3} \
 install -pm 644 %{_builddir}/nginx-%{nginx_version}/objs/%{name}.debug \
                 %{buildroot}%{_sbindir}/%{name}.debug
 
+# Create directory for certificates and copy dummy certificate
 install -dm 755 %{buildroot}%{_sysconfdir}/%{name}/ssl
+
+install -pm 600 %{SOURCE31} \
+                %{buildroot}%{_sysconfdir}/%{name}/ssl
+install -pm 600 %{SOURCE32} \
+                %{buildroot}%{_sysconfdir}/%{name}/ssl
 
 # Install LuaJIT
 install -dm 755 %{buildroot}%{_datadir}/%{name}/luajit
@@ -598,7 +606,6 @@ rm -rf %{buildroot}
 %{_sbindir}/%{name}
 
 %dir %{_sysconfdir}/%{name}
-%dir %{_sysconfdir}/%{name}/ssl
 %dir %{_sysconfdir}/%{name}/conf.d
 %dir %{_sysconfdir}/%{name}/stream.conf.d
 
@@ -608,6 +615,9 @@ rm -rf %{buildroot}
 %config %{_sysconfdir}/%{name}/xtra/ssl.conf
 %config %{_sysconfdir}/%{name}/xtra/ssl-wildcard.conf
 %config %{_sysconfdir}/%{name}/xtra/bots.conf
+
+%config(noreplace) %{_sysconfdir}/%{name}/ssl/default.key
+%config(noreplace) %{_sysconfdir}/%{name}/ssl/default.crt
 
 %config %{_sysconfdir}/%{name}/mime.types
 %config %{_sysconfdir}/%{name}/fastcgi_params
@@ -667,6 +677,14 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Wed Sep 08 2021 Anton Novojilov <andy@essentialkaos.com> - 1.21.3-0
+- Nginx updated to 1.21.3
+- BoringSSL updated to the latest version
+- PCRE updated to 8.45
+- lua-resty-core updated to 0.1.22
+- lua-resty-lru updated to 0.11
+- Improved default configuration file
+
 * Wed May 26 2021 Anton Novojilov <andy@essentialkaos.com> - 1.21.0-0
 - Nginx updated to 1.21.0 with fix for CVE-2021-23017
 - BoringSSL updated to the latest version

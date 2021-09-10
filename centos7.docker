@@ -2,11 +2,13 @@
 
 FROM essentialkaos/centos:7
 
-LABEL name="WEBKAOS Image on CentOS 7" \
-      vendor="ESSENTIAL KAOS" \
-      maintainer="Anton Novojilov" \
-      license="EKOL" \
-      version="2020.08.21"
+LABEL org.opencontainers.image.title="WEBKAOS" \
+      org.opencontainers.image.description="WEBKAOS Image on CentOS 7" \
+      org.opencontainers.image.vendor="ESSENTIAL KAOS" \
+      org.opencontainers.image.authors="Anton Novojilov" \
+      org.opencontainers.image.licenses="Apache-2.0" \
+      org.opencontainers.image.url="https://kaos.sh/webkaos" \
+      org.opencontainers.image.source="https://github.com/essentialkaos/webkaos"
 
 # hadolint ignore=DL3031,DL3033
 RUN yum -y -q install https://yum.kaos.st/kaos-repo-latest.el7.noarch.rpm && \

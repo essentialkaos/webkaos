@@ -21,61 +21,37 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Run Perfecto docker image
-        uses: docker://essentialkaos/perfecto:micro
+      - name: Check spec with Perfecto
+        uses: essentialkaos/perfecto-action@v1
         with:
-          args: --version
-
-      - name: Install perfecto-docker
-        run: |
-          wget https://kaos.sh/perfecto/perfecto-docker
-          chmod +x perfecto-docker
-
-      - name: Run Perfecto check
-        env:
-          IMAGE: essentialkaos/perfecto:micro
-        run: |
-          ./perfecto-docker webkaos.spec
+          files: webkaos.spec
 
   Hadolint:
     name: Hadolint
     runs-on: ubuntu-latest
 
-    env:
-      HADOLINT_VERSION: 2.6.1
-
     steps:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Install Hadolint
-        run: |
-          wget -O hadolint https://github.com/hadolint/hadolint/releases/download/v${HADOLINT_VERSION}/hadolint-Linux-x86_64
-          chmod +x hadolint
-      
-      - name: Print Hadolint version info
-        run: ./hadolint --version
-
-      - name: Check Docker files
-        run: |
-          ./hadolint centos7.docker
+      - name: Check dockerfiles with Hadolint
+        uses: essentialkaos/hadolint-action@v1
+        with:
+          files: centos7.docker
 
   Bibop:
-    name: Bibop Recipe Validation
+    name: Bibop
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout source code
         uses: actions/checkout@v2
 
-      - name: Install bibop
-        run: bash <(curl -fsSL https://apps.kaos.st/get) bibop
-
-      - name: Print bibop version
-        run: ./bibop --version
-
-      - name: Validate bibop recipe
-        run: ./bibop -D .bibop/webkaos.recipe
+      - name: Run test recipes with Bibop
+        uses: essentialkaos/bibop-action@v1
+        with:
+          recipe: .bibop/webkaos.recipe
+          dry-run: true
 
   DockerBuild:
     name: Docker Build Check

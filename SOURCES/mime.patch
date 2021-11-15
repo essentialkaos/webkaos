@@ -1,21 +1,12 @@
-diff -urN nginx-1.15.1-orig/conf/mime.types nginx-1.15.1/conf/mime.types
---- nginx-1.15.1-orig/conf/mime.types	2018-07-03 18:07:44.000000000 +0300
-+++ nginx-1.15.1/conf/mime.types	2018-07-04 02:10:22.000000000 +0300
-@@ -16,7 +16,7 @@
-     text/x-component                                 htc;
+diff -urN nginx-1.21.4-orig/conf/mime.types nginx-1.21.4-mime/conf/mime.types
+--- nginx-1.21.4-orig/conf/mime.types	2021-11-02 17:49:22.000000000 +0300
++++ nginx-1.21.4-mime/conf/mime.types	2021-11-13 13:52:45.000000000 +0300
+@@ -27,6 +27,8 @@
  
-     image/png                                        png;
--    image/svg+xml                                    svg svgz;
-+    image/svg+xml                                    svg svgz xng;
-     image/tiff                                       tif tiff;
-     image/vnd.wap.wbmp                               wbmp;
-     image/webp                                       webp;
-@@ -24,6 +24,8 @@
-     image/x-jng                                      jng;
-     image/x-ms-bmp                                   bmp;
- 
-+    application/x-font-ttf                           ttf;
-+    application/vnd.ms-opentype                      otf;
      font/woff                                        woff;
      font/woff2                                       woff2;
++    application/x-font-ttf                           ttf;
++    application/vnd.ms-opentype                      otf;
  
+     application/java-archive                         jar war ear;
+     application/json                                 json;

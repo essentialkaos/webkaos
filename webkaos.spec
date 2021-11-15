@@ -52,9 +52,9 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define nginx_version        1.21.3
-%define boring_commit        25773430c07075a368416c3646fa4b07daf4968a
-%define lua_module_ver       0.10.19
+%define nginx_version        1.21.4
+%define boring_commit        a9670a8b476470e6f874fef3554e8059683e1413
+%define lua_module_ver       0.10.20
 %define lua_resty_core_ver   0.1.22
 %define lua_resty_lru_ver    0.11
 %define mh_module_ver        0.33
@@ -98,7 +98,7 @@ Source32:             default.crt
 Source50:             https://github.com/openresty/lua-nginx-module/archive/v%{lua_module_ver}.tar.gz
 Source51:             https://boringssl.googlesource.com/boringssl/+archive/%{boring_commit}.tar.gz
 Source52:             https://github.com/openresty/headers-more-nginx-module/archive/v%{mh_module_ver}.tar.gz
-Source53:             https://ftp.pcre.org/pub/pcre/pcre-%{pcre_ver}.tar.gz
+Source53:             https://downloads.sourceforge.net/project/pcre/pcre/%{pcre_ver}/pcre-%{pcre_ver}.tar.gz
 Source54:             https://zlib.net/zlib-%{zlib_ver}.tar.gz
 Source55:             https://github.com/openresty/luajit2/archive/v%{luajit_ver}.tar.gz
 Source56:             https://github.com/google/ngx_brotli/archive/%{brotli_commit}.tar.gz
@@ -170,7 +170,7 @@ Links for nginx compatibility.
 
 Summary:           Module for Brotli compression
 Version:           0.1.5
-Release:           6%{?dist}
+Release:           7%{?dist}
 
 Group:             System Environment/Daemons
 Requires:          %{name} = %{nginx_version}
@@ -184,7 +184,7 @@ Module for Brotli compression.
 
 Summary:           High performance, low rules maintenance WAF
 Version:           %{naxsi_ver}
-Release:           5%{?dist}
+Release:           6%{?dist}
 
 Group:             System Environment/Daemons
 Requires:          %{name} = %{nginx_version}
@@ -677,6 +677,12 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Sat Nov 13 2021 Anton Novojilov <andy@essentialkaos.com> - 1.21.4-0
+- Nginx updated to 1.21.4
+- BoringSSL updated to the latest version
+- lua-nginx-module updated to 0.10.20
+- Updated link to PCRE
+
 * Wed Sep 08 2021 Anton Novojilov <andy@essentialkaos.com> - 1.21.3-0
 - Nginx updated to 1.21.3
 - BoringSSL updated to the latest version

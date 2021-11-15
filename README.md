@@ -48,6 +48,6 @@ rpmbuilder webkaos.spec -3 -V -di
 
 ### License
 
-BSD 2-clause
+[BSD 2-clause](LICENSE)
 
 <p align="center"><a href="https://essentialkaos.com"><img src="https://gh.kaos.st/ekgh.svg"/></a></p>

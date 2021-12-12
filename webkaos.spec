@@ -71,7 +71,7 @@
 Summary:              Superb high performance web server
 Name:                 webkaos
 Version:              %{nginx_version}
-Release:              0%{?dist}
+Release:              1%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 URL:                  https://kaos.sh/webkaos
@@ -677,6 +677,9 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Sat Dec 11 2021 Anton Novojilov <andy@essentialkaos.com> - 1.21.4-1
+- Removed duplicate of $http_referer from timed_combined log format
+
 * Sat Nov 13 2021 Anton Novojilov <andy@essentialkaos.com> - 1.21.4-0
 - Nginx updated to 1.21.4
 - BoringSSL updated to the latest version

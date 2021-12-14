@@ -15,8 +15,15 @@ RUN yum -y -q install https://yum.kaos.st/kaos-repo-latest.el7.noarch.rpm && \
     yum -y -q install webkaos webkaos-module-brotli && \
     yum clean all && \
     rm -rf /var/cache/yum && \
+    rm -rf /tmp/* && \
+    rm -rf /var/tmp/* && \
     ln -sf /dev/stdout /var/log/webkaos/access.log && \
     ln -sf /dev/stderr /var/log/webkaos/error.log
+
+COPY SOURCES/webkaos-docker.conf /etc/webkaos/webkaos.conf
+COPY .docker/entrypoint.sh /
+
+ENTRYPOINT ["/entrypoint.sh"]
 
 EXPOSE 80
 

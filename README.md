@@ -29,12 +29,24 @@
 
 Official webkaos images available on [Docker Hub](http://kaos.sh/d/webkaos).
 
-Simple usage example:
+Usage examples:
 
 ```bash
 docker run --name my-webkaos -v /some/content:/usr/share/webkaos/html:ro -p 8080:80 -d essentialkaos/webkaos:centos7
 
 ```
+
+```bash
+docker run --name my-webkaos -v /some/content:/usr/share/webkaos/html:ro -p 8080:8080 -d essentialkaos/webkaos:centos7-unprivileged
+
+```
+
+Useful environment variables:
+
+* `WEBKAOS_ENABLE_ENTRYPOINT_LOGS` - Enable logging for actions made by entrypoint script;
+* `WEBKAOS_DISABLE_PROC_TUNE` - Disable automatic `worker_processes` tuning;
+* `WEBKAOS_DISABLE_BUCKET_TUNE` - Disable automatic `server_names_hash_bucket_size` tuning.
+
 
 #### Using [rpmbuilder](https://github.com/essentialkaos/rpmbuilder)
 

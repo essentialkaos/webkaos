@@ -71,10 +71,14 @@ configureProcNum() {
       log "Can't find any limits in cgroups, 'worker_processes' will be set to \"$cpu_num\""
       cpu_limits="$cpu_num"
     else
-      log "Limits set by CGroupsV2, 'worker_processes' will be set to \"$cpu_limits\""
+      if [[ "$cpu_limits" != "$cpu_num" ]] ; then
+        log "Limits set by CGroupsV2, 'worker_processes' will be set to \"$cpu_limits\""
+      fi
     fi
   else
-    log "Limits set by CGroupsV1, 'worker_processes' will be set to \"$cpu_limits\""
+    if [[ "$cpu_limits" != "$cpu_num" ]] ; then
+      log "Limits set by CGroupsV1, 'worker_processes' will be set to \"$cpu_limits\""
+    fi
   fi
 
   cpu_num=$(minCPU "$cpu_num" "$cpu_limits")

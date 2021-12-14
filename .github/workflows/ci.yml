@@ -37,7 +37,7 @@ jobs:
       - name: Check scripts with Shellcheck
         uses: essentialkaos/shellcheck-action@v1
         with:
-          files: .docker/*.sh
+          files: .docker/entrypoint.sh
 
   Hadolint:
     name: Hadolint

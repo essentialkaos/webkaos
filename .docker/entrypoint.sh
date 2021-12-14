@@ -55,7 +55,7 @@ configureProcNum() {
       doExit 1
       return
     else
-      log "Workers num tuning is disabled, configuration property 'worker_processes' set to \"auto\""
+      log "Workers number tuning is disabled, configuration property 'worker_processes' set to \"auto\""
     fi
   fi
 

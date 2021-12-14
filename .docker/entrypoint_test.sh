@@ -94,6 +94,8 @@ unit.start() {
 
   unit.run "configureProcNumCG2NoLimits"
   unit.run "configureProcNumCG2Custom"
+
+  unit.run "minCPUVariations"
   
   unit.teardown
 }
@@ -222,6 +224,7 @@ test.configureBucketSizeDefault() {
   unit.contains "$conf_file" "server_names_hash_bucket_size 64;"
 
   if [[ $? -ne 0 ]] ; then
+    grep 'server_names_hash_bucket_size ' "$conf_file" | sed 's/^/\n    /'
     return 1
   fi
 
@@ -231,7 +234,12 @@ test.configureBucketSizeDefault() {
 
   unit.contains "$conf_file" "server_names_hash_bucket_size 64;"
 
-  return $?
+  if [[ $? -ne 0 ]] ; then
+    grep 'server_names_hash_bucket_size ' "$conf_file" | sed 's/^/\n    /'
+    return 1
+  fi
+
+  return 0
 }
 
 test.configureBucketSizeNoConfigs() {
@@ -247,6 +255,7 @@ test.configureBucketSizeNoConfigs() {
   unit.contains "$conf_file" "server_names_hash_bucket_size 64;"
 
   if [[ $? -ne 0 ]] ; then
+    grep 'server_names_hash_bucket_size ' "$conf_file" | sed 's/^/\n    /'
     return 1
   fi
 
@@ -256,7 +265,12 @@ test.configureBucketSizeNoConfigs() {
 
   unit.contains "$conf_file" "server_names_hash_bucket_size 64;"
 
-  return $?
+  if [[ $? -ne 0 ]] ; then
+    grep 'server_names_hash_bucket_size ' "$conf_file" | sed 's/^/\n    /'
+    return 1
+  fi
+
+  return 0
 }
 
 test.configureBucketSizeDisableTuning() {
@@ -275,6 +289,7 @@ test.configureBucketSizeDisableTuning() {
   unit.contains "$conf_file" "server_names_hash_bucket_size 128;"
 
   if [[ $? -ne 0 ]] ; then
+    grep 'server_names_hash_bucket_size ' "$conf_file" | sed 's/^/\n    /'
     return 1
   fi
 
@@ -285,11 +300,14 @@ test.configureBucketSizeDisableTuning() {
   unit.contains "$conf_file" "server_names_hash_bucket_size 128;"
 
   if [[ $? -ne 0 ]] ; then
+    grep 'server_names_hash_bucket_size ' "$conf_file" | sed 's/^/\n    /'
     return 1
   fi
 
   WEBKAOS_DISABLE_BUCKET_TUNE=""
   WEBKAOS_HASH_BUCKET_SIZE=""
+
+  return 0
 }
 
 test.configureBucketSizeIncreased() {
@@ -308,6 +326,7 @@ test.configureBucketSizeIncreased() {
   unit.contains "$conf_file" "server_names_hash_bucket_size 256;"
 
   if [[ $? -ne 0 ]] ; then
+    grep 'server_names_hash_bucket_size ' "$conf_file" | sed 's/^/\n    /'
     return 1
   fi
 
@@ -317,7 +336,12 @@ test.configureBucketSizeIncreased() {
 
   unit.contains "$conf_file" "server_names_hash_bucket_size 256;"
 
-  return $?
+  if [[ $? -ne 0 ]] ; then
+    grep 'server_names_hash_bucket_size ' "$conf_file" | sed 's/^/\n    /'
+    return 1
+  fi
+
+  return 0
 }
 
 test.configureBucketSizeSedError() {
@@ -332,7 +356,7 @@ test.configureBucketSizeSedError() {
 
   configureBucketSize
 
-  unit.hasError "Can't update configuration file $conf_file"
+  unit.hasError "(entrypoint) [ERROR] Can't update configuration file $conf_file"
 
   if [[ $? -ne 0 ]] ; then
     return 1
@@ -345,7 +369,7 @@ test.configureBucketSizeSedError() {
 
   configureBucketSize
 
-  unit.hasError "Can't update configuration file $conf_file"
+  unit.hasError "(entrypoint) [ERROR] Can't update configuration file $conf_file"
 
   return $?
 }
@@ -357,7 +381,7 @@ test.getCPULimitsCG1CpuacctNoLimit() {
   echo "-1" > "$cg1_cfs_quota_file"
   echo "100000" > "$cg1_cfs_period_file"
 
-  unit.isEqual "$(getCPULimitsCG1Cpuacct)" "0"
+  unit.isEqual "$(getCPULimitsCG1Cpuacct)" "-1"
 
   return $?
 }
@@ -414,7 +438,7 @@ test.getCPULimitsCG2CpuMaxNoLimit() {
 
   echo "max 100000" > "$cg2_cpu_max_file"
 
-  unit.isEqual "$(getCPULimitsCG2CpuMax)" "0"
+  unit.isEqual "$(getCPULimitsCG2CpuMax)" "-1"
 
   return $?
 }
@@ -481,7 +505,7 @@ test.getCPULimitsCG1Cpuset() {
   cg1_cfs_period_file=$(unit.mkfile "cpu.cfs_period_us")
   cg1_effective_cpus_file=$(unit.mkfile "cpuset.effective_cpus")
 
-  echo "800000" > "$cg1_cfs_quota_file"
+  echo "-1" > "$cg1_cfs_quota_file"
   echo "100000" > "$cg1_cfs_period_file"
   echo "0-1,3" > "$cg1_effective_cpus_file"
 
@@ -532,6 +556,7 @@ test.configureProcNumNoCG() {
   unit.contains "$conf_file" "worker_processes      $system_procs;"
 
   if [[ $? -ne 0 ]] ; then
+    grep 'worker_processes ' "$conf_file" | sed 's/^/\n    /'
     return 1
   fi
 
@@ -541,7 +566,12 @@ test.configureProcNumNoCG() {
 
   unit.contains "$conf_file" "worker_processes      $system_procs;"
 
-  return $?
+  if [[ $? -ne 0 ]] ; then
+    grep 'worker_processes ' "$conf_file" | sed 's/^/\n    /'
+    return 1
+  fi
+
+  return 0
 }
 
 test.configureProcNumDisableTuning() {
@@ -558,6 +588,7 @@ test.configureProcNumDisableTuning() {
   unit.contains "$conf_file" "worker_processes      auto;"
 
   if [[ $? -ne 0 ]] ; then
+    grep 'worker_processes ' "$conf_file" | sed 's/^/\n    /'
     return 1
   fi
 
@@ -568,10 +599,13 @@ test.configureProcNumDisableTuning() {
   unit.contains "$conf_file" "worker_processes      auto;"
 
   if [[ $? -ne 0 ]] ; then
+    grep 'worker_processes ' "$conf_file" | sed 's/^/\n    /'
     return 1
   fi
 
   WEBKAOS_DISABLE_PROC_TUNE=""
+
+  return 0
 }
 
 test.configureProcNumSedError() {
@@ -587,7 +621,7 @@ test.configureProcNumSedError() {
 
   configureProcNum
 
-  unit.hasError "Can't update configuration file $conf_file"
+  unit.hasError "(entrypoint) [ERROR] Can't update configuration file $conf_file"
 
   if [[ $? -ne 0 ]] ; then
     return 1
@@ -599,7 +633,7 @@ test.configureProcNumSedError() {
 
   configureProcNum
 
-  unit.hasError "Can't update configuration file $conf_file"
+  unit.hasError "(entrypoint) [ERROR] Can't update configuration file $conf_file"
 
   return $?
 }
@@ -626,6 +660,7 @@ test.configureProcNumCG1NoLimits() {
   unit.contains "$conf_file" "worker_processes      $system_procs;"
 
   if [[ $? -ne 0 ]] ; then
+    grep 'worker_processes ' "$conf_file" | sed 's/^/\n    /'
     return 1
   fi
 
@@ -635,7 +670,12 @@ test.configureProcNumCG1NoLimits() {
 
   unit.contains "$conf_file" "worker_processes      $system_procs;"
 
-  return $?
+  if [[ $? -ne 0 ]] ; then
+    grep 'worker_processes ' "$conf_file" | sed 's/^/\n    /'
+    return 1
+  fi
+
+  return 0
 }
 
 test.configureProcNumCG1Custom() {
@@ -656,6 +696,7 @@ test.configureProcNumCG1Custom() {
   unit.contains "$conf_file" "worker_processes      2;"
 
   if [[ $? -ne 0 ]] ; then
+    grep 'worker_processes ' "$conf_file" | sed 's/^/\n    /'
     return 1
   fi
 
@@ -665,7 +706,12 @@ test.configureProcNumCG1Custom() {
 
   unit.contains "$conf_file" "worker_processes      2;"
 
-  return $?
+  if [[ $? -ne 0 ]] ; then
+    grep 'worker_processes ' "$conf_file" | sed 's/^/\n    /'
+    return 1
+  fi
+
+  return 0
 }
 
 test.configureProcNumCG2NoLimits() {
@@ -689,6 +735,7 @@ test.configureProcNumCG2NoLimits() {
   unit.contains "$conf_file" "worker_processes      $system_procs;"
 
   if [[ $? -ne 0 ]] ; then
+    grep 'worker_processes ' "$conf_file" | sed 's/^/\n    /'
     return 1
   fi
 
@@ -698,7 +745,12 @@ test.configureProcNumCG2NoLimits() {
 
   unit.contains "$conf_file" "worker_processes      $system_procs;"
 
-  return $?
+  if [[ $? -ne 0 ]] ; then
+    grep 'worker_processes ' "$conf_file" | sed 's/^/\n    /'
+    return 1
+  fi
+
+  return 0
 }
 
 test.configureProcNumCG2Custom() {
@@ -718,6 +770,7 @@ test.configureProcNumCG2Custom() {
   unit.contains "$conf_file" "worker_processes      2;"
 
   if [[ $? -ne 0 ]] ; then
+    grep 'worker_processes ' "$conf_file" | sed 's/^/\n    /'
     return 1
   fi
 
@@ -727,7 +780,37 @@ test.configureProcNumCG2Custom() {
 
   unit.contains "$conf_file" "worker_processes      2;"
 
-  return $?
+  if [[ $? -ne 0 ]] ; then
+    grep 'worker_processes ' "$conf_file" | sed 's/^/\n    /'
+    return 1
+  fi
+
+  return 0
+}
+
+test.minCPUVariations() {
+  if ! unit.isEqual "$(minCPU '-1' '3')" "3" ; then
+    return 1
+  fi
+
+  if ! unit.isEqual "$(minCPU '3' '-1')" "3" ; then
+    return 1
+  fi
+
+  if ! unit.isEqual "$(minCPU '2' '8')" "2" ; then
+    return 1
+  fi
+
+  if ! unit.isEqual "$(minCPU '6' '2')" "2" ; then
+    return 1
+  fi
+
+  # Minimal number of CPU is 1
+  if ! unit.isEqual "$(minCPU '6' '0')" "1" ; then
+    return 1
+  fi
+
+  return 0
 }
 
 ########################################################################################

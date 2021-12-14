@@ -48,6 +48,8 @@ configureProcNum() {
       error "Can't update configuration file $conf_file"
       doExit 1
       return
+    else
+      log "Workers num tuning is disabled, worker_processes set to \"auto\""
     fi
   fi
 
@@ -56,19 +58,26 @@ configureProcNum() {
   cpu_num=$(getNumProc)
   cpu_limits=$(getCPULimitsCG1)
 
-  if [[ $cpu_limits -eq 0 ]] ; then
+  if [[ $cpu_limits == "-1" ]] ; then
     cpu_limits=$(getCPULimitsCG2)
 
-    if [[ $cpu_limits -eq 0 ]] ; then
+    if [[ $cpu_limits == "-1" ]] ; then
+      log "Can't find any limits in cgroups, worker_processes will be set to \"$cpu_num\""
       cpu_limits="$cpu_num"
+    else
+      log "Limits set by CGroupsV2, worker_processes will be set to \"$cpu_limits\""
     fi
+  else
+    log "Limits set by CGroupsV1, worker_processes will be set to \"$cpu_limits\""
   fi
 
-  cpu_num=$(min "$cpu_num" "$cpu_limits")
+  cpu_num=$(minCPU "$cpu_num" "$cpu_limits")
 
   if ! sed -i "s#{{WORKERS}}#${cpu_num}#" $conf_file &> /dev/null ; then
     error "Can't update configuration file $conf_file"
     doExit 1
+  else
+    log "worker_processes set to \"$cpu_limits\""
   fi
 }
 
@@ -82,6 +91,8 @@ configureBucketSize() {
       error "Can't update configuration file $conf_file"
       doExit 1
       return
+    else
+      log "Bucket size tuning is disabled, server_names_hash_bucket_size set to \"${bucket_size}\""
     fi
   fi
 
@@ -93,6 +104,8 @@ configureBucketSize() {
     error "Can't update configuration file $conf_file"
     doExit 1
     return
+  else
+    log "server_names_hash_bucket_size set to \"${bucket_size}\""
   fi
 }
 
@@ -112,7 +125,7 @@ startWebkaos() {
 # Echo: Number of CPU's limited by cgroups (Number)
 getCPULimitsCG1() {
   if [[ ! -d "$cg1_cpuacct" || ! -d "$cg1_cpuset" ]] ; then
-    echo 0
+    echo -1
     return
   fi
 
@@ -121,12 +134,12 @@ getCPULimitsCG1() {
   cpu_quota=$(getCPULimitsCG1Cpuacct)
   cpu_cpuset=$(getCPULimitsCG1Cpuset)
 
-  if [[ "$cpu_quota" -eq 0 && "$cpu_cpuset" -eq 0 ]] ; then
-    echo 0
+  if [[ "$cpu_quota" == "-1" && "$cpu_cpuset" == "-1" ]] ; then
+    echo -1
     return
   fi
 
-  min "$cpu_quota" "$cpu_cpuset"
+  minCPU "$cpu_quota" "$cpu_cpuset"
 }
 
 # Get CPU limits from cgroups CFS quotas
@@ -137,7 +150,7 @@ getCPULimitsCG1Cpuacct() {
   local cpuacct_num cfs_quota cfs_period
 
   if [[ ! -f "$cg1_cfs_quota_file" || ! -f "$cg1_cfs_period_file" ]] ; then
-    echo 0
+    echo -1
     return 
   fi
 
@@ -145,12 +158,12 @@ getCPULimitsCG1Cpuacct() {
   cfs_period=$(cat "$cg1_cfs_period_file")
 
   if [[ -z "$cfs_quota" || "$cfs_quota" == "-1" ]] ; then
-    echo 0
+    echo -1
     return
   fi
 
   if [[ -z "$cfs_period" || "$cfs_period" == "0" ]] ; then
-    echo 0
+    echo -1
     return
   fi
 
@@ -167,7 +180,7 @@ getCPULimitsCG1Cpuset() {
   local effective_cpus
 
   if [[ ! -f "$cg1_effective_cpus_file" ]] ; then
-    echo 0
+    echo -1
     return
   fi
 
@@ -183,7 +196,7 @@ getCPULimitsCG1Cpuset() {
 # Echo: Number of CPU's limited by cgroups2 (Number)
 getCPULimitsCG2() {
   if [[ ! -f "$cg2_cpu_max_file" || ! -f "$cg2_effective_cpus_file" ]] ; then
-    echo 0
+    echo -1
     return
   fi
 
@@ -192,12 +205,12 @@ getCPULimitsCG2() {
   cpu_quota=$(getCPULimitsCG2CpuMax)
   cpu_cpuset=$(getCPULimitsCG2Cpuset)
 
-  if [[ "$cpu_quota" -eq 0 && "$cpu_cpuset" -eq 0 ]] ; then
-    echo 0
+  if [[ "$cpu_quota" == "-1" && "$cpu_cpuset" == "-1" ]] ; then
+    echo -1
     return
   fi
 
-  min "$cpu_quota" "$cpu_cpuset"
+  minCPU "$cpu_quota" "$cpu_cpuset"
 }
 
 # Get CPU limits from cgroups v2 cpu.max quotas
@@ -208,7 +221,7 @@ getCPULimitsCG2CpuMax() {
   local cpuacct_num cfs_quota cfs_period
 
   if [[ ! -f "$cg2_cpu_max_file" ]] ; then
-    echo 0
+    echo -1
     return
   fi
 
@@ -216,12 +229,12 @@ getCPULimitsCG2CpuMax() {
   cfs_period=$(cut -f2 -d' ' < "$cg2_cpu_max_file")
 
   if [[ -z "$cfs_quota" || "$cfs_quota" == "max" ]] ; then
-    echo 0
+    echo -1
     return
   fi
 
   if [[ -z "$cfs_period" || "$cfs_period" == "0" ]] ; then
-    echo 0
+    echo -1
     return
   fi
 
@@ -238,7 +251,7 @@ getCPULimitsCG2Cpuset() {
   local effective_cpus
 
   if [[ ! -f "$cg2_effective_cpus_file" ]] ; then
-    echo 0
+    echo -1
     return
   fi
 
@@ -315,11 +328,24 @@ getNumProc() {
 #
 # Code: No
 # Echo: Smallest number (Number)
-min() {
-  if [[ "$1" -lt "$2" ]] ; then
-    echo "$1"
+minCPU() {
+  local result
+
+  if [[ "$1" != "-1" && "$2" == "-1" ]] ; then
+    result="$1"
+  elif [[ "$1" == "-1" && "$2" != "-1" ]] ; then
+    result="$2"
+  elif [[ "$1" -lt "$2" ]] ; then
+    result="$1"
   else
-    echo "$2"
+    result="$2"
+  fi
+
+  # Minimal number of CPU is 1
+  if [[ "$result" -le 0 ]] ; then
+    echo 1
+  else
+    echo "$result"
   fi
 }
 
@@ -333,10 +359,22 @@ min() {
 # Echo: No
 error() {
   if [[ -z "$is_test" ]] ; then
-    echo "$*" >&3
+    echo "(entrypoint) [ERROR] $*" >&3
   else
     # shellcheck disable=SC2034
-    error_message="$*"
+    error_message="(entrypoint) [ERROR] $*"
+  fi
+}
+
+# Print message to log
+#
+# 1: Message (String)
+#
+# Code: No
+# Echo: No
+log() {
+  if [[ -z "$is_test" ]] ; then
+    echo "(entrypoint) $*" >&3
   fi
 }
 

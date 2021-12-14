@@ -26,6 +26,19 @@ jobs:
         with:
           files: webkaos.spec
 
+  Shellcheck:
+    name: Shellcheck
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Check scripts with Shellcheck
+        uses: essentialkaos/shellcheck-action@v1
+        with:
+          files: .docker/*.sh
+
   Hadolint:
     name: Hadolint
     runs-on: ubuntu-latest
@@ -37,7 +50,7 @@ jobs:
       - name: Check dockerfiles with Hadolint
         uses: essentialkaos/hadolint-action@v1
         with:
-          files: centos7.docker
+          files: .docker/*.docker
 
   Bibop:
     name: Bibop
@@ -57,7 +70,7 @@ jobs:
     name: Docker Build Check
     runs-on: ubuntu-latest
 
-    needs: Hadolint
+    needs: [Hadolint, Shellcheck]
 
     steps:
       - name: Checkout
@@ -69,6 +82,7 @@ jobs:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build CentOS 7 image
+      - name: Build CentOS 7 images
         run: |
-          docker build -f centos7.docker -t centos7 .
+          docker build -f .docker/centos7.docker -t centos7 .
+          docker build -f .docker/centos7-unprivileged.docker -t centos7-unprivileged .

@@ -29,10 +29,15 @@
 
 Official webkaos images available on [Docker Hub](http://kaos.sh/d/webkaos).
 
-Simple usage example:
+Simple usage examples:
 
 ```bash
 docker run --name my-webkaos -v /some/content:/usr/share/webkaos/html:ro -p 8080:80 -d essentialkaos/webkaos:centos7
+
+```
+
+```bash
+docker run --name my-webkaos -v /some/content:/usr/share/webkaos/html:ro -p 8080:8080 -d essentialkaos/webkaos:centos7-unprivileged
 
 ```
 

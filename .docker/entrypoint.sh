@@ -28,6 +28,12 @@ cg2_effective_cpus_file="/sys/fs/cgroup/cpuset.cpus.effective"
 ################################################################################
 
 main() {
+  if [[ -n "$WEBKAOS_ENABLE_ENTRYPOINT_LOGS" ]] ; then
+    exec 3>&1
+  else
+    exec 3>/dev/null
+  fi
+
   if [[ -n "$is_test" ]] ; then
     return
   fi
@@ -49,7 +55,7 @@ configureProcNum() {
       doExit 1
       return
     else
-      log "Workers num tuning is disabled, worker_processes set to \"auto\""
+      log "Workers num tuning is disabled, configuration property 'worker_processes' set to \"auto\""
     fi
   fi
 
@@ -62,13 +68,13 @@ configureProcNum() {
     cpu_limits=$(getCPULimitsCG2)
 
     if [[ $cpu_limits == "-1" ]] ; then
-      log "Can't find any limits in cgroups, worker_processes will be set to \"$cpu_num\""
+      log "Can't find any limits in cgroups, 'worker_processes' will be set to \"$cpu_num\""
       cpu_limits="$cpu_num"
     else
-      log "Limits set by CGroupsV2, worker_processes will be set to \"$cpu_limits\""
+      log "Limits set by CGroupsV2, 'worker_processes' will be set to \"$cpu_limits\""
     fi
   else
-    log "Limits set by CGroupsV1, worker_processes will be set to \"$cpu_limits\""
+    log "Limits set by CGroupsV1, 'worker_processes' will be set to \"$cpu_limits\""
   fi
 
   cpu_num=$(minCPU "$cpu_num" "$cpu_limits")
@@ -77,7 +83,7 @@ configureProcNum() {
     error "Can't update configuration file $conf_file"
     doExit 1
   else
-    log "worker_processes set to \"$cpu_limits\""
+    log "Configuration property 'worker_processes' set to \"$cpu_limits\""
   fi
 }
 
@@ -92,7 +98,7 @@ configureBucketSize() {
       doExit 1
       return
     else
-      log "Bucket size tuning is disabled, server_names_hash_bucket_size set to \"${bucket_size}\""
+      log "Bucket size tuning is disabled, configuration property 'server_names_hash_bucket_size' set to \"${bucket_size}\""
     fi
   fi
 
@@ -105,7 +111,7 @@ configureBucketSize() {
     doExit 1
     return
   else
-    log "server_names_hash_bucket_size set to \"${bucket_size}\""
+    log "Configuration property 'server_names_hash_bucket_size' set to \"${bucket_size}\""
   fi
 }
 
@@ -359,7 +365,7 @@ minCPU() {
 # Echo: No
 error() {
   if [[ -z "$is_test" ]] ; then
-    echo "(entrypoint) [ERROR] $*" >&3
+    echo "$(date +'%Y/%m/%d %H:%M:%S') (entrypoint) [ERROR] $*" >&2
   else
     # shellcheck disable=SC2034
     error_message="(entrypoint) [ERROR] $*"
@@ -374,7 +380,7 @@ error() {
 # Echo: No
 log() {
   if [[ -z "$is_test" ]] ; then
-    echo "(entrypoint) $*" >&3
+    echo "$(date +'%Y/%m/%d %H:%M:%S') (entrypoint) $*" >&3
   fi
 }
 

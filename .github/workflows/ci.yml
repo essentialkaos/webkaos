@@ -100,3 +100,10 @@ jobs:
         run: |
           docker build -f .docker/centos7.docker -t centos7 .
           docker build -f .docker/centos7-unprivileged.docker -t centos7-unprivileged .
+
+      - name: Measure images size
+        run: |
+          image_size=$(docker inspect -f "{{ .Size }}" centos7)
+          printf "\033[1mUncompressed image size (CentOS 7):\033[0m %d (%s)\n" $image_size $(echo "$image_size" | numfmt --to=si)
+          image_size=$(docker inspect -f "{{ .Size }}" centos7-unprivileged)
+          printf "\033[1mUncompressed image size (CentOS 7 Unprivileged):\033[0m %d (%s)\n" $image_size $(echo "$image_size" | numfmt --to=si)

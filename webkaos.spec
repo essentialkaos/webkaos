@@ -52,15 +52,15 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define nginx_version        1.21.4
-%define boring_commit        a9670a8b476470e6f874fef3554e8059683e1413
+%define nginx_version        1.21.5
+%define boring_commit        3a667d10e94186fd503966f5638e134fe9fb4080
 %define lua_module_ver       0.10.20
 %define lua_resty_core_ver   0.1.22
 %define lua_resty_lru_ver    0.11
 %define mh_module_ver        0.33
 %define pcre_ver             8.45
 %define zlib_ver             1.2.11
-%define luajit_ver           2.1-20210510
+%define luajit_ver           2.1-20211210
 %define luajit_raw_ver       2.1.0-beta3
 %define brotli_commit        9aec15e2aa6feea2113119ba06460af70ab3ea62
 %define brotli_ver           1.0.9
@@ -71,7 +71,7 @@
 Summary:              Superb high performance web server
 Name:                 webkaos
 Version:              %{nginx_version}
-Release:              1%{?dist}
+Release:              0%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 URL:                  https://kaos.sh/webkaos
@@ -170,7 +170,7 @@ Links for nginx compatibility.
 
 Summary:           Module for Brotli compression
 Version:           0.1.5
-Release:           7%{?dist}
+Release:           8%{?dist}
 
 Group:             System Environment/Daemons
 Requires:          %{name} = %{nginx_version}
@@ -184,7 +184,7 @@ Module for Brotli compression.
 
 Summary:           High performance, low rules maintenance WAF
 Version:           %{naxsi_ver}
-Release:           6%{?dist}
+Release:           7%{?dist}
 
 Group:             System Environment/Daemons
 Requires:          %{name} = %{nginx_version}
@@ -677,6 +677,11 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Tue Jan 11 2022 Anton Novojilov <andy@essentialkaos.com> - 1.21.5-0
+- Nginx updated to 1.21.5
+- BoringSSL updated to the latest stable version
+- LuaJIT updated to 2.1-20211210
+
 * Sat Dec 11 2021 Anton Novojilov <andy@essentialkaos.com> - 1.21.4-1
 - Removed duplicate of $http_referer from timed_combined log format
 

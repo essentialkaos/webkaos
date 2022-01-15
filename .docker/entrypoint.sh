@@ -154,6 +154,7 @@ renderTemplates() {
 
   local template template_name output_name env_vars
 
+  # shellcheck disable=SC2016,SC2046
   env_vars=$(printf '${%s} ' $(printenv | cut -f1 -d'='))
 
   while IFS= read -r -d '' template ; do

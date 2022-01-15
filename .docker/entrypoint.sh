@@ -8,11 +8,28 @@ fi
 
 ################################################################################
 
+# Enable logging for actions made by script (Boolean)
+WEBKAOS_ENABLE_ENTRYPOINT_LOGS=""
+
+# Disable automatic worker_processes tuning (Boolean)
+WEBKAOS_DISABLE_PROC_TUNE=""
+
+# Disable automatic server_names_hash_bucket_size tuning (Boolean)
+WEBKAOS_DISABLE_BUCKET_TUNE=""
+
+# Disable templates rendering (Boolean)
+WEBKAOS_DISABLE_TEMPLATES=""
+
+################################################################################
+
 # Path to configuration file (String)
 conf_file="/etc/webkaos/webkaos.conf"
 
 # Path to directory with custom configuration files (String)
 conf_dir="/etc/webkaos/conf.d"
+
+# Path to directory with configuration files templates (String)
+templates_dir="/etc/webkaos/templates"
 
 ################################################################################
 
@@ -40,6 +57,7 @@ main() {
 
   configureProcNum
   configureBucketSize
+  renderTemplates
 
   startWebkaos "$@"
 }
@@ -117,6 +135,41 @@ configureBucketSize() {
   else
     log "Configuration property 'server_names_hash_bucket_size' set to \"${bucket_size}\""
   fi
+}
+
+# Render templates
+#
+# Code: No
+# Echo: No
+renderTemplates() {
+  # There is no templates, nothing to do
+  if [[ $(find "$templates_dir" -type f -name "*.template" -print | wc -l) == "0" ]] ; then
+    return
+  fi
+
+  if [[ -n "$WEBKAOS_DISABLE_TEMPLATES" ]] ; then
+    log "Templates rendering is disabled"
+    return
+  fi
+
+  local template template_name output_name env_vars
+
+  env_vars=$(printf '${%s} ' $(printenv | cut -f1 -d'='))
+
+  while IFS= read -r -d '' template ; do
+
+    template_name=$(basename "$template")
+
+    if [[ ! -s "$template" ]] ; then
+      log "[WARN] Can't parse template $template_name - template is empty"
+      continue
+    fi
+
+    output_name=${template_name%%.template}
+
+    envsubst "$env_vars" < "$template" > "$conf_dir/$output_name"
+
+  done < <(find "$templates_dir" -maxdepth 1 -type f -name "*.template" -print0)
 }
 
 # Start webkaos daemon

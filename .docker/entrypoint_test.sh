@@ -96,6 +96,11 @@ unit.start() {
   unit.run "configureProcNumCG2Custom"
 
   unit.run "minCPUVariations"
+
+  unit.run "templatesDefault"
+  unit.run "templatesDisabled"
+  unit.run "templatesNoTemplates"
+  unit.run "templatesEmptyTemplate"
   
   unit.teardown
 }
@@ -813,6 +818,98 @@ test.minCPUVariations() {
   return 0
 }
 
+test.templatesDefault() {
+  templates_dir=$(unit.mkdir)
+  conf_dir=$(unit.mkdir)
+
+cat << EOF > "$templates_dir/mytest.conf.template"
+server {
+  listen 443 ssl http2;
+  server_name \${MYHOST}.com;
+
+  location / {
+    root /srv/\$MYHOST/data;
+  }
+}
+EOF
+
+  export MYHOST="mysuperhost"
+
+  renderTemplates
+
+  if ! unit.isExist "$conf_dir/mytest.conf" ; then
+    return 1
+  fi
+
+  if ! unit.contains "$conf_dir/mytest.conf" "server_name mysuperhost.com" ; then
+    return 1
+  fi
+
+  if ! unit.contains "$conf_dir/mytest.conf" "root /srv/mysuperhost/data" ; then
+    return 1
+  fi
+
+  return 0
+}
+
+test.templatesDisabled() {
+  templates_dir=$(unit.mkdir)
+  conf_dir=$(unit.mkdir)
+
+cat << EOF > "$templates_dir/mytest.conf.template"
+server {
+  listen 443 ssl http2;
+  server_name \${MYHOST}.com;
+
+  location / {
+    root /srv/\$MYHOST/data;
+  }
+}
+EOF
+
+  export MYHOST="mysuperhost"
+
+  WEBKAOS_DISABLE_TEMPLATES=true
+
+  renderTemplates
+
+  if ! unit.isNotExist "$conf_dir/mytest.conf" ; then
+    return 1
+  fi
+
+  WEBKAOS_DISABLE_TEMPLATES=""
+
+  return 0
+}
+
+test.templatesNoTemplates() {
+  templates_dir=$(unit.mkdir)
+  conf_dir=$(unit.mkdir)
+
+  renderTemplates
+
+  if ! unit.isEqual "$(ls -1 "$conf_dir" | wc -l)" "0" ; then
+    return 1
+  fi
+
+  return 0
+}
+
+test.templatesEmptyTemplate() {
+  templates_dir=$(unit.mkdir)
+  conf_dir=$(unit.mkdir)
+
+  touch "$templates_dir/mytest.conf.template"
+
+  renderTemplates
+
+  if ! unit.isEqual "$(ls -1 "$conf_dir" | wc -l)" "0" ; then
+    return 1
+  fi
+
+  return 0
+}
+
 ########################################################################################
 
 # Check if two values are equal
@@ -854,7 +951,7 @@ unit.isNotEqual() {
 # 1: File path (String)
 # 2: Sub-string to search (String)
 #
-# Code: No
+# Code: Yes
 # Echo: No
 unit.contains() {
   local filename
@@ -867,6 +964,38 @@ unit.contains() {
   fi
 
   unit.show "  ${CL_GREEN}•${CL_NORM} ${CL_GREY}$filename contains \"$2\"${CL_NORM}"
+  return 0
+}
+
+# Check if file or directory exists
+#
+# 1: Path (String)
+#
+# Code: Yes
+# Echo: No
+unit.isExist() {
+  if [[ ! -f "$1" ]] ; then
+    unit.show "  ${CL_RED}•${CL_NORM} Object \"$1\" doesn't exist"
+    return 1
+  fi
+
+  unit.show "  ${CL_GREEN}•${CL_NORM} ${CL_GREY}Object \"$1\" exists${CL_NORM}"
+  return 0
+}
+
+# Check if file or directory doesn't exist
+#
+# 1: Path (String)
+#
+# Code: Yes
+# Echo: No
+unit.isNotExist() {
+  if [[ -f "$1" ]] ; then
+    unit.show "  ${CL_RED}•${CL_NORM} Object \"$1\" exists"
+    return 1
+  fi
+
+  unit.show "  ${CL_GREEN}•${CL_NORM} ${CL_GREY}Object \"$1\" doesn't exist${CL_NORM}"
   return 0
 }
 

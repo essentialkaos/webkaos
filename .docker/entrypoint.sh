@@ -152,7 +152,7 @@ renderTemplates() {
     return
   fi
 
-  local template template_name output_name env_vars
+  local template template_name template_dir template_output env_vars
 
   # shellcheck disable=SC2016,SC2046
   env_vars=$(printf '${%s} ' $(printenv | cut -f1 -d'='))
@@ -160,17 +160,23 @@ renderTemplates() {
   while IFS= read -r -d '' template ; do
 
     template_name=$(basename "$template")
+    template_dir=$(dirname "$template")
+    template_dir="${template_dir##$templates_dir}"
 
     if [[ ! -s "$template" ]] ; then
       log "[WARN] Can't parse template $template_name - template is empty"
       continue
     fi
 
-    output_name=${template_name%%.template}
+    if [[ -n "$template_dir" ]] ; then
+      mkdir "${conf_dir}${template_dir}"
+    fi
 
-    envsubst "$env_vars" < "$template" > "$conf_dir/$output_name"
+    template_output="${template_name%%\.template}"
 
-  done < <(find "$templates_dir" -maxdepth 1 -type f -name "*.template" -print0)
+    envsubst "$env_vars" < "$template" > "${conf_dir}${template_dir}/$template_output"
+
+  done < <(find "$templates_dir" -type f -name "*.template" -print0)
 }
 
 # Start webkaos daemon

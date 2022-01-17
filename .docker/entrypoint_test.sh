@@ -98,6 +98,7 @@ unit.start() {
   unit.run "minCPUVariations"
 
   unit.run "templatesDefault"
+  unit.run "templatesDefaultWithDir"
   unit.run "templatesDisabled"
   unit.run "templatesNoTemplates"
   unit.run "templatesEmptyTemplate"
@@ -852,6 +853,46 @@ EOF
   return 0
 }
 
+test.templatesDefaultWithDir() {
+  templates_dir=$(unit.mkdir)
+  conf_dir=$(unit.mkdir)
+
+  mkdir "${templates_dir}/websites"
+
+cat << EOF > "$templates_dir/websites/mytest.conf.template"
+server {
+  listen 443 ssl http2;
+  server_name \${MYHOST}.com;
+
+  location / {
+    root /srv/\$MYHOST/data;
+  }
+}
+EOF
+
+  export MYHOST="mysuperhost"
+
+  renderTemplates
+
+  if ! unit.isExist "$conf_dir/websites" ; then
+    return 1
+  fi
+
+  if ! unit.isExist "$conf_dir/websites/mytest.conf" ; then
+    return 1
+  fi
+
+  if ! unit.contains "$conf_dir/websites/mytest.conf" "server_name mysuperhost.com" ; then
+    return 1
+  fi
+
+  if ! unit.contains "$conf_dir/websites/mytest.conf" "root /srv/mysuperhost/data" ; then
+    return 1
+  fi
+
+  return 0
+}
+
 test.templatesDisabled() {
   templates_dir=$(unit.mkdir)
   conf_dir=$(unit.mkdir)
@@ -956,7 +997,7 @@ unit.isNotEqual() {
 unit.contains() {
   local filename
 
-  filename=$(basename "$1")
+  filename=$(unit.formatPath "$1")
 
   if ! grep -q "$2" "$1" ; then
     unit.show "  ${CL_RED}•${CL_NORM} $filename doesn't contain \"$2\""
@@ -974,12 +1015,16 @@ unit.contains() {
 # Code: Yes
 # Echo: No
 unit.isExist() {
-  if [[ ! -f "$1" ]] ; then
-    unit.show "  ${CL_RED}•${CL_NORM} Object \"$1\" doesn't exist"
+  local obj
+
+  obj=$(unit.formatPath "$1")
+
+  if [[ ! -e "$1" ]] ; then
+    unit.show "  ${CL_RED}•${CL_NORM} Object \"$obj\" doesn't exist"
     return 1
   fi
 
-  unit.show "  ${CL_GREEN}•${CL_NORM} ${CL_GREY}Object \"$1\" exists${CL_NORM}"
+  unit.show "  ${CL_GREEN}•${CL_NORM} ${CL_GREY}Object \"$obj\" exists${CL_NORM}"
   return 0
 }
 
@@ -990,12 +1035,16 @@ unit.isExist() {
 # Code: Yes
 # Echo: No
 unit.isNotExist() {
-  if [[ -f "$1" ]] ; then
-    unit.show "  ${CL_RED}•${CL_NORM} Object \"$1\" exists"
+  local obj
+
+  obj=$(unit.formatPath "$1")
+
+  if [[ -e "$1" ]] ; then
+    unit.show "  ${CL_RED}•${CL_NORM} Object \"$obj\" exists"
     return 1
   fi
 
-  unit.show "  ${CL_GREEN}•${CL_NORM} ${CL_GREY}Object \"$1\" doesn't exist${CL_NORM}"
+  unit.show "  ${CL_GREEN}•${CL_NORM} ${CL_GREY}Object \"$obj\" doesn't exist${CL_NORM}"
   return 0
 }
 
@@ -1052,6 +1101,16 @@ unit.mkcopy() {
   cat "$1" > "${tmp_dir}/$2"
 
   echo "${tmp_dir}/$2"
+}
+
+# Format path to file or directory in temporary directory
+#
+# 1: Path (String)
+#
+# Code: No
+# Echo: Formatted path (String)
+unit.formatPath() {
+  echo "${1##$TMP_PREFIX-?????????/}"
 }
 
 ########################################################################################

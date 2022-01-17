@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# shellcheck disable=SC2028,SC2034,SC2181
+# shellcheck disable=SC2012,SC2028,SC2034,SC2181
 
 ########################################################################################
 
@@ -1110,7 +1110,7 @@ unit.mkcopy() {
 # Code: No
 # Echo: Formatted path (String)
 unit.formatPath() {
-  echo "${1##$TMP_PREFIX-?????????/}"
+  echo "${1##"$TMP_PREFIX"-?????????/}"
 }
 
 ########################################################################################

@@ -161,7 +161,7 @@ renderTemplates() {
 
     template_name=$(basename "$template")
     template_dir=$(dirname "$template")
-    template_dir="${template_dir##$templates_dir}"
+    template_dir="${template_dir##"$templates_dir"}"
 
     if [[ ! -s "$template" ]] ; then
       log "[WARN] Can't parse template $template_name - template is empty"

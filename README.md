@@ -60,23 +60,23 @@ rpmbuilder webkaos.spec -3 -V -di
 
 ### FAQ
 
-**🅠** **_Why is it named webkaos?_**<br/>
-**🅐** The very first version of this webserver was named `nginx-kaos`. But it uses a lot of different, awesome projects and libraries, not only nginx. So, we decided to choose something neutral.
+**Q:** **_Why is it named webkaos?_**<br/>
+**A:** The very first version of this webserver was named `nginx-kaos`. But it uses a lot of different, awesome projects and libraries, not only nginx. So, we decided to choose something neutral.
 
-**🅠** **_Is it safe to use webkaos in production?_**<br/>
-**🅐** Yes. But we can't guarantee that there are no bugs in nginx, its modules, or used dependencies.
+**Q:** **_Is it safe to use webkaos in production?_**<br/>
+**A:** Yes. But we can't guarantee that there are no bugs in nginx, its modules, or used dependencies.
 
-**🅠** **_Can I use Docker images with Kubernetes/Nomad/Rancher?_**<br/>
-**🅐** Yes.
+**Q:** **_Can I use Docker images with Kubernetes/Nomad/Rancher?_**<br/>
+**A:** Yes.
 
-**🅠** **_Can you provide packages for Ubuntu/Debian/FreeBSD?_**<br/>
-**🅐** Theoretically, yes. Practically, no. We use only RHEL-based distros in our infrastructure, and we can't provide the same quality of packages for other distros.
+**Q:** **_Can you provide packages for Ubuntu/Debian/FreeBSD?_**<br/>
+**A:** Theoretically, yes. Practically, no. We use only RHEL-based distros in our infrastructure, and we can't provide the same quality of packages for other distros.
 
-**🅠** **_Can you provide Alpine-based Docker images?_**<br/>
-**🅐** No. Using RPM packages simplify their support for us. There is a complex process of building and testing packages with different tools (_[rpmbuilder](https://kaos.sh/rpmbuilder), rpmlint, [perfecto](https://kaos.sh/perfecto), [bibop](https://kaos.sh/bibop), [shellcheck](https://github.com/koalaman/shellcheck)_) and we can't provide the same level of quality without them. Also, it is tough to write and maintain Dockerfiles with a large number of build actions and stages.
+**Q:** **_Can you provide Alpine-based Docker images?_**<br/>
+**A:** No. Using RPM packages simplify their support for us. There is a complex process of building and testing packages with different tools (_[rpmbuilder](https://kaos.sh/rpmbuilder), rpmlint, [perfecto](https://kaos.sh/perfecto), [bibop](https://kaos.sh/bibop), [shellcheck](https://github.com/koalaman/shellcheck)_) and we can't provide the same level of quality without them. Also, it is tough to write and maintain Dockerfiles with a large number of build actions and stages.
 
 **Q:** **_Why doesn't Dockerfile contain a package version?_**<br/>
-**🅐** Webkaos is based on the latest, mainline (_unstable_) version of Nginx, every release of which contains different fixes. So it is important to use the latest version of webkaos, and not to stick to a particular one.
+**A:** Webkaos is based on the latest, mainline (_unstable_) version of Nginx, every release of which contains different fixes. So it is important to use the latest version of webkaos, and not to stick to a particular one.
 
 ### License
 

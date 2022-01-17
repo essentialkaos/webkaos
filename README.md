@@ -27,7 +27,7 @@ sudo yum install webkaos
 
 #### Using Docker
 
-Official webkaos images available on [Docker Hub](http://kaos.sh/d/webkaos).
+Official webkaos images available on [Docker Hub](http://kaos.sh/d/webkaos). All Docker images support templating using environment variables.
 
 Usage examples:
 
@@ -45,8 +45,8 @@ Useful environment variables:
 
 * `WEBKAOS_ENABLE_ENTRYPOINT_LOGS` - Enable logging for actions made by entrypoint script;
 * `WEBKAOS_DISABLE_PROC_TUNE` - Disable automatic `worker_processes` tuning;
-* `WEBKAOS_DISABLE_BUCKET_TUNE` - Disable automatic `server_names_hash_bucket_size` tuning.
-
+* `WEBKAOS_DISABLE_BUCKET_TUNE` - Disable automatic `server_names_hash_bucket_size` tuning;
+* `WEBKAOS_DISABLE_TEMPLATES` - Disable automatic templates rendering.
 
 #### Using [rpmbuilder](https://github.com/essentialkaos/rpmbuilder)
 
@@ -64,6 +64,9 @@ rpmbuilder webkaos.spec -3 -V -di
 **A:** The very first version of this webserver was named `nginx-kaos`. But it uses a lot of different, awesome projects and libraries, not only nginx. So, we decided to choose something neutral.
 
 **Q:** _Is it safe to use webkaos in production?_<br/>
+**A:** Yes. But we can't guarantee that there are no bugs in nginx, its modules, or used dependencies.
+
+**Q:** _Can I use Docker images with Kubernetes/Nomad/Rancher?_<br/>
 **A:** Yes.
 
 **Q:** _Can you provide packages for Ubuntu/Debian/FreeBSD?_<br/>

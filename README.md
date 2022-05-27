@@ -27,7 +27,7 @@ sudo yum install webkaos
 
 #### Using Docker
 
-Official webkaos images available on [Docker Hub](http://kaos.sh/d/webkaos). All Docker images support templating using environment variables.
+Official webkaos images available on [Docker Hub](http://kaos.sh/d/webkaos) and [GitHub Container Registry](https://kaos.sh/p/webkaos). All Docker images support templating using environment variables.
 
 Usage examples:
 

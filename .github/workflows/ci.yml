@@ -88,22 +88,45 @@ jobs:
     needs: [Hadolint, Shellcheck, DockerEntrypointUnit]
 
     steps:
+      - name: Check event type
+        run: |
+          if [[ "${{github.event_name}}" != "pull_request" ]] ; then
+            echo "::notice::Event type is not 'pull_request', all job actions will be skipped"
+          fi
+
+          # This step is a hack for needs+if issue with actions
+          # More info about issue: https://github.com/actions/runner/issues/491
+
       - name: Checkout
         uses: actions/checkout@v3
+        if: ${{ github.event_name == 'pull_request' }}
 
       - name: Login to DockerHub
         uses: docker/login-action@v2
+        env:
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+        if: ${{ github.event_name == 'pull_request' && env.DOCKERHUB_USERNAME != '' }}
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-      - name: Build CentOS 7 images
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v2
+        if: ${{ github.event_name == 'pull_request' }}
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Docker image
+        if: ${{ github.event_name == 'pull_request' }}
         run: |
           docker build -f .docker/centos7.docker -t centos7 .
           docker build -f .docker/centos7-unprivileged.docker -t centos7-unprivileged .
 
-      - name: Show info about built Docker images
+      - name: Show info about built Docker image
         uses: essentialkaos/docker-info-action@v1
+        if: ${{ github.event_name == 'pull_request' }}
         with:
           image: centos7 centos7-unprivileged
           show-labels: true

@@ -21,8 +21,10 @@
 #### From ESSENTIAL KAOS Public repo for RHEL7/CentOS7
 
 ```bash
-sudo yum install -y yum install -y https://yum.kaos.st/kaos-repo-latest.el7.noarch.rpm
+sudo yum install -y https://yum.kaos.st/get/$(uname -r).rpm
 sudo yum install webkaos
+# install optional modules
+sudo yum install webkaos-module-brotli webkaos-module-naxsi
 ```
 
 #### Using Docker

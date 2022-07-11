@@ -166,22 +166,22 @@ command "systemctl start {service_name}" "Start service"
   service-works {service_name}
 
 command "-" "Make HTTP requests"
+  http-set-header Accept-Encoding "gzip, deflate, br"
   http-status GET "http://127.0.0.1" 200
   http-header GET "http://127.0.0.1" server webkaos
+  http-header GET "http://127.0.0.1" Content-Encoding br
   http-contains GET "http://127.0.0.1/lua" "LUA MODULE WORKS"
   !empty {log_dir}/access.log
   truncate {log_dir}/access.log
 
 command "-" "Make HTTPS requests"
+  http-set-header Accept-Encoding "gzip, deflate, br"
   http-status GET "https://127.0.0.1" 200
   http-header GET "https://127.0.0.1" server webkaos
+  http-header GET "https://127.0.0.1" Content-Encoding br
   http-contains GET "https://127.0.0.1/lua" "LUA MODULE WORKS"
   !empty {log_dir}/access.log
   truncate {log_dir}/access.log
-
-command "-" "Check brotli compression"
-  http-set-header Accept-Encoding "gzip, deflate, br"
-  http-header GET "https://127.0.0.1" Content-Encoding br
 
 command "-" "Save PID file checksum"
   checksum-read {pid_file} pid_sha

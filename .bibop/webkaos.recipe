@@ -179,6 +179,10 @@ command "-" "Make HTTPS requests"
   !empty {log_dir}/access.log
   truncate {log_dir}/access.log
 
+command "-" "Check brotli compression"
+  http-set-header Accept-Encoding "gzip, deflate, br"
+  http-header GET "https://127.0.0.1" Content-Encoding br
+
 command "-" "Save PID file checksum"
   checksum-read {pid_file} pid_sha
 

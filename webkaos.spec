@@ -52,15 +52,15 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define nginx_version        1.21.6
-%define boring_commit        3a667d10e94186fd503966f5638e134fe9fb4080
-%define lua_module_ver       0.10.20
-%define lua_resty_core_ver   0.1.22
-%define lua_resty_lru_ver    0.11
+%define nginx_version        1.23.0
+%define boring_commit        c239ffd0552179f358de31517391679e9b62ccd3
+%define lua_module_ver       0.10.21
+%define lua_resty_core_ver   0.1.23
+%define lua_resty_lru_ver    0.13
 %define mh_module_ver        0.33
 %define pcre_ver             8.45
 %define zlib_ver             1.2.11
-%define luajit_ver           2.1-20220111
+%define luajit_ver           2.1-20220411
 %define luajit_raw_ver       2.1.0-beta3
 %define brotli_commit        9aec15e2aa6feea2113119ba06460af70ab3ea62
 %define brotli_ver           1.0.9
@@ -111,17 +111,21 @@ Source100:            checksum.sha512
 
 Patch0:               %{name}.patch
 Patch1:               mime.patch
-# https://github.com/cloudflare/sslconfig/blob/master/patches/nginx__1.11.5_dynamic_tls_records.patch
+                      # https://github.com/cloudflare/sslconfig/blob/master/patches/nginx__1.11.5_dynamic_tls_records.patch
 Patch2:               %{name}-dynamic-tls-records.patch
-# https://github.com/ajhaydock/BoringNginx/blob/master/patches
+                      # https://github.com/ajhaydock/BoringNginx/blob/master/patches
 Patch3:               boringssl.patch
 Patch5:               boringssl-tls13-support.patch
 Patch8:               boringssl-urand-test-disable.patch
 
+Patch10:              headers-more-nginx-module-compat.patch
+Patch11:              lua-nginx-module-compat.patch
+Patch12:              naxsi-compat.patch
+
 BuildRoot:            %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:        make perl cmake3 golang
-BuildRequires:        devtoolset-7-gcc-c++ devtoolset-7-binutils
+BuildRequires:        devtoolset-9-gcc-c++ devtoolset-9-binutils
 
 Requires:             initscripts >= 8.36 kaosv >= 2.16
 Requires:             gd libXpm libxslt
@@ -170,7 +174,7 @@ Links for nginx compatibility.
 
 Summary:           Module for Brotli compression
 Version:           0.1.5
-Release:           9%{?dist}
+Release:           10%{?dist}
 
 Group:             System Environment/Daemons
 Requires:          %{name} = %{nginx_version}
@@ -184,7 +188,7 @@ Module for Brotli compression.
 
 Summary:           High performance, low rules maintenance WAF
 Version:           %{naxsi_ver}
-Release:           8%{?dist}
+Release:           9%{?dist}
 
 Group:             System Environment/Daemons
 Requires:          %{name} = %{nginx_version}
@@ -223,6 +227,18 @@ pushd boringssl
 %patch8 -p1
 popd
 
+pushd headers-more-nginx-module-%{mh_module_ver}
+%patch10 -p1
+popd
+
+pushd lua-nginx-module-%{lua_module_ver}
+%patch11 -p1
+popd
+
+pushd naxsi-%{naxsi_ver}
+%patch12 -p1
+popd
+
 %build
 
 # Renaming and moving docs
@@ -234,8 +250,8 @@ mv README     NGINX-README
 mv lua-nginx-module-%{lua_module_ver}/README.markdown ./LUA-MODULE-README.markdown
 mv headers-more-nginx-module-%{mh_module_ver}/README.markdown ./HEADERS-MORE-MODULE-README.markdown
 
-# Use gcc and gcc-c++ from DevToolSet 7
-export PATH="/opt/rh/devtoolset-7/root/usr/bin:$PATH"
+# Use gcc and gcc-c++ from DevToolSet 9
+export PATH="/opt/rh/devtoolset-9/root/usr/bin:$PATH"
 
 # LuaJIT2 Build ################################################################
 
@@ -677,6 +693,15 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Mon Jul 04 2022 Anton Novojilov <andy@essentialkaos.com> - 1.23.0-0
+- Nginx updated to 1.23.0
+- BoringSSL updated to the latest stable version
+- LuaJIT updated to 2.1-20220411
+- lua-nginx-module updated to 0.10.21
+- lua-resty-core updated to 0.1.23
+- lua-resty-lru updated to 0.13
+- Using GCC 9 for build
+
 * Thu Jan 27 2022 Anton Novojilov <andy@essentialkaos.com> - 1.21.6-0
 - Nginx updated to 1.21.6
 - LuaJIT updated to 2.1-20220111

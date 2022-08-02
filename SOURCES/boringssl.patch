@@ -1,7 +1,7 @@
-diff -urN nginx-1.15.4-orig/src/event/ngx_event_openssl.c nginx-1.15.4-boring/src/event/ngx_event_openssl.c
---- nginx-1.15.4-orig/src/event/ngx_event_openssl.c	2018-09-25 18:11:39.000000000 +0300
-+++ nginx-1.15.4-boring/src/event/ngx_event_openssl.c	2018-09-27 14:21:12.000000000 +0300
-@@ -2591,7 +2591,9 @@
+diff -urN nginx-1.23.1-orig/src/event/ngx_event_openssl.c nginx-1.23.1-boring/src/event/ngx_event_openssl.c
+--- nginx-1.23.1-orig/src/event/ngx_event_openssl.c	2022-07-19 17:05:27.000000000 +0300
++++ nginx-1.23.1-boring/src/event/ngx_event_openssl.c	2022-08-02 15:19:58.000000000 +0300
+@@ -3352,7 +3352,9 @@
  #ifdef SSL_R_NO_SUITABLE_SIGNATURE_ALGORITHM
              || n == SSL_R_NO_SUITABLE_SIGNATURE_ALGORITHM            /*  118 */
  #endif
@@ -11,13 +11,13 @@ diff -urN nginx-1.15.4-orig/src/event/ngx_event_openssl.c nginx-1.15.4-boring/sr
              || n == SSL_R_DIGEST_CHECK_FAILED                        /*  149 */
              || n == SSL_R_ERROR_IN_RECEIVED_CIPHER_LIST              /*  151 */
              || n == SSL_R_EXCESSIVE_MESSAGE_SIZE                     /*  152 */
-@@ -2601,7 +2603,9 @@
+@@ -3362,7 +3364,9 @@
  #ifdef SSL_R_NO_CIPHERS_PASSED
              || n == SSL_R_NO_CIPHERS_PASSED                          /*  182 */
  #endif
 +#ifdef SSL_R_NO_CIPHERS_SPECIFIED
              || n == SSL_R_NO_CIPHERS_SPECIFIED                       /*  183 */
 +#endif
-             || n == SSL_R_NO_COMPRESSION_SPECIFIED                   /*  187 */
-             || n == SSL_R_NO_SHARED_CIPHER                           /*  193 */
-             || n == SSL_R_RECORD_LENGTH_MISMATCH                     /*  213 */
+ #ifdef SSL_R_BAD_CIPHER
+             || n == SSL_R_BAD_CIPHER                                 /*  186 */
+ #endif

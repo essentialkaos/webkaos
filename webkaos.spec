@@ -52,12 +52,12 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define nginx_version        1.23.0
+%define nginx_version        1.23.1
 %define boring_commit        c239ffd0552179f358de31517391679e9b62ccd3
 %define lua_module_ver       0.10.21
 %define lua_resty_core_ver   0.1.23
 %define lua_resty_lru_ver    0.13
-%define mh_module_ver        0.33
+%define mh_module_ver        0.34
 %define pcre_ver             8.45
 %define zlib_ver             1.2.11
 %define luajit_ver           2.1-20220411
@@ -118,7 +118,6 @@ Patch3:               boringssl.patch
 Patch5:               boringssl-tls13-support.patch
 Patch8:               boringssl-urand-test-disable.patch
 
-Patch10:              headers-more-nginx-module-compat.patch
 Patch11:              lua-nginx-module-compat.patch
 Patch12:              naxsi-compat.patch
 
@@ -174,7 +173,7 @@ Links for nginx compatibility.
 
 Summary:           Module for Brotli compression
 Version:           0.1.5
-Release:           10%{?dist}
+Release:           11%{?dist}
 
 Group:             System Environment/Daemons
 Requires:          %{name} = %{nginx_version}
@@ -188,7 +187,7 @@ Module for Brotli compression.
 
 Summary:           High performance, low rules maintenance WAF
 Version:           %{naxsi_ver}
-Release:           9%{?dist}
+Release:           10%{?dist}
 
 Group:             System Environment/Daemons
 Requires:          %{name} = %{nginx_version}
@@ -225,10 +224,6 @@ tar xzvf %{SOURCE60}
 pushd boringssl
 %patch5 -p1
 %patch8 -p1
-popd
-
-pushd headers-more-nginx-module-%{mh_module_ver}
-%patch10 -p1
 popd
 
 pushd lua-nginx-module-%{lua_module_ver}
@@ -693,6 +688,10 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Tue Aug 02 2022 Anton Novojilov <andy@essentialkaos.com> - 1.23.1-0
+- Nginx updated to 1.23.1
+- More Headers module updated to 0.34
+
 * Mon Jul 04 2022 Anton Novojilov <andy@essentialkaos.com> - 1.23.0-0
 - Nginx updated to 1.23.0
 - BoringSSL updated to the latest stable version

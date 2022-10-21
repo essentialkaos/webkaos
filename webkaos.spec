@@ -52,19 +52,22 @@
 %define service_name         %{name}
 %define service_home         %{_cachedir}/%{service_name}
 
-%define nginx_version        1.23.1
-%define boring_commit        c239ffd0552179f358de31517391679e9b62ccd3
+%define nginx_version        1.23.2
 %define lua_module_ver       0.10.21
-%define lua_resty_core_ver   0.1.23
+%define lua_resty_core_ver   0.1.24
 %define lua_resty_lru_ver    0.13
 %define mh_module_ver        0.34
 %define pcre_ver             8.45
 %define zlib_ver             1.2.11
-%define luajit_ver           2.1-20220411
+%define luajit_ver           2.1-20220915
 %define luajit_raw_ver       2.1.0-beta3
 %define brotli_commit        9aec15e2aa6feea2113119ba06460af70ab3ea62
 %define brotli_ver           1.0.9
 %define naxsi_ver            1.3
+
+# 1. Open https://omahaproxy.appspot.com and note <current_version> of linux/stable release.
+# 2. Open https://chromium.googlesource.com/chromium/src/+/refs/tags/<current_version>/DEPS and note <boringssl_revision>.
+%define boring_commit        adaa322b63d1bfbd1abcf4a308926a9a83a6acbe
 
 ################################################################################
 
@@ -84,6 +87,7 @@ Source4:              %{name}.conf
 Source5:              %{name}.service
 Source6:              %{name}-debug.service
 Source7:              modules.conf
+Source8:              nginx-wrapper
 
 Source20:             ssl.conf
 Source21:             ssl-wildcard.conf
@@ -173,7 +177,7 @@ Links for nginx compatibility.
 
 Summary:           Module for Brotli compression
 Version:           0.1.5
-Release:           11%{?dist}
+Release:           12%{?dist}
 
 Group:             System Environment/Daemons
 Requires:          %{name} = %{nginx_version}
@@ -187,7 +191,7 @@ Module for Brotli compression.
 
 Summary:           High performance, low rules maintenance WAF
 Version:           %{naxsi_ver}
-Release:           10%{?dist}
+Release:           11%{?dist}
 
 Group:             System Environment/Daemons
 Requires:          %{name} = %{nginx_version}
@@ -549,11 +553,12 @@ install -pm 644 %{SOURCE24} \
 install -pm 644 %{_builddir}/nginx-%{nginx_version}/naxsi-%{naxsi_ver}/naxsi_config/naxsi_core.rules \
                 %{buildroot}%{_sysconfdir}/%{name}/
 
-# Create links for compatibility with nginx
+# Create links and scripts for compatibility with nginx
+install -pm 755 %{SOURCE8} %{buildroot}%{_sbindir}/nginx
+
 ln -sf %{_sysconfdir}/%{name}/ %{buildroot}%{_sysconfdir}/nginx
 ln -sf %{_sysconfdir}/%{name}/%{name}.conf %{buildroot}%{_sysconfdir}/%{name}/nginx.conf
 ln -sf %{_logdir}/%{name}/ %{buildroot}%{_logdir}/nginx
-ln -sf %{_sbindir}/%{name} %{buildroot}%{_sbindir}/nginx
 ln -sf %{_initrddir}/%{service_name} %{buildroot}%{_initrddir}/nginx
 
 ln -sf %{_unitdir}/%{name}.service %{buildroot}%{_unitdir}/nginx.service
@@ -601,7 +606,7 @@ fi
 
 %postun
 if [[ $1 -ge 1 ]] ; then
-%{__sysctl} daemon-reload &>/dev/null || :
+  %{__sysctl} daemon-reload &>/dev/null || :
 fi
 
 %clean
@@ -688,6 +693,12 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Sat Oct 22 2022 Anton Novojilov <andy@essentialkaos.com> - 1.23.2-0
+- Nginx updated to 1.23.2 with fixes for CVE-2022-41741, CVE-2022-41742
+- BoringSSL updated to the latest stable version for Chromium
+- LuaJIT updated to 2.1-20220915
+- lua-resty-core updated to 0.1.24
+
 * Tue Aug 02 2022 Anton Novojilov <andy@essentialkaos.com> - 1.23.1-0
 - Nginx updated to 1.23.1
 - More Headers module updated to 0.34

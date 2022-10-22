@@ -20,7 +20,7 @@ jobs:
 
     strategy:
       matrix:
-        tag: [ 'centos7', 'centos7-unprivileged' ]
+        tag: [ 'centos7', 'centos7-unprivileged', 'ol7', 'ol7-unprivileged' ]
 
     steps:
       - name: Checkout

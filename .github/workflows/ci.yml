@@ -127,10 +127,12 @@ jobs:
         run: |
           docker build -f .docker/centos7.docker -t centos7 .
           docker build -f .docker/centos7-unprivileged.docker -t centos7-unprivileged .
+          docker build -f .docker/ol7.docker -t ol7 .
+          docker build -f .docker/ol7-unprivileged.docker -t ol7-unprivileged .
 
       - name: Show info about built Docker image
         uses: essentialkaos/docker-info-action@v1
         if: ${{ github.event_name == 'pull_request' }}
         with:
-          image: centos7 centos7-unprivileged
+          image: centos7 centos7-unprivileged ol7 ol7-unprivileged
           show-labels: true

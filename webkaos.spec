@@ -53,7 +53,7 @@
 %define service_home         %{_cachedir}/%{service_name}
 
 %define nginx_version        1.23.2
-%define lua_module_ver       0.10.21
+%define lua_module_ver       0.10.22
 %define lua_resty_core_ver   0.1.24
 %define lua_resty_lru_ver    0.13
 %define mh_module_ver        0.34
@@ -247,6 +247,8 @@ mv LICENSE    NGINX-LICENSE
 mv README     NGINX-README
 
 mv lua-nginx-module-%{lua_module_ver}/README.markdown ./LUA-MODULE-README.markdown
+mv lua-resty-core-%{lua_resty_core_ver}/README.markdown ./LUA-RESTY-CORE-README.markdown
+mv lua-resty-lrucache-%{lua_resty_lru_ver}/README.markdown ./LUA-RESTY-LRU-README.markdown
 mv headers-more-nginx-module-%{mh_module_ver}/README.markdown ./HEADERS-MORE-MODULE-README.markdown
 
 # Use gcc and gcc-c++ from DevToolSet 9
@@ -698,6 +700,7 @@ rm -rf %{buildroot}
 - BoringSSL updated to the latest stable version for Chromium
 - LuaJIT updated to 2.1-20220915
 - lua-resty-core updated to 0.1.24
+- lua-nginx-module updated to 0.10.22
 
 * Tue Aug 02 2022 Anton Novojilov <andy@essentialkaos.com> - 1.23.1-0
 - Nginx updated to 1.23.1

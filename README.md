@@ -31,16 +31,31 @@ sudo yum install webkaos-module-brotli webkaos-module-naxsi
 
 Official webkaos images available on [Docker Hub](http://kaos.sh/d/webkaos) and [GitHub Container Registry](https://kaos.sh/p/webkaos). All Docker images support templating using environment variables.
 
+Official images:
+
+- `essentialkaos/webkaos:centos7`
+- `essentialkaos/webkaos:centos7-unprivileged`
+- `essentialkaos/webkaos:ol7`
+- `essentialkaos/webkaos:ol7-unprivileged`
+- `ghcr.io/essentialkaos/webkaos:centos7`
+- `ghcr.io/essentialkaos/webkaos:centos7-unprivileged`
+- `ghcr.io/essentialkaos/webkaos:ol7`
+- `ghcr.io/essentialkaos/webkaos:ol7-unprivileged`
+
 Usage examples:
 
 ```bash
+# Image on CentOS 7
 docker run --name my-webkaos -v /some/content:/usr/share/webkaos/html:ro -p 8080:80 -d essentialkaos/webkaos:centos7
-
+# Image on OracleLinux 7
+docker run --name my-webkaos -v /some/content:/usr/share/webkaos/html:ro -p 8080:80 -d essentialkaos/webkaos:ol7
 ```
 
 ```bash
+# Unprivileged image on CentOS 7
 docker run --name my-webkaos -v /some/content:/usr/share/webkaos/html:ro -p 8080:8080 -d essentialkaos/webkaos:centos7-unprivileged
-
+# Unprivileged image on OracleLinux 7
+docker run --name my-webkaos -v /some/content:/usr/share/webkaos/html:ro -p 8080:8080 -d essentialkaos/webkaos:ol7-unprivileged
 ```
 
 Useful environment variables:

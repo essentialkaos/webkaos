@@ -11,6 +11,7 @@ var service_name webkaos
 var user_name webkaos
 var prefix_dir /etc/webkaos
 var config {prefix_dir}/webkaos.conf
+var extra_config_dir {prefix_dir}/xtra
 var binary /usr/sbin/webkaos
 var modules_config {prefix_dir}/modules.conf
 var modules_dir /usr/share/webkaos/modules
@@ -33,6 +34,14 @@ command "-" "System environment validation"
 command "-" "Debug version"
   exist {binary}.debug
   service-present webkaos-debug
+
+command "webkaos -v" "Check version info"
+  wait-output 1.0
+  output-match "webkaos version: webkaos\/\d\.\d+\.\d+"
+
+command "webkaos -t" "Validate default config"
+  exit 0
+  output-contains "webkaos: the configuration file /etc/webkaos/webkaos.conf syntax is ok"
 
 command "-" "Check linking with LuaJIT"
   lib-rpath {binary} /usr/share/webkaos/luajit/lib
@@ -113,13 +122,33 @@ command "-" "Check Resty core and lrucache"
   mode {lua_dir}/resty/core/worker.lua 644
   mode {lua_dir}/resty/lrucache/pureffi.lua 644
 
-command "-" "Nginx compatibility package"
+command "-" "Check extra configs"
+  exist {extra_config_dir}/bots.conf
+  exist {extra_config_dir}/brotli.conf
+  exist {extra_config_dir}/common.conf
+  exist {extra_config_dir}/ssl.conf
+  exist {extra_config_dir}/ssl-wildcard.conf
+
+  mode {extra_config_dir}/bots.conf 644
+  mode {extra_config_dir}/brotli.conf 644
+  mode {extra_config_dir}/common.conf 644
+  mode {extra_config_dir}/ssl.conf 644
+  mode {extra_config_dir}/ssl-wildcard.conf 644
+
+command "-" "Check Nginx compatibility package"
   exist /etc/nginx
   exist /var/log/nginx
   exist /etc/nginx/nginx.conf
   exist /usr/sbin/nginx
   service-present nginx
   service-present nginx-debug
+
+command "nginx -v" "Check nginx wrapper version info"
+  wait-output 1.0
+  output-match "nginx version: nginx\/\d\.\d+\.\d+"
+
+command "nginx -t" "Validate default config using nginx wrapper"
+  exit 0
 
 command "-" "Original configuration backup"
   backup {config}
@@ -141,6 +170,9 @@ command "-" "Add self-signed certificate"
   chmod {ssl_dir}/ssl.key 600
   chmod {ssl_dir}/ssl.crt 600
 
+command "webkaos -t" "Validate test configuration"
+  exit 0
+
 command "-" "Clear old log files"
   touch {log_dir}/access.log
   touch {log_dir}/error.log
@@ -148,10 +180,10 @@ command "-" "Clear old log files"
   truncate {log_dir}/error.log
 
 command "-" "Check brotli module"
-  exist {prefix_dir}/xtra/brotli.conf
+  exist {extra_config_dir}/brotli.conf
   exist {modules_dir}/ngx_http_brotli_filter_module.so
   exist {modules_dir}/ngx_http_brotli_static_module.so
-  mode {prefix_dir}/xtra/brotli.conf 644
+  mode {extra_config_dir}/brotli.conf 644
   mode {modules_dir}/ngx_http_brotli_filter_module.so 755
   mode {modules_dir}/ngx_http_brotli_static_module.so 755
 
@@ -260,6 +292,10 @@ command:teardown "-" "Configuration restore"
 
 command:teardown "-" "DH param cleanup"
   remove {dh_param}
+
+command:teardown "-" "Logs cleanup"
+  truncate {log_dir}/access.log
+  truncate {log_dir}/error.log
 
 command:teardown "-" "Self-signed certificate cleanup"
   remove {ssl_dir}/ssl.key

@@ -94,6 +94,7 @@ Source21:             ssl-wildcard.conf
 Source22:             common.conf
 Source23:             bots.conf
 Source24:             brotli.conf
+Source25:             cloudflare-ips.conf
 
 Source30:             %{name}-index.html
 Source31:             default.key
@@ -510,6 +511,8 @@ install -pm 644 %{SOURCE22} \
                 %{buildroot}%{_sysconfdir}/%{name}/xtra/
 install -pm 644 %{SOURCE23} \
                 %{buildroot}%{_sysconfdir}/%{name}/xtra/
+install -pm 644 %{SOURCE25} \
+                %{buildroot}%{_sysconfdir}/%{name}/xtra/
 
 install -dm 755 %{buildroot}%{_sysconfdir}/sysconfig
 
@@ -629,10 +632,11 @@ rm -rf %{buildroot}
 
 %config(noreplace) %{_sysconfdir}/%{name}/%{name}.conf
 %config(noreplace) %{_sysconfdir}/%{name}/modules.conf
-%config %{_sysconfdir}/%{name}/xtra/common.conf
-%config %{_sysconfdir}/%{name}/xtra/ssl.conf
-%config %{_sysconfdir}/%{name}/xtra/ssl-wildcard.conf
 %config %{_sysconfdir}/%{name}/xtra/bots.conf
+%config %{_sysconfdir}/%{name}/xtra/cloudflare-ips.conf
+%config %{_sysconfdir}/%{name}/xtra/common.conf
+%config %{_sysconfdir}/%{name}/xtra/ssl-wildcard.conf
+%config %{_sysconfdir}/%{name}/xtra/ssl.conf
 
 %config(noreplace) %{_sysconfdir}/%{name}/ssl/default.key
 %config(noreplace) %{_sysconfdir}/%{name}/ssl/default.crt
@@ -701,6 +705,7 @@ rm -rf %{buildroot}
 - LuaJIT updated to 2.1-20220915
 - lua-resty-core updated to 0.1.24
 - lua-nginx-module updated to 0.10.22
+- Added extra config with Cloudflare IPs
 
 * Tue Aug 02 2022 Anton Novojilov <andy@essentialkaos.com> - 1.23.1-0
 - Nginx updated to 1.23.1

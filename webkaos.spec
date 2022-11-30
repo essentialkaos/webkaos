@@ -58,11 +58,11 @@
 %define lua_resty_lru_ver    0.13
 %define mh_module_ver        0.34
 %define pcre_ver             8.45
-%define zlib_ver             1.2.11
+%define zlib_ver             1.2.13
 %define luajit_ver           2.1-20220915
 %define luajit_raw_ver       2.1.0-beta3
-%define brotli_commit        9aec15e2aa6feea2113119ba06460af70ab3ea62
-%define brotli_ver           1.0.9
+%define brotli_ngx_commit    6e975bcb015f62e1f303054897783355e2a877dc
+%define brotli_commit        3914999fcc1fda92e750ef9190aa6db9bf7bdb07
 %define naxsi_ver            1.3
 
 # 1. Open https://omahaproxy.appspot.com and note <current_version> of linux/stable release.
@@ -74,7 +74,7 @@
 Summary:              Superb high performance web server
 Name:                 webkaos
 Version:              %{nginx_version}
-Release:              0%{?dist}
+Release:              1%{?dist}
 License:              2-clause BSD-like license
 Group:                System Environment/Daemons
 URL:                  https://kaos.sh/webkaos
@@ -106,8 +106,8 @@ Source52:             https://github.com/openresty/headers-more-nginx-module/arc
 Source53:             https://downloads.sourceforge.net/project/pcre/pcre/%{pcre_ver}/pcre-%{pcre_ver}.tar.gz
 Source54:             https://zlib.net/zlib-%{zlib_ver}.tar.gz
 Source55:             https://github.com/openresty/luajit2/archive/v%{luajit_ver}.tar.gz
-Source56:             https://github.com/google/ngx_brotli/archive/%{brotli_commit}.tar.gz
-Source57:             https://github.com/google/brotli/archive/v%{brotli_ver}.tar.gz
+Source56:             https://github.com/google/ngx_brotli/archive/%{brotli_ngx_commit}.tar.gz
+Source57:             https://github.com/google/brotli/archive/%{brotli_commit}.tar.gz
 Source58:             https://github.com/nbs-system/naxsi/archive/%{naxsi_ver}.tar.gz
 Source59:             https://github.com/openresty/lua-resty-core/archive/v%{lua_resty_core_ver}.tar.gz
 Source60:             https://github.com/openresty/lua-resty-lrucache/archive/v%{lua_resty_lru_ver}.tar.gz
@@ -128,8 +128,12 @@ Patch12:              naxsi-compat.patch
 
 BuildRoot:            %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:        make perl cmake3 golang
-BuildRequires:        devtoolset-9-gcc-c++ devtoolset-9-binutils
+BuildRequires:        make perl golang
+%if 0%{?rhel} <= 7
+BuildRequires:        cmake3 devtoolset-9-gcc-c++ devtoolset-9-binutils
+%else
+BuildRequires:        cmake gcc-c++
+%endif
 
 Requires:             initscripts >= 8.36 kaosv >= 2.16
 Requires:             gd libXpm libxslt
@@ -287,9 +291,9 @@ cp boringssl/build/crypto/libcrypto.a boringssl/build/ssl/libssl.a boringssl/.op
 
 # Brotli Source Copy ###########################################################
 
-pushd ngx_brotli-%{brotli_commit}
+pushd ngx_brotli-%{brotli_ngx_commit}
   rm -rf deps/brotli
-  mv ../brotli-%{brotli_ver} deps/brotli
+  mv ../brotli-%{brotli_commit} deps/brotli
 popd
 
 ################################################################################
@@ -370,7 +374,7 @@ touch boringssl/.openssl/include/openssl/ssl.h
     --with-pcre-jit \
     --with-pcre=pcre-%{pcre_ver} \
     --with-openssl=boringssl \
-    --add-dynamic-module=ngx_brotli-%{brotli_commit} \
+    --add-dynamic-module=ngx_brotli-%{brotli_ngx_commit} \
     --add-dynamic-module=naxsi-%{naxsi_ver}/naxsi_src \
     --with-cc-opt="-I ../boringssl/.openssl/include/" \
     --with-ld-opt="-L ../boringssl/.openssl/lib -L ../luajit2-%{luajit_ver}/lib" \
@@ -699,6 +703,11 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Thu Dec 01 2022 Anton Novojilov <andy@essentialkaos.com> - 1.23.2-1
+- zlib updated to 1.2.13 with fixes for CVE-2022-37434
+- ngx_brotli updated to the latest commit
+- brotli updated to the latest commit
+
 * Sat Oct 22 2022 Anton Novojilov <andy@essentialkaos.com> - 1.23.2-0
 - Nginx updated to 1.23.2 with fixes for CVE-2022-41741, CVE-2022-41742
 - BoringSSL updated to the latest stable version for Chromium

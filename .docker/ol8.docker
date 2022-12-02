@@ -1,9 +1,9 @@
 ## WEBKAOS IMAGE ###############################################################
 
-FROM essentialkaos/oraclelinux:7
+FROM essentialkaos/oraclelinux:8
 
 LABEL org.opencontainers.image.title="WEBKAOS" \
-      org.opencontainers.image.description="WEBKAOS Image on OracleLinux 7" \
+      org.opencontainers.image.description="WEBKAOS Image on OracleLinux 8" \
       org.opencontainers.image.vendor="ESSENTIAL KAOS" \
       org.opencontainers.image.authors="Anton Novojilov" \
       org.opencontainers.image.licenses="Apache-2.0" \
@@ -14,7 +14,7 @@ ARG WEBKAOS_VER=1.23.2
 ARG BROTLI_VER=0.1.5
 
 # hadolint ignore=DL3031,DL3033
-RUN yum -y -q install https://yum.kaos.st/kaos-repo-latest.el7.noarch.rpm && \
+RUN yum -y -q install https://yum.kaos.st/kaos-repo-latest.el8.noarch.rpm && \
     yum -y -q install webkaos-${WEBKAOS_VER} webkaos-module-brotli-${BROTLI_VER} gettext && \
     yum clean all && \
     rm -rf /var/cache/yum && \

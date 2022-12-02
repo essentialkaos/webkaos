@@ -1,4 +1,4 @@
-# Bibop recipe for webkaos (CentOS 7+)
+# Bibop recipe for webkaos (EL7/EL8/EL9)
 # See more: https://kaos.sh/bibop
 
 pkg webkaos webkaos-debug webkaos-nginx webkaos-module-brotli webkaos-module-naxsi

@@ -12,13 +12,14 @@ LABEL org.opencontainers.image.title="WEBKAOS (Unprivileged)" \
 
 ARG WEBKAOS_VER=1.23.2
 ARG BROTLI_VER=0.1.5
+ARG REPOSITORY=kaos-release
 
 ARG UID=1001
 ARG GID=1001
 
 # hadolint ignore=DL3031,DL3033
 RUN yum -y -q install https://yum.kaos.st/kaos-repo-latest.el9.noarch.rpm && \
-    yum -y -q install webkaos-${WEBKAOS_VER} webkaos-module-brotli-${BROTLI_VER} gettext && \
+    yum -y -q install --enablerepo=${REPOSITORY} webkaos-${WEBKAOS_VER} webkaos-module-brotli-${BROTLI_VER} gettext && \
     yum clean all && \
     rm -rf /var/cache/yum && \
     rm -rf /tmp/* && \

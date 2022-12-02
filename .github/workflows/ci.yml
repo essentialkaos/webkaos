@@ -129,14 +129,14 @@ jobs:
       - name: Build Docker image
         if: ${{ github.event_name == 'pull_request' }}
         run: |
-          docker build -f .docker/centos7.docker -t centos7 .
-          docker build -f .docker/centos7-unprivileged.docker -t centos7-unprivileged .
-          docker build -f .docker/ol7.docker -t ol7 .
-          docker build -f .docker/ol7-unprivileged.docker -t ol7-unprivileged .
-          docker build -f .docker/ol8.docker -t ol8 .
-          docker build -f .docker/ol8-unprivileged.docker -t ol8-unprivileged .
-          docker build -f .docker/ol9.docker -t ol9 .
-          docker build -f .docker/ol9-unprivileged.docker -t ol9-unprivileged .
+          docker build --build-arg REPOSITORY=kaos-testing -f .docker/centos7.docker -t centos7 .
+          docker build --build-arg REPOSITORY=kaos-testing -f .docker/centos7-unprivileged.docker -t centos7-unprivileged .
+          docker build --build-arg REPOSITORY=kaos-testing -f .docker/ol7.docker -t ol7 .
+          docker build --build-arg REPOSITORY=kaos-testing -f .docker/ol7-unprivileged.docker -t ol7-unprivileged .
+          docker build --build-arg REPOSITORY=kaos-testing -f .docker/ol8.docker -t ol8 .
+          docker build --build-arg REPOSITORY=kaos-testing -f .docker/ol8-unprivileged.docker -t ol8-unprivileged .
+          docker build --build-arg REPOSITORY=kaos-testing -f .docker/ol9.docker -t ol9 .
+          docker build --build-arg REPOSITORY=kaos-testing -f .docker/ol9-unprivileged.docker -t ol9-unprivileged .
 
       - name: Show info about built Docker image
         uses: essentialkaos/docker-info-action@v1

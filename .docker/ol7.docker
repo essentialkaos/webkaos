@@ -1,6 +1,10 @@
+## REGISTRY CONFIGURATION ######################################################
+
+ARG REGISTRY="docker.io"
+
 ## WEBKAOS IMAGE ###############################################################
 
-FROM essentialkaos/oraclelinux:7
+FROM ${REGISTRY}/essentialkaos/oraclelinux:7
 
 LABEL org.opencontainers.image.title="WEBKAOS" \
       org.opencontainers.image.description="WEBKAOS Image on OracleLinux 7" \

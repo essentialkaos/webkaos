@@ -256,8 +256,10 @@ mv lua-resty-core-%{lua_resty_core_ver}/README.markdown ./LUA-RESTY-CORE-README.
 mv lua-resty-lrucache-%{lua_resty_lru_ver}/README.markdown ./LUA-RESTY-LRU-README.markdown
 mv headers-more-nginx-module-%{mh_module_ver}/README.markdown ./HEADERS-MORE-MODULE-README.markdown
 
+%if 0%{?rhel} <= 7
 # Use gcc and gcc-c++ from DevToolSet 9
 export PATH="/opt/rh/devtoolset-9/root/usr/bin:$PATH"
+%endif
 
 # LuaJIT2 Build ################################################################
 

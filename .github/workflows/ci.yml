@@ -136,7 +136,7 @@ jobs:
       - name: Build Docker image
         if: ${{ github.event_name == 'pull_request' }}
         run: |
-          docker build --build-arg REGISTRY=${REGISTRY} -f .docker/${{matrix.image}}.docker -t ${{matrix.image}} .
+          docker build --build-arg REGISTRY=${REGISTRY} --build-arg REPOSITORY=kaos-testing -f .docker/${{matrix.image}}.docker -t ${{matrix.image}} .
 
       - name: Show info about built Docker image
         uses: essentialkaos/docker-info-action@v1

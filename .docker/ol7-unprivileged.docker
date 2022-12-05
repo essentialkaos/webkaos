@@ -4,7 +4,7 @@ ARG REGISTRY="docker.io"
 
 ## WEBKAOS UNPRIVILEGED IMAGE ##################################################
 
-FROM ${REGISTRY}/essentialkaos/oraclelinux:7
+FROM ${REGISTRY}/essentialkaos/oraclelinux:7-slim
 
 LABEL org.opencontainers.image.title="WEBKAOS (Unprivileged)" \
       org.opencontainers.image.description="WEBKAOS Image on OracleLinux 7" \

@@ -13,28 +13,56 @@ command "-" "Check if docker is installed"
 +command "-" "Check if docker daemon works"
   service-works docker
 
+## Prefetch images ##
+
+command:fetch "docker pull {image_name}:centos7" "Pull CentOS 7 Image"
+  exit 0
+
++command:fetch "docker pull {image_name}:centos7-unprivileged" "Pull CentOS 7 Unprivileged Image"
+  exit 0
+
++command:fetch "docker pull {image_name}:ol7" "Pull OracleLinux 7 Image"
+  exit 0
+
++command:fetch "docker pull {image_name}:ol7-unprivileged" "Pull OracleLinux 7 Unprivileged Image"
+  exit 0
+
++command:fetch "docker pull {image_name}:ol8" "Pull OracleLinux 8 Image"
+  exit 0
+
++command:fetch "docker pull {image_name}:ol8-unprivileged" "Pull OracleLinux 8 Unprivileged Image"
+  exit 0
+
++command:fetch "docker pull {image_name}:ol9" "Pull OracleLinux 9 Image"
+  exit 0
+
++command:fetch "docker pull {image_name}:ol9-unprivileged" "Pull OracleLinux 9 Unprivileged Image"
+  exit 0
+
+## Build images ##
+
 command "docker build --build-arg {repo_tag} -f ../.docker/centos7.docker -t {image_name}:centos7 .." "Build CentOS 7 Image"
   exit 0 {build_timeout}
 
 +command "docker build --build-arg {repo_tag} -f ../.docker/centos7-unprivileged.docker -t {image_name}:centos7-unprivileged .." "Build CentOS 7 Unprivileged Image"
   exit 0 {build_timeout}
 
-+command "docker build --build-arg {repo_tag} -f ../.docker/ol7.docker -t {image_name}:ol7 .." "Build OL 7 Image"
++command "docker build --build-arg {repo_tag} -f ../.docker/ol7.docker -t {image_name}:ol7 .." "Build OracleLinux 7 Image"
   exit 0 {build_timeout}
 
-+command "docker build --build-arg {repo_tag} -f ../.docker/ol7-unprivileged.docker -t {image_name}:ol7-unprivileged .." "Build OL 7 Unprivileged Image"
++command "docker build --build-arg {repo_tag} -f ../.docker/ol7-unprivileged.docker -t {image_name}:ol7-unprivileged .." "Build OracleLinux 7 Unprivileged Image"
   exit 0 {build_timeout}
 
-+command "docker build --build-arg {repo_tag} -f ../.docker/ol8.docker -t {image_name}:ol8 .." "Build OL 8 Image"
++command "docker build --build-arg {repo_tag} -f ../.docker/ol8.docker -t {image_name}:ol8 .." "Build OracleLinux 8 Image"
   exit 0 {build_timeout}
 
-+command "docker build --build-arg {repo_tag} -f ../.docker/ol8-unprivileged.docker -t {image_name}:ol8-unprivileged .." "Build OL 8 Unprivileged Image"
++command "docker build --build-arg {repo_tag} -f ../.docker/ol8-unprivileged.docker -t {image_name}:ol8-unprivileged .." "Build OracleLinux 8 Unprivileged Image"
   exit 0 {build_timeout}
 
-+command "docker build --build-arg {repo_tag} -f ../.docker/ol9.docker -t {image_name}:ol9 .." "Build OL 9 Image"
++command "docker build --build-arg {repo_tag} -f ../.docker/ol9.docker -t {image_name}:ol9 .." "Build OracleLinux 9 Image"
   exit 0 {build_timeout}
 
-+command "docker build --build-arg {repo_tag} -f ../.docker/ol9-unprivileged.docker -t {image_name}:ol9-unprivileged .." "Build OL 9 Unprivileged Image"
++command "docker build --build-arg {repo_tag} -f ../.docker/ol9-unprivileged.docker -t {image_name}:ol9-unprivileged .." "Build OracleLinux 9 Unprivileged Image"
   exit 0 {build_timeout}
 
 ## CentOS 7 ##

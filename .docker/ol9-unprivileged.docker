@@ -21,7 +21,7 @@ ARG REPOSITORY=kaos-release
 ARG UID=1001
 ARG GID=1001
 
-# hadolint ignore=DL3031,DL3033
+# hadolint ignore=DL3031,DL3041
 RUN rpm -ivh https://yum.kaos.st/kaos-repo-latest.el9.noarch.rpm && \
     microdnf -y install --enablerepo=${REPOSITORY} webkaos-${WEBKAOS_VER} webkaos-module-brotli-${BROTLI_VER} gettext && \
     microdnf clean all && \

@@ -18,7 +18,7 @@ ARG WEBKAOS_VER=1.23.2
 ARG BROTLI_VER=0.1.5
 ARG REPOSITORY=kaos-release
 
-# hadolint ignore=DL3031,DL3033
+# hadolint ignore=DL3031,DL3041
 RUN rpm -ivh https://yum.kaos.st/kaos-repo-latest.el8.noarch.rpm && \
     microdnf -y install --enablerepo=${REPOSITORY} webkaos-${WEBKAOS_VER} webkaos-module-brotli-${BROTLI_VER} gettext && \
     microdnf clean all && \

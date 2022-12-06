@@ -3,6 +3,13 @@ name: "Docker Push"
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      force_rebuild:
+        description: 'Force container rebuild'
+        required: true
+        type: choice
+        options: [yes, no]
   schedule:
     - cron: '30 12 * * *'
 
@@ -20,7 +27,7 @@ jobs:
 
     strategy:
       matrix:
-        tag: [ 'centos7', 'centos7-unprivileged', 'ol7', 'ol7-unprivileged', 'ol8', 'ol8-unprivileged', 'ol9', 'ol9-unprivileged' ]
+        image: [ 'centos7', 'centos7-unprivileged', 'ol7', 'ol7-unprivileged', 'ol8', 'ol8-unprivileged', 'ol9', 'ol9-unprivileged' ]
 
     steps:
       - name: Checkout
@@ -67,7 +74,7 @@ jobs:
             exit 1
           fi
 
-          docker_file=".docker/${{matrix.tag}}.docker"
+          docker_file=".docker/${{matrix.image}}.docker"
           base_image=$(grep 'FROM ' $docker_file | grep -v 'builder' | sed 's#${REGISTRY}/##' | tail -1 | cut -f2 -d' ')
 
           if [[ -z "$base_image" ]] ; then
@@ -91,10 +98,16 @@ jobs:
             exit 0
           fi
 
+          if [[ "${{ github.event.inputs.force_rebuild }}" == "true" ]] ; then
+            echo "::warning::Rebuild ${{matrix.version}} (reason: forced rebuild)"
+            echo "build=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
           echo -e "::group::\033[34mDownloading built image…\033[0m"
 
-          if ! docker pull ghcr.io/${{env.IMAGE_NAME}}:${{matrix.tag}} ; then
-            echo "::error::Can't download image ${{env.IMAGE_NAME}}:${{matrix.tag}}"
+          if ! docker pull ghcr.io/${{env.IMAGE_NAME}}:${{matrix.image}} ; then
+            echo "::error::Can't download image ghcr.io/${{env.IMAGE_NAME}}:${{matrix.image}}"
             exit 1
           fi
 
@@ -115,7 +128,7 @@ jobs:
             exit 1
           fi
 
-          if ! docker inspect "ghcr.io/${{env.IMAGE_NAME}}:${{matrix.tag}}" | jq -r '.[0].RootFS.Layers' | grep -q "$base_layer" ; then
+          if ! docker inspect "ghcr.io/${{env.IMAGE_NAME}}:${{matrix.image}}" | jq -r '.[0].RootFS.Layers' | grep -q "$base_layer" ; then
             echo "::warning::Rebuild image (reason: base image rebuilt)"
             echo "build=true" >> $GITHUB_OUTPUT
             exit 0
@@ -148,7 +161,8 @@ jobs:
             ghcr.io/${{env.IMAGE_NAME}}:${{matrix.image}}
 
       - name: Show info about built Docker image
+        if: ${{ steps.build_check.outputs.build == 'true' }}
         uses: essentialkaos/docker-info-action@v1
         with:
-          image: ghcr.io/${{env.IMAGE_NAME}}:${{matrix.tag}}
+          image: ghcr.io/${{env.IMAGE_NAME}}:${{matrix.image}}
           show-labels: true

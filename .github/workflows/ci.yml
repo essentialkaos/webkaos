@@ -68,7 +68,7 @@ jobs:
       - name: Test recipes with Bibop
         uses: essentialkaos/bibop-action@v1
         with:
-          recipe: .bibop/webkaos.recipe
+          recipe: .bibop/webkaos.recipe .bibop/webkaos-docker.recipe
           dry-run: true
 
   DockerEntrypointUnit:

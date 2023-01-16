@@ -47,102 +47,102 @@
 
 ################################################################################
 
-%define service_user         %{name}
-%define service_group        %{name}
-%define service_name         %{name}
-%define service_home         %{_cachedir}/%{service_name}
+%define service_user   %{name}
+%define service_group  %{name}
+%define service_name   %{name}
+%define service_home   %{_cachedir}/%{service_name}
 
-%define nginx_version        1.23.2
-%define lua_module_ver       0.10.22
-%define lua_resty_core_ver   0.1.24
-%define lua_resty_lru_ver    0.13
-%define mh_module_ver        0.34
-%define pcre_ver             8.45
-%define zlib_ver             1.2.13
-%define luajit_ver           2.1-20220915
-%define luajit_raw_ver       2.1.0-beta3
-%define brotli_ngx_commit    6e975bcb015f62e1f303054897783355e2a877dc
-%define brotli_commit        3914999fcc1fda92e750ef9190aa6db9bf7bdb07
-%define naxsi_ver            1.3
+%define nginx_version       1.23.3
+%define lua_module_ver      0.10.22
+%define lua_resty_core_ver  0.1.24
+%define lua_resty_lru_ver   0.13
+%define mh_module_ver       0.34
+%define pcre_ver            8.45
+%define zlib_ver            1.2.13
+%define luajit_ver          2.1-20220915
+%define luajit_raw_ver      2.1.0-beta3
+%define brotli_ngx_commit   6e975bcb015f62e1f303054897783355e2a877dc
+%define brotli_commit       3914999fcc1fda92e750ef9190aa6db9bf7bdb07
+%define naxsi_ver           1.3
 
 # 1. Open https://omahaproxy.appspot.com and note <current_version> of linux/stable release.
 # 2. Open https://chromium.googlesource.com/chromium/src/+/refs/tags/<current_version>/DEPS and note <boringssl_revision>.
-%define boring_commit        adaa322b63d1bfbd1abcf4a308926a9a83a6acbe
+%define boring_commit  1ccef4908ce04adc6d246262846f3cd8a111fa44
 
 ################################################################################
 
-Summary:              Superb high performance web server
-Name:                 webkaos
-Version:              %{nginx_version}
-Release:              1%{?dist}
-License:              2-clause BSD-like license
-Group:                System Environment/Daemons
-URL:                  https://kaos.sh/webkaos
+Summary:        Superb high performance web server
+Name:           webkaos
+Version:        %{nginx_version}
+Release:        0%{?dist}
+License:        2-clause BSD-like license
+Group:          System Environment/Daemons
+URL:            https://kaos.sh/webkaos
 
-Source0:              https://nginx.org/download/nginx-%{version}.tar.gz
-Source1:              %{name}.logrotate
-Source2:              %{name}.init
-Source3:              %{name}.sysconfig
-Source4:              %{name}.conf
-Source5:              %{name}.service
-Source6:              %{name}-debug.service
-Source7:              modules.conf
-Source8:              nginx-wrapper
+Source0:        https://nginx.org/download/nginx-%{version}.tar.gz
+Source1:        %{name}.logrotate
+Source2:        %{name}.init
+Source3:        %{name}.sysconfig
+Source4:        %{name}.conf
+Source5:        %{name}.service
+Source6:        %{name}-debug.service
+Source7:        modules.conf
+Source8:        nginx-wrapper
 
-Source20:             ssl.conf
-Source21:             ssl-wildcard.conf
-Source22:             common.conf
-Source23:             bots.conf
-Source24:             brotli.conf
-Source25:             cloudflare-ips.conf
+Source20:       ssl.conf
+Source21:       ssl-wildcard.conf
+Source22:       common.conf
+Source23:       bots.conf
+Source24:       brotli.conf
+Source25:       cloudflare-ips.conf
 
-Source30:             %{name}-index.html
-Source31:             default.key
-Source32:             default.crt
+Source30:       %{name}-index.html
+Source31:       default.key
+Source32:       default.crt
 
-Source50:             https://github.com/openresty/lua-nginx-module/archive/v%{lua_module_ver}.tar.gz
-Source51:             https://boringssl.googlesource.com/boringssl/+archive/%{boring_commit}.tar.gz
-Source52:             https://github.com/openresty/headers-more-nginx-module/archive/v%{mh_module_ver}.tar.gz
-Source53:             https://downloads.sourceforge.net/project/pcre/pcre/%{pcre_ver}/pcre-%{pcre_ver}.tar.gz
-Source54:             https://zlib.net/zlib-%{zlib_ver}.tar.gz
-Source55:             https://github.com/openresty/luajit2/archive/v%{luajit_ver}.tar.gz
-Source56:             https://github.com/google/ngx_brotli/archive/%{brotli_ngx_commit}.tar.gz
-Source57:             https://github.com/google/brotli/archive/%{brotli_commit}.tar.gz
-Source58:             https://github.com/nbs-system/naxsi/archive/%{naxsi_ver}.tar.gz
-Source59:             https://github.com/openresty/lua-resty-core/archive/v%{lua_resty_core_ver}.tar.gz
-Source60:             https://github.com/openresty/lua-resty-lrucache/archive/v%{lua_resty_lru_ver}.tar.gz
+Source50:       https://github.com/openresty/lua-nginx-module/archive/v%{lua_module_ver}.tar.gz
+Source51:       https://boringssl.googlesource.com/boringssl/+archive/%{boring_commit}.tar.gz
+Source52:       https://github.com/openresty/headers-more-nginx-module/archive/v%{mh_module_ver}.tar.gz
+Source53:       https://downloads.sourceforge.net/project/pcre/pcre/%{pcre_ver}/pcre-%{pcre_ver}.tar.gz
+Source54:       https://zlib.net/zlib-%{zlib_ver}.tar.gz
+Source55:       https://github.com/openresty/luajit2/archive/v%{luajit_ver}.tar.gz
+Source56:       https://github.com/google/ngx_brotli/archive/%{brotli_ngx_commit}.tar.gz
+Source57:       https://github.com/google/brotli/archive/%{brotli_commit}.tar.gz
+Source58:       https://github.com/nbs-system/naxsi/archive/%{naxsi_ver}.tar.gz
+Source59:       https://github.com/openresty/lua-resty-core/archive/v%{lua_resty_core_ver}.tar.gz
+Source60:       https://github.com/openresty/lua-resty-lrucache/archive/v%{lua_resty_lru_ver}.tar.gz
 
-Source100:            checksum.sha512
+Source100:      checksum.sha512
 
-Patch0:               %{name}.patch
-Patch1:               mime.patch
-                      # https://github.com/cloudflare/sslconfig/blob/master/patches/nginx__1.11.5_dynamic_tls_records.patch
-Patch2:               %{name}-dynamic-tls-records.patch
-                      # https://github.com/ajhaydock/BoringNginx/blob/master/patches
-Patch3:               boringssl.patch
-Patch5:               boringssl-tls13-support.patch
-Patch8:               boringssl-urand-test-disable.patch
+Patch0:         %{name}.patch
+Patch1:         mime.patch
+                # https://github.com/cloudflare/sslconfig/blob/master/patches/nginx__1.11.5_dynamic_tls_records.patch
+Patch2:         %{name}-dynamic-tls-records.patch
+                # https://github.com/ajhaydock/BoringNginx/blob/master/patches
+Patch3:         boringssl.patch
+Patch5:         boringssl-tls13-support.patch
+Patch8:         boringssl-urand-test-disable.patch
 
-Patch11:              lua-nginx-module-compat.patch
-Patch12:              naxsi-compat.patch
+Patch11:        lua-nginx-module-compat.patch
+Patch12:        naxsi-compat.patch
 
-BuildRoot:            %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:        make perl golang
+BuildRequires:  make perl golang
 %if 0%{?rhel} <= 7
-BuildRequires:        cmake3 devtoolset-9-gcc-c++ devtoolset-9-binutils
+BuildRequires:  cmake3 devtoolset-9-gcc-c++ devtoolset-9-binutils
 %else
-BuildRequires:        cmake gcc-c++
+BuildRequires:  cmake gcc-c++
 %endif
 
-Requires:             initscripts >= 8.36 kaosv >= 2.16
-Requires:             gd libXpm libxslt
+Requires:       initscripts >= 8.36 kaosv >= 2.16
+Requires:       gd libXpm libxslt
 
-Requires:             systemd
-Requires(pre):        shadow-utils
+Requires:       systemd
+Requires(pre):  shadow-utils
 
-Provides:             %{name} = %{version}-%{release}
-Provides:             webserver = %{version}-%{release}
+Provides:       %{name} = %{version}-%{release}
+Provides:       webserver = %{version}-%{release}
 
 ################################################################################
 
@@ -154,9 +154,9 @@ optimizations and improvements.
 
 %package debug
 
-Summary:           Debug version of webkaos
-Group:             System Environment/Daemons
-Requires:          %{name} >= %{version}
+Summary:   Debug version of webkaos
+Group:     System Environment/Daemons
+Requires:  %{name} >= %{version}
 
 %description debug
 Not stripped version of webkaos with the debugging log support
@@ -165,13 +165,13 @@ Not stripped version of webkaos with the debugging log support
 
 %package nginx
 
-Summary:           Links for nginx compatibility
-Group:             System Environment/Daemons
-Requires:          %{name} >= %{version}
+Summary:    Links for nginx compatibility
+Group:      System Environment/Daemons
+Requires:   %{name} >= %{version}
 
-Conflicts:         nginx nginx-kaos tengine openresty
+Conflicts:  nginx nginx-kaos tengine openresty
 
-BuildArch:         noarch
+BuildArch:  noarch
 
 %description nginx
 Links for nginx compatibility.
@@ -180,12 +180,12 @@ Links for nginx compatibility.
 
 %package module-brotli
 
-Summary:           Module for Brotli compression
-Version:           0.1.5
-Release:           12%{?dist}
+Summary:   Module for Brotli compression
+Version:   0.1.5
+Release:   13%{?dist}
 
-Group:             System Environment/Daemons
-Requires:          %{name} = %{nginx_version}
+Group:     System Environment/Daemons
+Requires:  %{name} = %{nginx_version}
 
 %description module-brotli
 Module for Brotli compression.
@@ -194,12 +194,12 @@ Module for Brotli compression.
 
 %package module-naxsi
 
-Summary:           High performance, low rules maintenance WAF
-Version:           %{naxsi_ver}
-Release:           11%{?dist}
+Summary:   High performance, low rules maintenance WAF
+Version:   %{naxsi_ver}
+Release:   12%{?dist}
 
-Group:             System Environment/Daemons
-Requires:          %{name} = %{nginx_version}
+Group:     System Environment/Daemons
+Requires:  %{name} = %{nginx_version}
 
 %description module-naxsi
 NAXSI is an open-source, high performance, low rules maintenance WAF.
@@ -705,8 +705,10 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
-* Thu Dec 01 2022 Anton Novojilov <andy@essentialkaos.com> - 1.23.2-1
+* Thu Dec 01 2022 Anton Novojilov <andy@essentialkaos.com> - 1.23.3-0
+- Nginx updated to 1.23.3
 - zlib updated to 1.2.13 with fixes for CVE-2022-37434
+- BoringSSL updated to the latest stable version for Chromium
 - ngx_brotli updated to the latest commit
 - brotli updated to the latest commit
 

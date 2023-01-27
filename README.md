@@ -21,7 +21,7 @@
 #### From ESSENTIAL KAOS Public repo for RHEL7/CentOS7
 
 ```bash
-sudo yum install -y https://yum.kaos.st/get/$(uname -r).rpm
+sudo yum install -y https://yum.kaos.st/kaos-repo-latest.el$(grep 'CPE_NAME' /etc/os-release | tr -d '"' | cut -d':' -f5).noarch.rpm
 sudo yum install webkaos
 # install optional modules
 sudo yum install webkaos-module-brotli webkaos-module-naxsi
@@ -37,10 +37,18 @@ Official images:
 - `essentialkaos/webkaos:centos7-unprivileged`
 - `essentialkaos/webkaos:ol7`
 - `essentialkaos/webkaos:ol7-unprivileged`
+- `essentialkaos/webkaos:ol8`
+- `essentialkaos/webkaos:ol8-unprivileged`
+- `essentialkaos/webkaos:ol9`
+- `essentialkaos/webkaos:ol9-unprivileged`
 - `ghcr.io/essentialkaos/webkaos:centos7`
 - `ghcr.io/essentialkaos/webkaos:centos7-unprivileged`
 - `ghcr.io/essentialkaos/webkaos:ol7`
 - `ghcr.io/essentialkaos/webkaos:ol7-unprivileged`
+- `ghcr.io/essentialkaos/webkaos:ol8`
+- `ghcr.io/essentialkaos/webkaos:ol8-unprivileged`
+- `ghcr.io/essentialkaos/webkaos:ol9`
+- `ghcr.io/essentialkaos/webkaos:ol9-unprivileged`
 
 Usage examples:
 

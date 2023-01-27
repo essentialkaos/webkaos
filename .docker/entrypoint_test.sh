@@ -52,32 +52,32 @@ unit.start() {
   fi
 
   unit.prepare
-  
-  unit.run "getBucketSizeNoConfigs"
-  unit.run "getBucketSize64"
-  unit.run "getBucketSize128"
-  unit.run "getBucketSize256"
-  unit.run "getBucketSize512"
 
-  unit.run "configureBucketSizeDefault"
-  unit.run "configureBucketSizeNoConfigs"
-  unit.run "configureBucketSizeDisableTuning"
-  unit.run "configureBucketSizeIncreased"
-  unit.run "configureBucketSizeSedError"
+  unit.run "getBucketSize_NoConfigs"
+  unit.run "getBucketSize_64"
+  unit.run "getBucketSize_128"
+  unit.run "getBucketSize_256"
+  unit.run "getBucketSize_512"
 
-  unit.run "getCPULimitsCG1CpuacctNoLimit"
-  unit.run "getCPULimitsCG1CpuacctSmall"
-  unit.run "getCPULimitsCG1CpuacctNormal"
+  unit.run "configureBucketSize_Default"
+  unit.run "configureBucketSize_NoConfigs"
+  unit.run "configureBucketSize_DisableTuning"
+  unit.run "configureBucketSize_Increased"
+  unit.run "configureBucketSize_SedError"
 
-  unit.run "getCPULimitsCG1CpusetNoLimit"
-  unit.run "getCPULimitsCG1CpusetCustom"
+  unit.run "getCPULimitsCG1Cpuacct_NoLimit"
+  unit.run "getCPULimitsCG1Cpuacct_Small"
+  unit.run "getCPULimitsCG1Cpuacct_Normal"
 
-  unit.run "getCPULimitsCG2CpuMaxNoLimit"
-  unit.run "getCPULimitsCG2CpuMaxSmall"
-  unit.run "getCPULimitsCG2CpuMaxNormal"
+  unit.run "getCPULimitsCG1Cpuset_NoLimit"
+  unit.run "getCPULimitsCG1Cpuset_Custom"
 
-  unit.run "getCPULimitsCG2CpusetNoLimit"
-  unit.run "getCPULimitsCG2CpusetCustom"
+  unit.run "getCPULimitsCG2CpuMax_NoLimit"
+  unit.run "getCPULimitsCG2CpuMax_Small"
+  unit.run "getCPULimitsCG2CpuMax_Normal"
+
+  unit.run "getCPULimitsCG2Cpuset_NoLimit"
+  unit.run "getCPULimitsCG2Cpuset_Custom"
 
   unit.run "getCPULimitsCG1Cpuacct"
   unit.run "getCPULimitsCG1Cpuset"
@@ -85,24 +85,24 @@ unit.start() {
   unit.run "getCPULimitsCG2CpuMax"
   unit.run "getCPULimitsCG2Cpuset"
 
-  unit.run "configureProcNumNoCG"
-  unit.run "configureProcNumDisableTuning"
-  unit.run "configureProcNumSedError"
+  unit.run "configureProcNum_NoCG"
+  unit.run "configureProcNum_DisableTuning"
+  unit.run "configureProcNum_SedError"
 
-  unit.run "configureProcNumCG1NoLimits"
-  unit.run "configureProcNumCG1Custom"
+  unit.run "configureProcNumCG1_NoLimits"
+  unit.run "configureProcNumCG1_Custom"
 
-  unit.run "configureProcNumCG2NoLimits"
-  unit.run "configureProcNumCG2Custom"
+  unit.run "configureProcNumCG2_NoLimits"
+  unit.run "configureProcNumCG2_Custom"
 
   unit.run "minCPUVariations"
 
-  unit.run "templatesDefault"
-  unit.run "templatesDefaultWithDir"
-  unit.run "templatesDisabled"
-  unit.run "templatesNoTemplates"
-  unit.run "templatesEmptyTemplate"
-  
+  unit.run "templates_Default"
+  unit.run "templates_DefaultWithDir"
+  unit.run "templates_Disabled"
+  unit.run "templates_NoTemplates"
+  unit.run "templates_EmptyTemplate"
+
   unit.teardown
 }
 
@@ -111,24 +111,26 @@ unit.prepare() {
 }
 
 unit.run() {
+  local func="$1"
+
   # Clear error message before every test
   error_message=""
 
   if [[ -z "$verbose" ]] ; then
-    "test.$*" &> /dev/null
+    "test.$func" &> /dev/null
 
     if [[ $? -ne 0 ]] ; then
-      unit.show "  [ ${CL_RED}FAIL${CL_NORM} ] $*"
+      unit.show "  [ ${CL_RED}FAIL${CL_NORM} ] ${func//_/\/}"
       unit.teardown 1
     else
-      unit.show "  [  ${CL_GREEN}OK${CL_NORM}  ] $*"
+      unit.show "  [  ${CL_GREEN}OK${CL_NORM}  ] ${func//_/\/}"
     fi
   else
-    unit.show "  $*"
+    unit.show "  ${func//_/\/}"
     "test.$*"
 
     if [[ $? -ne 0 ]] ; then
-      unit.teardown 1 
+      unit.teardown 1
     fi
 
     echo ""
@@ -149,7 +151,7 @@ unit.teardown() {
 
 ########################################################################################
 
-test.getBucketSizeNoConfigs() {
+test.getBucketSize_NoConfigs() {
   local data_dir
 
   conf_dir=$(unit.mkdir)
@@ -159,7 +161,7 @@ test.getBucketSizeNoConfigs() {
   return $?
 }
 
-test.getBucketSize64() {
+test.getBucketSize_64() {
   local data_dir
 
   data_dir=$(unit.mkdir)
@@ -173,7 +175,7 @@ test.getBucketSize64() {
   return $?
 }
 
-test.getBucketSize128() {
+test.getBucketSize_128() {
   local data_dir
 
   data_dir=$(unit.mkdir)
@@ -187,7 +189,7 @@ test.getBucketSize128() {
   return $?
 }
 
-test.getBucketSize256() {
+test.getBucketSize_256() {
   local data_dir
 
   data_dir=$(unit.mkdir)
@@ -201,7 +203,7 @@ test.getBucketSize256() {
   return $?
 }
 
-test.getBucketSize512() {
+test.getBucketSize_512() {
   local data_dir
 
   data_dir=$(unit.mkdir)
@@ -215,7 +217,7 @@ test.getBucketSize512() {
   return $?
 }
 
-test.configureBucketSizeDefault() {
+test.configureBucketSize_Default() {
   local data_dir
 
   data_dir=$(unit.mkdir)
@@ -235,7 +237,7 @@ test.configureBucketSizeDefault() {
   fi
 
   conf_file=$(unit.mkcopy "../SOURCES/webkaos-docker-unprivileged.conf" "webkaos-docker-unprivileged.conf")
-  
+
   configureBucketSize
 
   unit.contains "$conf_file" "server_names_hash_bucket_size 64;"
@@ -248,7 +250,7 @@ test.configureBucketSizeDefault() {
   return 0
 }
 
-test.configureBucketSizeNoConfigs() {
+test.configureBucketSize_NoConfigs() {
   local data_dir
 
   data_dir=$(unit.mkdir)
@@ -266,7 +268,7 @@ test.configureBucketSizeNoConfigs() {
   fi
 
   conf_file=$(unit.mkcopy "../SOURCES/webkaos-docker-unprivileged.conf" "webkaos-docker-unprivileged.conf")
-  
+
   configureBucketSize
 
   unit.contains "$conf_file" "server_names_hash_bucket_size 64;"
@@ -279,7 +281,7 @@ test.configureBucketSizeNoConfigs() {
   return 0
 }
 
-test.configureBucketSizeDisableTuning() {
+test.configureBucketSize_DisableTuning() {
   local data_dir
 
   WEBKAOS_DISABLE_BUCKET_TUNE=true
@@ -300,7 +302,7 @@ test.configureBucketSizeDisableTuning() {
   fi
 
   conf_file=$(unit.mkcopy "../SOURCES/webkaos-docker-unprivileged.conf" "webkaos-docker-unprivileged.conf")
-  
+
   configureBucketSize
 
   unit.contains "$conf_file" "server_names_hash_bucket_size 128;"
@@ -316,7 +318,7 @@ test.configureBucketSizeDisableTuning() {
   return 0
 }
 
-test.configureBucketSizeIncreased() {
+test.configureBucketSize_Increased() {
   local data_dir
 
   data_dir=$(unit.mkdir)
@@ -350,7 +352,7 @@ test.configureBucketSizeIncreased() {
   return 0
 }
 
-test.configureBucketSizeSedError() {
+test.configureBucketSize_SedError() {
   local data_dir
 
   data_dir=$(unit.mkdir)
@@ -380,7 +382,7 @@ test.configureBucketSizeSedError() {
   return $?
 }
 
-test.getCPULimitsCG1CpuacctNoLimit() {
+test.getCPULimitsCG1Cpuacct_NoLimit() {
   cg1_cfs_quota_file=$(unit.mkfile "cpu.cfs_quota_us")
   cg1_cfs_period_file=$(unit.mkfile "cpu.cfs_period_us")
 
@@ -392,7 +394,7 @@ test.getCPULimitsCG1CpuacctNoLimit() {
   return $?
 }
 
-test.getCPULimitsCG1CpuacctSmall() {
+test.getCPULimitsCG1Cpuacct_Small() {
   cg1_cfs_quota_file=$(unit.mkfile "cpu.cfs_quota_us")
   cg1_cfs_period_file=$(unit.mkfile "cpu.cfs_period_us")
 
@@ -405,7 +407,7 @@ test.getCPULimitsCG1CpuacctSmall() {
   return $?
 }
 
-test.getCPULimitsCG1CpuacctNormal() {
+test.getCPULimitsCG1Cpuacct_Normal() {
   cg1_cfs_quota_file=$(unit.mkfile "cpu.cfs_quota_us")
   cg1_cfs_period_file=$(unit.mkfile "cpu.cfs_period_us")
 
@@ -418,7 +420,7 @@ test.getCPULimitsCG1CpuacctNormal() {
   return $?
 }
 
-test.getCPULimitsCG1CpusetNoLimit() {
+test.getCPULimitsCG1Cpuset_NoLimit() {
   cg1_effective_cpus_file=$(unit.mkfile "cpuset.effective_cpus")
 
   # All 8 CPU's
@@ -429,7 +431,7 @@ test.getCPULimitsCG1CpusetNoLimit() {
   return $?
 }
 
-test.getCPULimitsCG1CpusetCustom() {
+test.getCPULimitsCG1Cpuset_Custom() {
   cg1_effective_cpus_file=$(unit.mkfile "cpuset.effective_cpus")
 
   echo "0-3,6,8,9-12,14" > "$cg1_effective_cpus_file"
@@ -439,7 +441,7 @@ test.getCPULimitsCG1CpusetCustom() {
   return $?
 }
 
-test.getCPULimitsCG2CpuMaxNoLimit() {
+test.getCPULimitsCG2CpuMax_NoLimit() {
   cg2_cpu_max_file=$(unit.mkfile "cpu.max")
 
   echo "max 100000" > "$cg2_cpu_max_file"
@@ -449,7 +451,7 @@ test.getCPULimitsCG2CpuMaxNoLimit() {
   return $?
 }
 
-test.getCPULimitsCG2CpuMaxSmall() {
+test.getCPULimitsCG2CpuMax_Small() {
   cg2_cpu_max_file=$(unit.mkfile "cpu.max")
 
   # 0.15 CPU
@@ -460,7 +462,7 @@ test.getCPULimitsCG2CpuMaxSmall() {
   return $?
 }
 
-test.getCPULimitsCG2CpuMaxNormal() {
+test.getCPULimitsCG2CpuMax_Normal() {
   cg2_cpu_max_file=$(unit.mkfile "cpu.max")
 
   # 4.8 CPU
@@ -471,7 +473,7 @@ test.getCPULimitsCG2CpuMaxNormal() {
   return $?
 }
 
-test.getCPULimitsCG2CpusetNoLimit() {
+test.getCPULimitsCG2Cpuset_NoLimit() {
   cg2_effective_cpus_file=$(unit.mkfile "cpuset.cpus.effective")
 
   # All 8 CPU's
@@ -482,7 +484,7 @@ test.getCPULimitsCG2CpusetNoLimit() {
   return $?
 }
 
-test.getCPULimitsCG2CpusetCustom() {
+test.getCPULimitsCG2Cpuset_Custom() {
   cg2_effective_cpus_file=$(unit.mkfile "cpuset.cpus.effective")
 
   echo "0-3,6,8,9-12,14" > "$cg2_effective_cpus_file"
@@ -501,7 +503,7 @@ test.getCPULimitsCG1Cpuacct() {
   echo "100000" > "$cg1_cfs_period_file"
   echo "0-7" > "$cg1_effective_cpus_file"
 
-  unit.isEqual "$(getCPULimitsCG1)" "1"
+  unit.isEqual "$(getCPULimitsCG1Cpuacct)" "1"
 
   return $?
 }
@@ -544,7 +546,7 @@ test.getCPULimitsCG2Cpuset() {
   return $?
 }
 
-test.configureProcNumNoCG() {
+test.configureProcNum_NoCG() {
   local system_procs
 
   system_procs=$(getNumProc)
@@ -580,7 +582,7 @@ test.configureProcNumNoCG() {
   return 0
 }
 
-test.configureProcNumDisableTuning() {
+test.configureProcNum_DisableTuning() {
   local system_procs
 
   system_procs=$(getNumProc)
@@ -614,7 +616,7 @@ test.configureProcNumDisableTuning() {
   return 0
 }
 
-test.configureProcNumSedError() {
+test.configureProcNum_SedError() {
   cg1_cfs_quota_file=""
   cg1_cfs_period_file=""
   cg1_effective_cpus_file=""
@@ -644,7 +646,7 @@ test.configureProcNumSedError() {
   return $?
 }
 
-test.configureProcNumCG1NoLimits() {
+test.configureProcNumCG1_NoLimits() {
   local system_procs
 
   system_procs=$(getNumProc)
@@ -684,7 +686,7 @@ test.configureProcNumCG1NoLimits() {
   return 0
 }
 
-test.configureProcNumCG1Custom() {
+test.configureProcNumCG1_Custom() {
   cg1_cfs_quota_file=$(unit.mkfile "cpu.cfs_quota_us")
   cg1_cfs_period_file=$(unit.mkfile "cpu.cfs_period_us")
   cg1_effective_cpus_file=$(unit.mkfile "cpuset.effective_cpus")
@@ -720,7 +722,7 @@ test.configureProcNumCG1Custom() {
   return 0
 }
 
-test.configureProcNumCG2NoLimits() {
+test.configureProcNumCG2_NoLimits() {
   local system_procs
 
   system_procs=$(getNumProc)
@@ -759,7 +761,7 @@ test.configureProcNumCG2NoLimits() {
   return 0
 }
 
-test.configureProcNumCG2Custom() {
+test.configureProcNumCG2_Custom() {
   cg1_cfs_quota_file=""
   cg1_cfs_period_file=""
   cg1_effective_cpus_file=""
@@ -819,7 +821,7 @@ test.minCPUVariations() {
   return 0
 }
 
-test.templatesDefault() {
+test.templates_Default() {
   templates_dir=$(unit.mkdir)
   conf_dir=$(unit.mkdir)
 
@@ -853,7 +855,7 @@ EOF
   return 0
 }
 
-test.templatesDefaultWithDir() {
+test.templates_DefaultWithDir() {
   templates_dir=$(unit.mkdir)
   conf_dir=$(unit.mkdir)
 
@@ -893,7 +895,7 @@ EOF
   return 0
 }
 
-test.templatesDisabled() {
+test.templates_Disabled() {
   templates_dir=$(unit.mkdir)
   conf_dir=$(unit.mkdir)
 
@@ -923,7 +925,7 @@ EOF
   return 0
 }
 
-test.templatesNoTemplates() {
+test.templates_NoTemplates() {
   templates_dir=$(unit.mkdir)
   conf_dir=$(unit.mkdir)
 
@@ -936,7 +938,7 @@ test.templatesNoTemplates() {
   return 0
 }
 
-test.templatesEmptyTemplate() {
+test.templates_EmptyTemplate() {
   templates_dir=$(unit.mkdir)
   conf_dir=$(unit.mkdir)
 

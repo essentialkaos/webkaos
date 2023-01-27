@@ -1,7 +1,8 @@
 [Unit]
 Description=webkaos (HTTP and reverse proxy server)
-Documentation=http://nginx.org/en/docs/
-After=network.target remote-fs.target nss-lookup.target
+Documentation=https://kaos.sh/webkaos
+After=network-online.target remote-fs.target nss-lookup.target
+Wants=network-online.target
  
 [Service]
 PIDFile=/var/run/webkaos.pid

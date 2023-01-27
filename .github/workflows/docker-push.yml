@@ -3,6 +3,13 @@ name: "Docker Push"
 on:
   release:
     types: [published]
+  workflow_dispatch:
+    inputs:
+      force_rebuild:
+        description: 'Force container rebuild'
+        required: true
+        type: choice
+        options: [yes, no]
   schedule:
     - cron: '30 12 * * *'
 
@@ -12,6 +19,7 @@ permissions:
 
 env:
   IMAGE_NAME: ${{ github.repository }}
+  LATEST_IMAGE: ol8
 
 jobs:
   Docker:
@@ -20,7 +28,7 @@ jobs:
 
     strategy:
       matrix:
-        tag: [ 'centos7', 'centos7-unprivileged', 'ol7', 'ol7-unprivileged' ]
+        image: [ 'centos7', 'centos7-unprivileged', 'ol7', 'ol7-unprivileged', 'ol8', 'ol8-unprivileged', 'ol9', 'ol9-unprivileged' ]
 
     steps:
       - name: Checkout
@@ -67,21 +75,33 @@ jobs:
             exit 1
           fi
 
-          docker_file=".docker/${{matrix.tag}}.docker"
-          base_image=$(grep 'FROM ' $docker_file | tail -1 | cut -f2 -d' ')
+          docker_file=".docker/${{matrix.image}}.docker"
+          base_image=$(grep 'FROM ' $docker_file | grep -v 'builder' | sed 's#${REGISTRY}/##' | tail -1 | cut -f2 -d' ')
 
           if [[ -z "$base_image" ]] ; then
             echo "::error::Can't extract base image info"
             exit 1
           fi
 
+          dh_tags="${{env.IMAGE_NAME}}:${{matrix.image}}-$version,${{env.IMAGE_NAME}}:${{matrix.image}}"
+          gh_tags="ghcr.io/${{env.IMAGE_NAME}}:${{matrix.image}}-$version,ghcr.io/${{env.IMAGE_NAME}}:${{matrix.image}}"
+
+          if [[ -n "${{env.LATEST_IMAGE}}" && "${{env.LATEST_IMAGE}}" == "${{matrix.image}}" ]] ; then
+            dh_tags="$dh_tags,${{env.IMAGE_NAME}}:latest"
+            gh_tags="$gh_tags,ghcr.io/${{env.IMAGE_NAME}}:latest"
+          fi
+
           echo "version=$version" >> $GITHUB_OUTPUT
           echo "dockerfile=$docker_file" >> $GITHUB_OUTPUT
           echo "baseimage=$base_image" >> $GITHUB_OUTPUT
+          echo "dh_tags=$dh_tags" >> $GITHUB_OUTPUT
+          echo "gh_tags=$gh_tags" >> $GITHUB_OUTPUT
 
           echo -e "\033[34mVersion:\033[0m    $version"
           echo -e "\033[34mDockerfile:\033[0m $docker_file"
           echo -e "\033[34mBase image:\033[0m $base_image"
+          echo -e "\033[34mDH Tags:\033[0m    $dh_tags"
+          echo -e "\033[34mGHCR Tags:\033[0m  $gh_tags"
 
       - name: Check if build/rebuild is required
         id: build_check
@@ -91,10 +111,16 @@ jobs:
             exit 0
           fi
 
+          if [[ "${{ github.event.inputs.force_rebuild }}" == "true" ]] ; then
+            echo "::warning::Rebuild ${{matrix.version}} (reason: forced rebuild)"
+            echo "build=true" >> $GITHUB_OUTPUT
+            exit 0
+          fi
+
           echo -e "::group::\033[34mDownloading built image…\033[0m"
 
-          if ! docker pull ghcr.io/${{env.IMAGE_NAME}}:${{matrix.tag}} ; then
-            echo "::error::Can't download image ${{env.IMAGE_NAME}}:${{matrix.tag}}"
+          if ! docker pull ghcr.io/${{env.IMAGE_NAME}}:${{matrix.image}} ; then
+            echo "::error::Can't download image ghcr.io/${{env.IMAGE_NAME}}:${{matrix.image}}"
             exit 1
           fi
 
@@ -115,27 +141,37 @@ jobs:
             exit 1
           fi
 
-          if ! docker inspect "ghcr.io/${{env.IMAGE_NAME}}:${{matrix.tag}}" | jq -r '.[0].RootFS.Layers' | grep -q "$base_layer" ; then
+          if ! docker inspect "ghcr.io/${{env.IMAGE_NAME}}:${{matrix.image}}" | jq -r '.[0].RootFS.Layers' | grep -q "$base_layer" ; then
             echo "::warning::Rebuild image (reason: base image rebuilt)"
             echo "build=true" >> $GITHUB_OUTPUT
             exit 0
           fi
 
-      - name: Build and push Docker image
+      - name: Build and push Docker images (Docker)
         if: ${{ steps.build_check.outputs.build == 'true' }}
         uses: docker/build-push-action@v3
         with:
           push: true
           context: .
           file: ${{steps.metadata.outputs.dockerfile}}
-          tags: |
-            ghcr.io/${{env.IMAGE_NAME}}:${{matrix.tag}}-${{steps.metadata.outputs.version}}
-            ghcr.io/${{env.IMAGE_NAME}}:${{matrix.tag}}
-            ${{env.IMAGE_NAME}}:${{matrix.tag}}-${{steps.metadata.outputs.version}}
-            ${{env.IMAGE_NAME}}:${{matrix.tag}}
+          build-args: |
+            REGISTRY=docker.io
+          tags: ${{steps.metadata.outputs.dh_tags}}
+
+      - name: Build and push Docker images (GHCR)
+        if: ${{ steps.build_check.outputs.build == 'true' }}
+        uses: docker/build-push-action@v3
+        with:
+          push: true
+          context: .
+          file: ${{steps.metadata.outputs.dockerfile}}
+          build-args: |
+            REGISTRY=ghcr.io
+          tags: ${{steps.metadata.outputs.gh_tags}}
 
       - name: Show info about built Docker image
+        if: ${{ steps.build_check.outputs.build == 'true' }}
         uses: essentialkaos/docker-info-action@v1
         with:
-          image: ghcr.io/${{env.IMAGE_NAME}}:${{matrix.tag}}
+          image: ghcr.io/${{env.IMAGE_NAME}}:${{matrix.image}}
           show-labels: true

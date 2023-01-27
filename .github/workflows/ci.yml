@@ -68,7 +68,7 @@ jobs:
       - name: Test recipes with Bibop
         uses: essentialkaos/bibop-action@v1
         with:
-          recipe: .bibop/webkaos.recipe
+          recipe: .bibop/webkaos.recipe .bibop/webkaos-docker.recipe
           dry-run: true
 
   DockerEntrypointUnit:
@@ -82,7 +82,7 @@ jobs:
       - name: Run entrypoint unit tests
         run: |
           pushd .docker
-          ./entrypoint_test.sh --verbose
+          ./entrypoint_test.sh
           popd
 
   DockerBuild:
@@ -90,6 +90,13 @@ jobs:
     runs-on: ubuntu-latest
 
     needs: [Hadolint, Shellcheck, DockerEntrypointUnit]
+
+    env:
+      REGISTRY: ghcr.io
+
+    strategy:
+      matrix:
+        image: [ 'centos7', 'centos7-unprivileged', 'ol7', 'ol7-unprivileged', 'ol8', 'ol8-unprivileged', 'ol9', 'ol9-unprivileged' ]
 
     steps:
       - name: Check event type
@@ -104,6 +111,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
         if: ${{ github.event_name == 'pull_request' }}
+
+      - name: Check versions in Dockerfiles
+        if: ${{ github.event_name == 'pull_request' }}
+        run: ./.docker/version_check.sh
 
       - name: Login to DockerHub
         uses: docker/login-action@v2
@@ -125,14 +136,11 @@ jobs:
       - name: Build Docker image
         if: ${{ github.event_name == 'pull_request' }}
         run: |
-          docker build -f .docker/centos7.docker -t centos7 .
-          docker build -f .docker/centos7-unprivileged.docker -t centos7-unprivileged .
-          docker build -f .docker/ol7.docker -t ol7 .
-          docker build -f .docker/ol7-unprivileged.docker -t ol7-unprivileged .
+          docker build --build-arg REGISTRY=${REGISTRY} --build-arg REPOSITORY=kaos-testing -f .docker/${{matrix.image}}.docker -t ${{matrix.image}} .
 
       - name: Show info about built Docker image
         uses: essentialkaos/docker-info-action@v1
         if: ${{ github.event_name == 'pull_request' }}
         with:
-          image: centos7 centos7-unprivileged ol7 ol7-unprivileged
+          image: ${{matrix.image}}
           show-labels: true

@@ -2,12 +2,12 @@
 
 ARG REGISTRY="docker.io"
 
-## WEBKAOS UNPRIVILEGED IMAGE ##################################################
+## WEBKAOS IMAGE ###############################################################
 
-FROM ${REGISTRY}/essentialkaos/centos:7
+FROM ${REGISTRY}/essentialkaos/oraclelinux:9-slim
 
-LABEL org.opencontainers.image.title="WEBKAOS (Unprivileged)" \
-      org.opencontainers.image.description="WEBKAOS Image on CentOS 7" \
+LABEL org.opencontainers.image.title="WEBKAOS" \
+      org.opencontainers.image.description="WEBKAOS Image on OracleLinux 9" \
       org.opencontainers.image.vendor="ESSENTIAL KAOS" \
       org.opencontainers.image.authors="Anton Novojilov" \
       org.opencontainers.image.licenses="Apache-2.0" \
@@ -18,32 +18,23 @@ ARG WEBKAOS_VER=1.23.3
 ARG BROTLI_VER=0.1.5
 ARG REPOSITORY=kaos-release
 
-ARG UID=1001
-ARG GID=1001
-
-# hadolint ignore=DL3031,DL3033
-RUN yum -y -q install https://yum.kaos.st/kaos-repo-latest.el7.noarch.rpm && \
-    yum -y -q install --enablerepo=${REPOSITORY} webkaos-${WEBKAOS_VER} webkaos-module-brotli-${BROTLI_VER} gettext && \
-    yum clean all && \
-    rm -rf /var/cache/yum && \
+# hadolint ignore=DL3031,DL3041
+RUN rpm -ivh https://yum.kaos.st/kaos-repo-latest.el9.noarch.rpm && \
+    microdnf -y install --enablerepo=${REPOSITORY} webkaos-${WEBKAOS_VER} webkaos-module-brotli-${BROTLI_VER} gettext && \
+    microdnf clean all && \
+    rm -rf /var/cache/dnf /var/log/dnf.* && \
     rm -rf /tmp/* && \
     rm -rf /var/tmp/* && \
-    usermod -u $UID webkaos && \
-    groupmod -g $GID webkaos && \
-    mkdir /var/run/webkaos && \
-    chown -R $UID:$GID /etc/webkaos /var/run/webkaos /var/log/webkaos && \
     ln -sf /dev/stdout /var/log/webkaos/access.log && \
     ln -sf /dev/stderr /var/log/webkaos/error.log && \
     mkdir /etc/webkaos/templates
 
-COPY --chown=$UID:$GID SOURCES/webkaos-docker-unprivileged.conf /etc/webkaos/webkaos.conf
+COPY SOURCES/webkaos-docker.conf /etc/webkaos/webkaos.conf
 COPY .docker/entrypoint.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
 
-EXPOSE 8080
-
-USER $UID
+EXPOSE 80
 
 STOPSIGNAL SIGTERM
 

@@ -1,17 +1,17 @@
-diff -urN nginx-1.23.1-orig/src/event/ngx_event_openssl.c nginx-1.23.1-boring/src/event/ngx_event_openssl.c
---- nginx-1.23.1-orig/src/event/ngx_event_openssl.c	2022-07-19 17:05:27.000000000 +0300
-+++ nginx-1.23.1-boring/src/event/ngx_event_openssl.c	2022-08-02 15:19:58.000000000 +0300
-@@ -3352,7 +3352,9 @@
- #ifdef SSL_R_NO_SUITABLE_SIGNATURE_ALGORITHM
-             || n == SSL_R_NO_SUITABLE_SIGNATURE_ALGORITHM            /*  118 */
+diff -urN nginx-1.23.4-orig/src/event/ngx_event_openssl.c nginx-1.23.4/src/event/ngx_event_openssl.c
+--- nginx-1.23.4-orig/src/event/ngx_event_openssl.c	2023-03-28 18:01:54.000000000 +0300
++++ nginx-1.23.4/src/event/ngx_event_openssl.c	2023-03-29 13:53:09.000000000 +0300
+@@ -3416,7 +3416,9 @@
+ #ifdef SSL_R_BAD_KEY_UPDATE
+             || n == SSL_R_BAD_KEY_UPDATE                             /*  122 */
  #endif
 +#ifdef SSL_R_BLOCK_CIPHER_PAD_IS_WRONG
              || n == SSL_R_BLOCK_CIPHER_PAD_IS_WRONG                  /*  129 */
 +#endif
-             || n == SSL_R_DIGEST_CHECK_FAILED                        /*  149 */
-             || n == SSL_R_ERROR_IN_RECEIVED_CIPHER_LIST              /*  151 */
-             || n == SSL_R_EXCESSIVE_MESSAGE_SIZE                     /*  152 */
-@@ -3362,7 +3364,9 @@
+             || n == SSL_R_CCS_RECEIVED_EARLY                         /*  133 */
+ #ifdef SSL_R_DECODE_ERROR
+             || n == SSL_R_DECODE_ERROR                               /*  137 */
+@@ -3444,7 +3446,9 @@
  #ifdef SSL_R_NO_CIPHERS_PASSED
              || n == SSL_R_NO_CIPHERS_PASSED                          /*  182 */
  #endif

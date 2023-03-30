@@ -63,12 +63,12 @@ checkDockerfiles() {
     fi
   done
 
-  if [[ -z "$has_errors" ]] ; then
-    show "\nEverything looks fine, excellent!" $BOLD
-  else
+  if [[ -n "$has_errors" ]] ; then
     show "\nFound problems with versions!" $RED
+    return 1
   fi
 
+  show "\nEverything looks fine, excellent!" $BOLD
   return 0
 }
 

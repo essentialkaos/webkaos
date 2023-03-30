@@ -152,7 +152,7 @@ Links for nginx compatibility.
 
 Summary:   Module for Brotli compression
 Version:   0.1.5
-Release:   13%{?dist}
+Release:   14%{?dist}
 
 Group:     System Environment/Daemons
 Requires:  %{name} = %{nginx_version}
@@ -166,7 +166,7 @@ Module for Brotli compression.
 
 Summary:   High performance, low rules maintenance WAF
 Version:   %{naxsi_ver}
-Release:   12%{?dist}
+Release:   13%{?dist}
 
 Group:     System Environment/Daemons
 Requires:  %{name} = %{nginx_version}

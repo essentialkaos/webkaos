@@ -100,9 +100,6 @@ rpmbuilder webkaos.spec -3 -V -di
 **Q:** **_Can you provide Alpine-based Docker images?_**<br/>
 **A:** No. Using RPM packages simplify their support for us. There is a complex process of building and testing packages with different tools (_[rpmbuilder](https://kaos.sh/rpmbuilder), rpmlint, [perfecto](https://kaos.sh/perfecto), [bibop](https://kaos.sh/bibop), [shellcheck](https://github.com/koalaman/shellcheck)_) and we can't provide the same level of quality without them. Also, it is tough to write and maintain Dockerfiles with a large number of build actions and stages.
 
-**Q:** **_Why doesn't Dockerfile contain a package version?_**<br/>
-**A:** Webkaos is based on the latest, mainline (_unstable_) version of Nginx, every release of which contains different fixes. So it is important to use the latest version of webkaos, and not to stick to a particular one.
-
 ### License
 
 [BSD 2-clause](LICENSE)

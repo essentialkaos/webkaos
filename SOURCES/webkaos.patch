@@ -1,12 +1,12 @@
-diff -urN nginx-1.23.3-orig/auto/lib/openssl/make nginx-1.23.3/auto/lib/openssl/make
---- nginx-1.23.3-orig/auto/lib/openssl/make	2022-12-13 18:53:53.000000000 +0300
-+++ nginx-1.23.3/auto/lib/openssl/make	2023-01-16 13:05:59.968753081 +0300
-@@ -45,18 +45,18 @@
+diff -urN nginx-1.23.4-orig/auto/lib/openssl/make nginx-1.23.4/auto/lib/openssl/make
+--- nginx-1.23.4-orig/auto/lib/openssl/make	2023-03-28 18:01:54.000000000 +0300
++++ nginx-1.23.4/auto/lib/openssl/make	2023-03-29 13:08:48.000000000 +0300
+@@ -58,18 +58,18 @@
              /*) ngx_prefix="$OPENSSL/.openssl" ;;
              *)  ngx_prefix="$PWD/$OPENSSL/.openssl" ;;
          esac
 -
-+				if [ ! -d "$ngx_prefix" ]; then
++                if [ ! -d "$ngx_prefix" ]; then
          cat << END                                            >> $NGX_MAKEFILE
  
  $OPENSSL/.openssl/include/openssl/ssl.h:	$NGX_MAKEFILE
@@ -15,18 +15,18 @@ diff -urN nginx-1.23.3-orig/auto/lib/openssl/make nginx-1.23.3/auto/lib/openssl/
  	&& ./config --prefix=$ngx_prefix no-shared no-threads $OPENSSL_OPT \\
 -	&& \$(MAKE) \\
 -	&& \$(MAKE) install_sw LIBDIR=lib
-+	&& \$(MAKE) -j1\\
++	&& \$(MAKE) -j1 \\
 +	&& \$(MAKE) -j1 install_sw LIBDIR=lib
  
  END
 -
-+				fi
++                fi
      ;;
  
  esac
-diff -urN nginx-1.23.3-orig/src/core/nginx.c nginx-1.23.3/src/core/nginx.c
---- nginx-1.23.3-orig/src/core/nginx.c	2022-12-13 18:53:53.000000000 +0300
-+++ nginx-1.23.3/src/core/nginx.c	2023-01-16 13:05:59.974753059 +0300
+diff -urN nginx-1.23.4-orig/src/core/nginx.c nginx-1.23.4/src/core/nginx.c
+--- nginx-1.23.4-orig/src/core/nginx.c	2023-03-28 18:01:54.000000000 +0300
++++ nginx-1.23.4/src/core/nginx.c	2023-03-29 12:59:12.184527558 +0300
 @@ -390,13 +390,13 @@
  static void
  ngx_show_version_info(void)
@@ -45,13 +45,13 @@ diff -urN nginx-1.23.3-orig/src/core/nginx.c nginx-1.23.3/src/core/nginx.c
              "Options:" NGX_LINEFEED
              "  -?,-h         : this help" NGX_LINEFEED
              "  -v            : show version and exit" NGX_LINEFEED
-diff -urN nginx-1.23.3-orig/src/core/nginx.h nginx-1.23.3/src/core/nginx.h
---- nginx-1.23.3-orig/src/core/nginx.h	2022-12-13 18:53:53.000000000 +0300
-+++ nginx-1.23.3/src/core/nginx.h	2023-01-16 13:06:36.000000000 +0300
+diff -urN nginx-1.23.4-orig/src/core/nginx.h nginx-1.23.4/src/core/nginx.h
+--- nginx-1.23.4-orig/src/core/nginx.h	2023-03-28 18:01:54.000000000 +0300
++++ nginx-1.23.4/src/core/nginx.h	2023-03-29 13:09:16.000000000 +0300
 @@ -11,7 +11,7 @@
  
- #define nginx_version      1023003
- #define NGINX_VERSION      "1.23.3"
+ #define nginx_version      1023004
+ #define NGINX_VERSION      "1.23.4"
 -#define NGINX_VER          "nginx/" NGINX_VERSION
 +#define NGINX_VER          "webkaos/" NGINX_VERSION
  
@@ -66,9 +66,9 @@ diff -urN nginx-1.23.3-orig/src/core/nginx.h nginx-1.23.3/src/core/nginx.h
  #define NGX_OLDPID_EXT     ".oldbin"
  
  
-diff -urN nginx-1.23.3-orig/src/core/ngx_log.c nginx-1.23.3/src/core/ngx_log.c
---- nginx-1.23.3-orig/src/core/ngx_log.c	2022-12-13 18:53:53.000000000 +0300
-+++ nginx-1.23.3/src/core/ngx_log.c	2023-01-16 13:05:59.985753018 +0300
+diff -urN nginx-1.23.4-orig/src/core/ngx_log.c nginx-1.23.4/src/core/ngx_log.c
+--- nginx-1.23.4-orig/src/core/ngx_log.c	2023-03-28 18:01:54.000000000 +0300
++++ nginx-1.23.4/src/core/ngx_log.c	2023-03-29 12:59:12.195527524 +0300
 @@ -202,9 +202,9 @@
          return;
      }
@@ -99,9 +99,9 @@ diff -urN nginx-1.23.3-orig/src/core/ngx_log.c nginx-1.23.3/src/core/ngx_log.c
          return NGX_CONF_ERROR;
  #endif
  
-diff -urN nginx-1.23.3-orig/src/http/modules/ngx_http_autoindex_module.c nginx-1.23.3/src/http/modules/ngx_http_autoindex_module.c
---- nginx-1.23.3-orig/src/http/modules/ngx_http_autoindex_module.c	2022-12-13 18:53:53.000000000 +0300
-+++ nginx-1.23.3/src/http/modules/ngx_http_autoindex_module.c	2023-01-16 13:05:59.991752996 +0300
+diff -urN nginx-1.23.4-orig/src/http/modules/ngx_http_autoindex_module.c nginx-1.23.4/src/http/modules/ngx_http_autoindex_module.c
+--- nginx-1.23.4-orig/src/http/modules/ngx_http_autoindex_module.c	2023-03-28 18:01:54.000000000 +0300
++++ nginx-1.23.4/src/http/modules/ngx_http_autoindex_module.c	2023-03-29 12:59:12.201527505 +0300
 @@ -449,9 +449,11 @@
      ;
  
@@ -177,9 +177,9 @@ diff -urN nginx-1.23.3-orig/src/http/modules/ngx_http_autoindex_module.c nginx-1
                                tm.ngx_tm_mday,
                                months[tm.ngx_tm_mon - 1],
                                tm.ngx_tm_year,
-diff -urN nginx-1.23.3-orig/src/http/ngx_http_header_filter_module.c nginx-1.23.3/src/http/ngx_http_header_filter_module.c
---- nginx-1.23.3-orig/src/http/ngx_http_header_filter_module.c	2022-12-13 18:53:53.000000000 +0300
-+++ nginx-1.23.3/src/http/ngx_http_header_filter_module.c	2023-01-16 13:05:59.998752970 +0300
+diff -urN nginx-1.23.4-orig/src/http/ngx_http_header_filter_module.c nginx-1.23.4/src/http/ngx_http_header_filter_module.c
+--- nginx-1.23.4-orig/src/http/ngx_http_header_filter_module.c	2023-03-28 18:01:54.000000000 +0300
++++ nginx-1.23.4/src/http/ngx_http_header_filter_module.c	2023-03-29 12:59:12.207527487 +0300
 @@ -46,7 +46,7 @@
  };
  
@@ -230,9 +230,9 @@ diff -urN nginx-1.23.3-orig/src/http/ngx_http_header_filter_module.c nginx-1.23.
  #define NGX_HTTP_OFF_5XX   (NGX_HTTP_LAST_4XX - 400 + NGX_HTTP_OFF_4XX)
  
      ngx_string("500 Internal Server Error"),
-diff -urN nginx-1.23.3-orig/src/http/ngx_http_special_response.c nginx-1.23.3/src/http/ngx_http_special_response.c
---- nginx-1.23.3-orig/src/http/ngx_http_special_response.c	2022-12-13 18:53:53.000000000 +0300
-+++ nginx-1.23.3/src/http/ngx_http_special_response.c	2023-01-16 13:06:00.004752948 +0300
+diff -urN nginx-1.23.4-orig/src/http/ngx_http_special_response.c nginx-1.23.4/src/http/ngx_http_special_response.c
+--- nginx-1.23.4-orig/src/http/ngx_http_special_response.c	2023-03-28 18:01:54.000000000 +0300
++++ nginx-1.23.4/src/http/ngx_http_special_response.c	2023-03-29 12:59:12.214527465 +0300
 @@ -19,21 +19,21 @@
  
  
@@ -705,9 +705,9 @@ diff -urN nginx-1.23.3-orig/src/http/ngx_http_special_response.c nginx-1.23.3/sr
  #define NGX_HTTP_OFF_5XX   (NGX_HTTP_LAST_4XX - 400 + NGX_HTTP_OFF_4XX)
  
      ngx_string(ngx_http_error_494_page), /* 494, request header too large */
-diff -urN nginx-1.23.3-orig/src/http/v2/ngx_http_v2_filter_module.c nginx-1.23.3/src/http/v2/ngx_http_v2_filter_module.c
---- nginx-1.23.3-orig/src/http/v2/ngx_http_v2_filter_module.c	2022-12-13 18:53:53.000000000 +0300
-+++ nginx-1.23.3/src/http/v2/ngx_http_v2_filter_module.c	2023-01-16 13:06:00.010752926 +0300
+diff -urN nginx-1.23.4-orig/src/http/v2/ngx_http_v2_filter_module.c nginx-1.23.4/src/http/v2/ngx_http_v2_filter_module.c
+--- nginx-1.23.4-orig/src/http/v2/ngx_http_v2_filter_module.c	2023-03-28 18:01:54.000000000 +0300
++++ nginx-1.23.4/src/http/v2/ngx_http_v2_filter_module.c	2023-03-29 12:59:12.221527443 +0300
 @@ -148,7 +148,7 @@
      ngx_http_core_srv_conf_t  *cscf;
      u_char                     addr[NGX_SOCKADDR_STRLEN];
@@ -726,9 +726,9 @@ diff -urN nginx-1.23.3-orig/src/http/v2/ngx_http_v2_filter_module.c nginx-1.23.3
          }
  
          *pos++ = ngx_http_v2_inc_indexed(NGX_HTTP_V2_SERVER_INDEX);
-diff -urN nginx-1.23.3-orig/src/os/unix/ngx_setproctitle.c nginx-1.23.3/src/os/unix/ngx_setproctitle.c
---- nginx-1.23.3-orig/src/os/unix/ngx_setproctitle.c	2022-12-13 18:53:53.000000000 +0300
-+++ nginx-1.23.3/src/os/unix/ngx_setproctitle.c	2023-01-16 13:06:00.016752904 +0300
+diff -urN nginx-1.23.4-orig/src/os/unix/ngx_setproctitle.c nginx-1.23.4/src/os/unix/ngx_setproctitle.c
+--- nginx-1.23.4-orig/src/os/unix/ngx_setproctitle.c	2023-03-28 18:01:54.000000000 +0300
++++ nginx-1.23.4/src/os/unix/ngx_setproctitle.c	2023-03-29 12:59:12.227527425 +0300
 @@ -89,7 +89,7 @@
  
      ngx_os_argv[1] = NULL;

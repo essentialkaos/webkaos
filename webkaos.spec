@@ -8,42 +8,13 @@
 
 ################################################################################
 
-%define _posixroot        /
-%define _root             /root
-%define _bin              /bin
-%define _sbin             /sbin
-%define _srv              /srv
-%define _home             /home
-%define _lib32            %{_posixroot}lib
-%define _lib64            %{_posixroot}lib64
-%define _libdir32         %{_prefix}%{_lib32}
-%define _libdir64         %{_prefix}%{_lib64}
-%define _logdir           %{_localstatedir}/log
-%define _rundir           %{_localstatedir}/run
-%define _lockdir          %{_localstatedir}/lock/subsys
-%define _cachedir         %{_localstatedir}/cache
-%define _spooldir         %{_localstatedir}/spool
-%define _crondir          %{_sysconfdir}/cron.d
-%define _loc_prefix       %{_prefix}/local
-%define _loc_exec_prefix  %{_loc_prefix}
-%define _loc_bindir       %{_loc_exec_prefix}/bin
-%define _loc_libdir       %{_loc_exec_prefix}/%{_lib}
-%define _loc_libdir32     %{_loc_exec_prefix}/%{_lib32}
-%define _loc_libdir64     %{_loc_exec_prefix}/%{_lib64}
-%define _loc_libexecdir   %{_loc_exec_prefix}/libexec
-%define _loc_sbindir      %{_loc_exec_prefix}/sbin
-%define _loc_bindir       %{_loc_exec_prefix}/bin
-%define _loc_datarootdir  %{_loc_prefix}/share
-%define _loc_includedir   %{_loc_prefix}/include
-%define _rpmstatedir      %{_sharedstatedir}/rpm-state
-%define _pkgconfigdir     %{_libdir}/pkgconfig
+%define _cachedir  %{_localstatedir}/cache
+%define _logdir    %{_localstatedir}/log
+%define _rundir    %{_localstatedir}/run
 
-%define __service         %{_sbin}/service
-%define __chkconfig       %{_sbin}/chkconfig
-%define __useradd         %{_sbindir}/useradd
-%define __groupadd        %{_sbindir}/groupadd
-%define __getent          %{_bindir}/getent
-%define __sysctl          %{_bindir}/systemctl
+%define __service    %{_sbin}/service
+%define __chkconfig  %{_sbin}/chkconfig
+%define __sysctl     %{_bindir}/systemctl
 
 ################################################################################
 
@@ -52,22 +23,22 @@
 %define service_name   %{name}
 %define service_home   %{_cachedir}/%{service_name}
 
-%define nginx_version       1.23.3
-%define lua_module_ver      0.10.22
-%define lua_resty_core_ver  0.1.24
+%define nginx_version       1.23.4
+%define lua_module_ver      0.10.24
+%define lua_resty_core_ver  0.1.26
 %define lua_resty_lru_ver   0.13
 %define mh_module_ver       0.34
 %define pcre_ver            8.45
 %define zlib_ver            1.2.13
-%define luajit_ver          2.1-20220915
+%define luajit_ver          2.1-20230119
 %define luajit_raw_ver      2.1.0-beta3
 %define brotli_ngx_commit   6e975bcb015f62e1f303054897783355e2a877dc
 %define brotli_commit       3914999fcc1fda92e750ef9190aa6db9bf7bdb07
 %define naxsi_ver           1.3
 
-# 1. Open https://omahaproxy.appspot.com and note <current_version> of linux/stable release.
-# 2. Open https://chromium.googlesource.com/chromium/src/+/refs/tags/<current_version>/DEPS and note <boringssl_revision>.
-%define boring_commit  1ccef4908ce04adc6d246262846f3cd8a111fa44
+# 1. Open https://chromiumdash.appspot.com/releases?platform=Linux and note the latest stable version.
+# 2. Open https://chromium.googlesource.com/chromium/src/+/refs/tags/<version>/DEPS and note <boringssl_revision>.
+%define boring_commit  45b8d7bbd771cbf7e116db2ba1f1cc7af959497e
 
 ################################################################################
 
@@ -123,7 +94,6 @@ Patch3:         boringssl.patch
 Patch5:         boringssl-tls13-support.patch
 Patch8:         boringssl-urand-test-disable.patch
 
-Patch11:        lua-nginx-module-compat.patch
 Patch12:        naxsi-compat.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
@@ -182,7 +152,7 @@ Links for nginx compatibility.
 
 Summary:   Module for Brotli compression
 Version:   0.1.5
-Release:   13%{?dist}
+Release:   14%{?dist}
 
 Group:     System Environment/Daemons
 Requires:  %{name} = %{nginx_version}
@@ -196,7 +166,7 @@ Module for Brotli compression.
 
 Summary:   High performance, low rules maintenance WAF
 Version:   %{naxsi_ver}
-Release:   12%{?dist}
+Release:   13%{?dist}
 
 Group:     System Environment/Daemons
 Requires:  %{name} = %{nginx_version}
@@ -233,10 +203,6 @@ tar xzvf %{SOURCE60}
 pushd boringssl
 %patch5 -p1
 %patch8 -p1
-popd
-
-pushd lua-nginx-module-%{lua_module_ver}
-%patch11 -p1
 popd
 
 pushd naxsi-%{naxsi_ver}
@@ -705,6 +671,12 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Wed Mar 29 2023 Anton Novojilov <andy@essentialkaos.com> - 1.23.4-0
+- Nginx updated to 1.23.4
+- lua-nginx-module updated to 0.10.24
+- lua-resty-core updated to 0.1.26
+- BoringSSL updated to the latest stable version for Chromium
+
 * Thu Dec 01 2022 Anton Novojilov <andy@essentialkaos.com> - 1.23.3-0
 - Nginx updated to 1.23.3
 - zlib updated to 1.2.13 with fixes for CVE-2022-37434

@@ -237,9 +237,6 @@ command "service {service_name} check" "Broken config check"
 command "service {service_name} reload" "Broken config reload"
   !exit 0
 
-command "service {service_name} restart" "Restart with broken config"
-  !exit 0
-
 command "-" "Restore working configuration"
   copy webkaos.conf {config}
 

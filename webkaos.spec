@@ -23,7 +23,7 @@
 %define service_name   %{name}
 %define service_home   %{_cachedir}/%{service_name}
 
-%define nginx_version       1.23.4
+%define nginx_version       1.24.0
 %define lua_module_ver      0.10.24
 %define lua_resty_core_ver  0.1.26
 %define lua_resty_lru_ver   0.13
@@ -38,7 +38,7 @@
 
 # 1. Open https://chromiumdash.appspot.com/releases?platform=Linux and note the latest stable version.
 # 2. Open https://chromium.googlesource.com/chromium/src/+/refs/tags/<version>/DEPS and note <boringssl_revision>.
-%define boring_commit  45b8d7bbd771cbf7e116db2ba1f1cc7af959497e
+%define boring_commit  4b6d950d8921d6dd5365de0797fcc97302b9561b
 
 ################################################################################
 
@@ -92,7 +92,6 @@ Patch2:         %{name}-dynamic-tls-records.patch
                 # https://github.com/ajhaydock/BoringNginx/blob/master/patches
 Patch3:         boringssl.patch
 Patch5:         boringssl-tls13-support.patch
-Patch8:         boringssl-urand-test-disable.patch
 
 Patch12:        naxsi-compat.patch
 
@@ -202,7 +201,6 @@ tar xzvf %{SOURCE60}
 
 pushd boringssl
 %patch5 -p1
-%patch8 -p1
 popd
 
 pushd naxsi-%{naxsi_ver}
@@ -671,6 +669,10 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Wed Jun 21 2023 Anton Novojilov <andy@essentialkaos.com> - 1.24.0-0
+- Nginx updated to 1.24.0 (mainline → stable)
+- BoringSSL updated to the latest stable version for Chromium
+
 * Wed Mar 29 2023 Anton Novojilov <andy@essentialkaos.com> - 1.23.4-0
 - Nginx updated to 1.23.4
 - lua-nginx-module updated to 0.10.24

@@ -14,7 +14,7 @@ LABEL org.opencontainers.image.title="WEBKAOS" \
       org.opencontainers.image.url="https://kaos.sh/webkaos" \
       org.opencontainers.image.source="https://github.com/essentialkaos/webkaos"
 
-ARG WEBKAOS_VER=1.23.4
+ARG WEBKAOS_VER=1.24.0
 ARG BROTLI_VER=0.1.5
 ARG REPOSITORY=kaos-release
 

@@ -18,10 +18,10 @@
 
 ### Installation
 
-#### From ESSENTIAL KAOS Public repo for RHEL7/CentOS7
+#### From ESSENTIAL KAOS Public repository (EL 7/8/9)
 
 ```bash
-sudo yum install -y https://yum.kaos.st/kaos-repo-latest.el$(grep 'CPE_NAME' /etc/os-release | tr -d '"' | cut -d':' -f5).noarch.rpm
+sudo yum install -y https://pkgs.kaos.st/kaos-repo-latest.el$(grep 'CPE_NAME' /etc/os-release | tr -d '"' | cut -d':' -f5).noarch.rpm
 sudo yum install webkaos
 # install optional modules
 sudo yum install webkaos-module-brotli webkaos-module-naxsi
@@ -29,18 +29,10 @@ sudo yum install webkaos-module-brotli webkaos-module-naxsi
 
 #### Using Docker
 
-Official webkaos images available on [Docker Hub](http://kaos.sh/d/webkaos) and [GitHub Container Registry](https://kaos.sh/p/webkaos). All Docker images support templating using environment variables.
+Official webkaos images available on [GitHub Container Registry](https://kaos.sh/p/webkaos) and [Docker Hub](http://kaos.sh/d/webkaos). All Docker images support templating using environment variables.
 
 Official images:
 
-- `essentialkaos/webkaos:centos7`
-- `essentialkaos/webkaos:centos7-unprivileged`
-- `essentialkaos/webkaos:ol7`
-- `essentialkaos/webkaos:ol7-unprivileged`
-- `essentialkaos/webkaos:ol8`
-- `essentialkaos/webkaos:ol8-unprivileged`
-- `essentialkaos/webkaos:ol9`
-- `essentialkaos/webkaos:ol9-unprivileged`
 - `ghcr.io/essentialkaos/webkaos:centos7`
 - `ghcr.io/essentialkaos/webkaos:centos7-unprivileged`
 - `ghcr.io/essentialkaos/webkaos:ol7`
@@ -49,21 +41,29 @@ Official images:
 - `ghcr.io/essentialkaos/webkaos:ol8-unprivileged`
 - `ghcr.io/essentialkaos/webkaos:ol9`
 - `ghcr.io/essentialkaos/webkaos:ol9-unprivileged`
+- `essentialkaos/webkaos:centos7`
+- `essentialkaos/webkaos:centos7-unprivileged`
+- `essentialkaos/webkaos:ol7`
+- `essentialkaos/webkaos:ol7-unprivileged`
+- `essentialkaos/webkaos:ol8`
+- `essentialkaos/webkaos:ol8-unprivileged`
+- `essentialkaos/webkaos:ol9`
+- `essentialkaos/webkaos:ol9-unprivileged`
 
 Usage examples:
 
 ```bash
 # Image on CentOS 7
 docker run --name my-webkaos -v /some/content:/usr/share/webkaos/html:ro -p 8080:80 -d essentialkaos/webkaos:centos7
-# Image on OracleLinux 7
-docker run --name my-webkaos -v /some/content:/usr/share/webkaos/html:ro -p 8080:80 -d essentialkaos/webkaos:ol7
+# Image on OracleLinux 8
+docker run --name my-webkaos -v /some/content:/usr/share/webkaos/html:ro -p 8080:80 -d essentialkaos/webkaos:ol8
 ```
 
 ```bash
 # Unprivileged image on CentOS 7
 docker run --name my-webkaos -v /some/content:/usr/share/webkaos/html:ro -p 8080:8080 -d essentialkaos/webkaos:centos7-unprivileged
-# Unprivileged image on OracleLinux 7
-docker run --name my-webkaos -v /some/content:/usr/share/webkaos/html:ro -p 8080:8080 -d essentialkaos/webkaos:ol7-unprivileged
+# Unprivileged image on OracleLinux 8
+docker run --name my-webkaos -v /some/content:/usr/share/webkaos/html:ro -p 8080:8080 -d essentialkaos/webkaos:ol8-unprivileged
 ```
 
 Useful environment variables:

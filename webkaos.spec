@@ -602,11 +602,11 @@ rm -rf %{buildroot}
 
 %config(noreplace) %{_sysconfdir}/%{name}/%{name}.conf
 %config(noreplace) %{_sysconfdir}/%{name}/modules.conf
-%config %{_sysconfdir}/%{name}/xtra/bots.conf
-%config %{_sysconfdir}/%{name}/xtra/cloudflare-ips.conf
-%config %{_sysconfdir}/%{name}/xtra/common.conf
-%config %{_sysconfdir}/%{name}/xtra/ssl-wildcard.conf
-%config %{_sysconfdir}/%{name}/xtra/ssl.conf
+%config(noreplace) %{_sysconfdir}/%{name}/xtra/bots.conf
+%config(noreplace) %{_sysconfdir}/%{name}/xtra/cloudflare-ips.conf
+%config(noreplace) %{_sysconfdir}/%{name}/xtra/common.conf
+%config(noreplace) %{_sysconfdir}/%{name}/xtra/ssl-wildcard.conf
+%config(noreplace) %{_sysconfdir}/%{name}/xtra/ssl.conf
 
 %config(noreplace) %{_sysconfdir}/%{name}/ssl/default.key
 %config(noreplace) %{_sysconfdir}/%{name}/ssl/default.crt

@@ -14,12 +14,12 @@ LABEL org.opencontainers.image.title="WEBKAOS" \
       org.opencontainers.image.url="https://kaos.sh/webkaos" \
       org.opencontainers.image.source="https://github.com/essentialkaos/webkaos"
 
-ARG WEBKAOS_VER=1.24.0
-ARG BROTLI_VER=0.1.5
+ARG WEBKAOS_VER=1.26.0
+ARG BROTLI_VER=0.1.6
 ARG REPOSITORY=kaos-release
 
 # hadolint ignore=DL3031,DL3041
-RUN rpm -ivh https://yum.kaos.st/kaos-repo-latest.el8.noarch.rpm && \
+RUN rpm -ivh https://pkgs.kaos.st/kaos-repo-latest.el8.noarch.rpm && \
     microdnf -y install --enablerepo=${REPOSITORY} webkaos-${WEBKAOS_VER} webkaos-module-brotli-${BROTLI_VER} gettext && \
     microdnf clean all && \
     rm -rf /var/cache/dnf /var/log/dnf.* && \

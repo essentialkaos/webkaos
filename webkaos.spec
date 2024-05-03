@@ -23,22 +23,21 @@
 %define service_name   %{name}
 %define service_home   %{_cachedir}/%{service_name}
 
-%define nginx_version       1.24.0
+%define nginx_version       1.26.0
 %define lua_module_ver      0.10.24
-%define lua_resty_core_ver  0.1.26
+%define lua_resty_core_ver  0.1.28
 %define lua_resty_lru_ver   0.13
 %define mh_module_ver       0.34
 %define pcre_ver            8.45
-%define zlib_ver            1.2.13
-%define luajit_ver          2.1-20230119
-%define luajit_raw_ver      2.1.0-beta3
-%define brotli_ngx_commit   6e975bcb015f62e1f303054897783355e2a877dc
-%define brotli_commit       3914999fcc1fda92e750ef9190aa6db9bf7bdb07
-%define naxsi_ver           1.3
+%define zlib_ver            1.3.1
+%define luajit_ver          2.1-20240314
+%define luajit_raw_ver      2.1
+%define brotli_ngx_commit   a71f9312c2deb28875acc7bacfdd5695a111aa53
+%define brotli_commit       ed738e842d2fbdf2d6459e39267a633c4a9b2f5d
 
 # 1. Open https://chromiumdash.appspot.com/releases?platform=Linux and note the latest stable version.
 # 2. Open https://chromium.googlesource.com/chromium/src/+/refs/tags/<version>/DEPS and note <boringssl_revision>.
-%define boring_commit  4b6d950d8921d6dd5365de0797fcc97302b9561b
+%define boring_commit  4fa4804c8ab4521079af62dba5260a99c34b8a29
 
 ################################################################################
 
@@ -79,7 +78,6 @@ Source54:       https://zlib.net/zlib-%{zlib_ver}.tar.gz
 Source55:       https://github.com/openresty/luajit2/archive/v%{luajit_ver}.tar.gz
 Source56:       https://github.com/google/ngx_brotli/archive/%{brotli_ngx_commit}.tar.gz
 Source57:       https://github.com/google/brotli/archive/%{brotli_commit}.tar.gz
-Source58:       https://github.com/nbs-system/naxsi/archive/%{naxsi_ver}.tar.gz
 Source59:       https://github.com/openresty/lua-resty-core/archive/v%{lua_resty_core_ver}.tar.gz
 Source60:       https://github.com/openresty/lua-resty-lrucache/archive/v%{lua_resty_lru_ver}.tar.gz
 
@@ -93,18 +91,12 @@ Patch2:         %{name}-dynamic-tls-records.patch
 Patch3:         boringssl.patch
 Patch5:         boringssl-tls13-support.patch
 
-Patch12:        naxsi-compat.patch
-
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
 BuildRequires:  make perl golang
-%if 0%{?rhel} <= 7
-BuildRequires:  cmake3 devtoolset-9-gcc-c++ devtoolset-9-binutils
-%else
 BuildRequires:  cmake gcc-c++
-%endif
 
-Requires:       initscripts >= 8.36 kaosv >= 2.16
+Requires:       initscripts >= 8.36 kaosv >= 2.17
 Requires:       gd libXpm libxslt
 
 Requires:       systemd
@@ -150,28 +142,14 @@ Links for nginx compatibility.
 %package module-brotli
 
 Summary:   Module for Brotli compression
-Version:   0.1.5
-Release:   15%{?dist}
+Version:   0.1.6
+Release:   0%{?dist}
 
 Group:     System Environment/Daemons
 Requires:  %{name} = %{nginx_version}
 
 %description module-brotli
 Module for Brotli compression.
-
-################################################################################
-
-%package module-naxsi
-
-Summary:   High performance, low rules maintenance WAF
-Version:   %{naxsi_ver}
-Release:   14%{?dist}
-
-Group:     System Environment/Daemons
-Requires:  %{name} = %{nginx_version}
-
-%description module-naxsi
-NAXSI is an open-source, high performance, low rules maintenance WAF.
 
 ################################################################################
 
@@ -190,7 +168,6 @@ tar xzvf %{SOURCE54}
 tar xzvf %{SOURCE55}
 tar xzvf %{SOURCE56}
 tar xzvf %{SOURCE57}
-tar xzvf %{SOURCE58}
 tar xzvf %{SOURCE59}
 tar xzvf %{SOURCE60}
 
@@ -201,10 +178,6 @@ tar xzvf %{SOURCE60}
 
 pushd boringssl
 %patch5 -p1
-popd
-
-pushd naxsi-%{naxsi_ver}
-%patch12 -p1
 popd
 
 %build
@@ -219,11 +192,6 @@ mv lua-nginx-module-%{lua_module_ver}/README.markdown ./LUA-MODULE-README.markdo
 mv lua-resty-core-%{lua_resty_core_ver}/README.markdown ./LUA-RESTY-CORE-README.markdown
 mv lua-resty-lrucache-%{lua_resty_lru_ver}/README.markdown ./LUA-RESTY-LRU-README.markdown
 mv headers-more-nginx-module-%{mh_module_ver}/README.markdown ./HEADERS-MORE-MODULE-README.markdown
-
-%if 0%{?rhel} <= 7
-# Use gcc and gcc-c++ from DevToolSet 9
-export PATH="/opt/rh/devtoolset-9/root/usr/bin:$PATH"
-%endif
 
 # LuaJIT2 Build ################################################################
 
@@ -243,7 +211,7 @@ export LUAJIT_INC="$LUAJIT2_DIR/build%{_datadir}/%{name}/luajit/include/luajit-2
 mkdir boringssl/build
 
 pushd boringssl/build &> /dev/null
-  cmake3 ../
+  cmake3 -DCMAKE_EXE_LINKER_FLAGS="-Wl,--no-as-needed -ldl -lstdc++" ../
   %{__make} %{?_smp_mflags}
 popd
 
@@ -255,15 +223,25 @@ popd
 
 cp boringssl/build/crypto/libcrypto.a boringssl/build/ssl/libssl.a boringssl/.openssl/lib
 
-# Brotli Source Copy ###########################################################
+# Brotli Build #################################################################
 
 pushd ngx_brotli-%{brotli_ngx_commit}
   rm -rf deps/brotli
   mv ../brotli-%{brotli_commit} deps/brotli
+
+  mkdir deps/brotli/out && pushd deps/brotli/out
+    cmake3 -DCMAKE_BUILD_TYPE=Release \
+           -DBUILD_SHARED_LIBS=OFF \
+           -DCMAKE_C_FLAGS="-Ofast -m64 -march=native -mtune=native -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections" \
+           -DCMAKE_CXX_FLAGS="-Ofast -m64 -march=native -mtune=native -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections" \
+           -DCMAKE_INSTALL_PREFIX=./installed ..
+    cmake3 --build . --config Release --target brotlienc
+  popd
 popd
 
 ################################################################################
 
+# perfecto:ignore
 ./configure \
     --prefix=%{_sysconfdir}/%{name} \
     --sbin-path=%{_sbindir}/%{name} \
@@ -311,7 +289,7 @@ popd
     --add-module=lua-nginx-module-%{lua_module_ver} \
     --add-module=headers-more-nginx-module-%{mh_module_ver} \
     --with-cc-opt="-g -O2 -fPIE -fstack-protector-all -DTCP_FASTOPEN=23 -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -I ../boringssl/.openssl/include/" \
-    --with-ld-opt="-Wl,-Bsymbolic-functions -Wl,-z,relro -L ../boringssl/.openssl/lib -L ../luajit2-%{luajit_ver}/lib -Wl,-rpath -Wl,%{_datadir}/%{name}/luajit/lib" \
+    --with-ld-opt="-Wl,-Bsymbolic-functions -Wl,-z,relro -L ../boringssl/.openssl/lib -L ../luajit2-%{luajit_ver}/lib -Wl,-rpath -Wl,%{_datadir}/%{name}/luajit/lib -ldl -lstdc++" \
     --with-compat \
     $*
 
@@ -320,6 +298,7 @@ touch boringssl/.openssl/include/openssl/ssl.h
 
 %{__make} %{?_smp_mflags}
 
+# perfecto:ignore
 ./configure \
     --prefix=%{_sysconfdir}/%{name} \
     --sbin-path=%{_sbindir}/%{name} \
@@ -341,9 +320,8 @@ touch boringssl/.openssl/include/openssl/ssl.h
     --with-pcre=pcre-%{pcre_ver} \
     --with-openssl=boringssl \
     --add-dynamic-module=ngx_brotli-%{brotli_ngx_commit} \
-    --add-dynamic-module=naxsi-%{naxsi_ver}/naxsi_src \
     --with-cc-opt="-I ../boringssl/.openssl/include/" \
-    --with-ld-opt="-L ../boringssl/.openssl/lib -L ../luajit2-%{luajit_ver}/lib" \
+    --with-ld-opt="-L ../boringssl/.openssl/lib -L ../luajit2-%{luajit_ver}/lib -ldl -lstdc++" \
     --with-compat \
     $*
 
@@ -355,6 +333,7 @@ touch boringssl/.openssl/include/openssl/ssl.h
 mv %{_builddir}/nginx-%{nginx_version}/objs/nginx \
         %{_builddir}/nginx-%{nginx_version}/objs/%{name}.debug
 
+# perfecto:ignore
 ./configure \
     --prefix=%{_sysconfdir}/%{name} \
     --sbin-path=%{_sbindir}/%{name} \
@@ -400,7 +379,7 @@ mv %{_builddir}/nginx-%{nginx_version}/objs/nginx \
     --add-module=lua-nginx-module-%{lua_module_ver} \
     --add-module=headers-more-nginx-module-%{mh_module_ver} \
     --with-cc-opt="-g -O2 -fPIE -fstack-protector-all -DTCP_FASTOPEN=23 -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security -I ../boringssl/.openssl/include/" \
-    --with-ld-opt="-Wl,-Bsymbolic-functions -Wl,-z,relro -L ../boringssl/.openssl/lib -L ../luajit2-%{luajit_ver}/lib -Wl,-rpath -Wl,%{_datadir}/%{name}/luajit/lib" \
+    --with-ld-opt="-Wl,-Bsymbolic-functions -Wl,-z,relro -L ../boringssl/.openssl/lib -L ../luajit2-%{luajit_ver}/lib -Wl,-rpath -Wl,%{_datadir}/%{name}/luajit/lib -ldl -lstdc++" \
     --with-compat \
     $*
 
@@ -523,10 +502,6 @@ cp -rp %{_builddir}/nginx-%{nginx_version}/objs/*.so \
 # Modules configs installation
 install -pm 644 %{SOURCE24} \
                 %{buildroot}%{_sysconfdir}/%{name}/xtra/
-
-# NAXSI rules installation
-install -pm 644 %{_builddir}/nginx-%{nginx_version}/naxsi-%{naxsi_ver}/naxsi_config/naxsi_core.rules \
-                %{buildroot}%{_sysconfdir}/%{name}/
 
 # Create links and scripts for compatibility with nginx
 install -pm 755 %{SOURCE8} %{buildroot}%{_sbindir}/nginx
@@ -661,14 +636,17 @@ rm -rf %{buildroot}
 %{_datadir}/%{name}/modules/ngx_http_brotli_filter_module.so
 %{_datadir}/%{name}/modules/ngx_http_brotli_static_module.so
 
-%files module-naxsi
-%defattr(-,root,root)
-%config(noreplace) %{_sysconfdir}/%{name}/naxsi_core.rules
-%{_datadir}/%{name}/modules/ngx_http_naxsi_module.so
-
 ################################################################################
 
 %changelog
+* Fri May 03 2024 Anton Novojilov <andy@essentialkaos.com> - 1.26.0-0
+- Nginx updated to 1.26.0
+- BoringSSL updated to the latest stable version for Chromium
+- Zlib updated to 1.3.1
+- Brotli updated to the latest version
+- NAXSI module removed due to discontinued development
+- Discontinued supported of CentOS 7
+
 * Wed Jun 21 2023 Anton Novojilov <andy@essentialkaos.com> - 1.24.0-0
 - Nginx updated to 1.24.0 (mainline → stable)
 - BoringSSL updated to the latest stable version for Chromium

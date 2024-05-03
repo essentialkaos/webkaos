@@ -4,13 +4,13 @@
 
 ## Feature list
 
-* Improved default SSL/TLS preferencies (_A+ on [SSL Labs](https://www.ssllabs.com/ssltest/analyze.html?d=essentialkaos.com), [Immuni Web](https://www.immuniweb.com/ssl/?id=WHUz0U3v), [Mozilla Observatory](https://observatory.mozilla.org/analyze/essentialkaos.com), [CryptCheck](https://tls.imirhil.fr/https/essentialkaos.com) and [Security Headers](https://securityheaders.com/?q=essentialkaos.com&followRedirects=on)_)
+* Improved default SSL/TLS preferencies
 * [Dynamic TLS Records](https://blog.cloudflare.com/optimizing-tls-over-tcp-to-reduce-latency/) support
 * The latest version of [BoringSSL](https://boringssl.googlesource.com/boringssl/) with some state-of-the-art crypto features
 * TLS 1.3 support (_RFC 8446_)
 * [TCP Fast Open](https://en.wikipedia.org/wiki/TCP_Fast_Open) support
 * [Lua](https://github.com/openresty/lua-nginx-module) and [Headers More](https://github.com/openresty/headers-more-nginx-module) modules from the box
-* [Brotli](https://github.com/eustas/ngx_brotli) and [NAXSI](https://github.com/nbs-system/naxsi) as dynamic modules
+* [Brotli](https://github.com/eustas/ngx_brotli) as dynamic module
 * Improved SysV script
 * Well-looking error pages
 * Improved design of index pages
@@ -24,7 +24,7 @@
 sudo yum install -y https://pkgs.kaos.st/kaos-repo-latest.el$(grep 'CPE_NAME' /etc/os-release | tr -d '"' | cut -d':' -f5).noarch.rpm
 sudo yum install webkaos
 # install optional modules
-sudo yum install webkaos-module-brotli webkaos-module-naxsi
+sudo yum install webkaos-module-brotli
 ```
 
 #### Using Docker

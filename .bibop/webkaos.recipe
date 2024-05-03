@@ -187,12 +187,6 @@ command "-" "Check brotli module"
   mode {modules_dir}/ngx_http_brotli_filter_module.so 755
   mode {modules_dir}/ngx_http_brotli_static_module.so 755
 
-command "-" "Check NAXSI module"
-  exist {prefix_dir}/naxsi_core.rules
-  exist {modules_dir}/ngx_http_naxsi_module.so
-  mode {prefix_dir}/naxsi_core.rules 644
-  mode {modules_dir}/ngx_http_naxsi_module.so 755
-
 command "systemctl start {service_name}" "Start service"
   wait-pid {pid_file} 5
   service-works {service_name}

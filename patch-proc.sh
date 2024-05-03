@@ -153,7 +153,7 @@ checkArgs() {
   old_ver="$3"
   new_ver="$4"
 
-  if ! head -1 "$patch_file" | grep -q -o 'diff -urN' ; then
+  if ! head -5 "$patch_file" | grep -q -o '+++ nginx-1' ; then
     error "File $patch_file is not a patch file"
     exit 1
   fi

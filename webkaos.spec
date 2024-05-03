@@ -1220,7 +1220,7 @@ rm -rf %{buildroot}
 * Fri Aug 08 2014 Anton Novojilov <andy@essentialkaos.com> - 1.7.4-0
 - OpenSSL updated to 1.0.1i
 - Nginx updated to 1.7.4
-- Fixed posible bug with error message output
+- Fixed possible bug with error message output
 
 * Mon Aug 04 2014 Anton Novojilov <andy@essentialkaos.com> - 1.7.3-1
 - Added compatibility with nginx init

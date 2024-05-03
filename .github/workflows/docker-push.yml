@@ -28,7 +28,7 @@ jobs:
 
     strategy:
       matrix:
-        image: [ 'centos7', 'centos7-unprivileged', 'ol7', 'ol7-unprivileged', 'ol8', 'ol8-unprivileged', 'ol9', 'ol9-unprivileged' ]
+        image: [ 'ol8', 'ol8-unprivileged', 'ol9', 'ol9-unprivileged' ]
 
     steps:
       - name: Checkout

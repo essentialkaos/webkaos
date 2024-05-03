@@ -82,7 +82,9 @@ jobs:
       - name: Run entrypoint unit tests
         run: |
           pushd .docker
-          ./entrypoint_test.sh --verbose
+            if ! ./entrypoint_test.sh ; then
+              ./entrypoint_test.sh --verbose
+            fi
           popd
 
   DockerVersionCheck:

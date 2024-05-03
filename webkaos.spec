@@ -645,7 +645,7 @@ rm -rf %{buildroot}
 - Zlib updated to 1.3.1
 - Brotli updated to the latest version
 - NAXSI module removed due to discontinued development
-- Discontinued supported of CentOS 7
+- End of support for CentOS 7
 
 * Wed Jun 21 2023 Anton Novojilov <andy@essentialkaos.com> - 1.24.0-0
 - Nginx updated to 1.24.0 (mainline → stable)

@@ -229,9 +229,7 @@ test.configureBucketSize_Default() {
 
   configureBucketSize
 
-  unit.contains "$conf_file" "server_names_hash_bucket_size 64;"
-
-  if [[ $? -ne 0 ]] ; then
+  if ! unit.contains "$conf_file" "server_names_hash_bucket_size 64;" ; then
     grep 'server_names_hash_bucket_size ' "$conf_file" | sed 's/^/\n    /'
     return 1
   fi
@@ -240,9 +238,7 @@ test.configureBucketSize_Default() {
 
   configureBucketSize
 
-  unit.contains "$conf_file" "server_names_hash_bucket_size 64;"
-
-  if [[ $? -ne 0 ]] ; then
+  if ! unit.contains "$conf_file" "server_names_hash_bucket_size 64;" ; then
     grep 'server_names_hash_bucket_size ' "$conf_file" | sed 's/^/\n    /'
     return 1
   fi
@@ -260,9 +256,7 @@ test.configureBucketSize_NoConfigs() {
 
   configureBucketSize
 
-  unit.contains "$conf_file" "server_names_hash_bucket_size 64;"
-
-  if [[ $? -ne 0 ]] ; then
+  if ! unit.contains "$conf_file" "server_names_hash_bucket_size 64;" ; then
     grep 'server_names_hash_bucket_size ' "$conf_file" | sed 's/^/\n    /'
     return 1
   fi
@@ -271,9 +265,7 @@ test.configureBucketSize_NoConfigs() {
 
   configureBucketSize
 
-  unit.contains "$conf_file" "server_names_hash_bucket_size 64;"
-
-  if [[ $? -ne 0 ]] ; then
+  if ! unit.contains "$conf_file" "server_names_hash_bucket_size 64;" ; then
     grep 'server_names_hash_bucket_size ' "$conf_file" | sed 's/^/\n    /'
     return 1
   fi
@@ -294,9 +286,7 @@ test.configureBucketSize_DisableTuning() {
 
   configureBucketSize
 
-  unit.contains "$conf_file" "server_names_hash_bucket_size 128;"
-
-  if [[ $? -ne 0 ]] ; then
+  if ! unit.contains "$conf_file" "server_names_hash_bucket_size 128;" ; then
     grep 'server_names_hash_bucket_size ' "$conf_file" | sed 's/^/\n    /'
     return 1
   fi
@@ -305,9 +295,7 @@ test.configureBucketSize_DisableTuning() {
 
   configureBucketSize
 
-  unit.contains "$conf_file" "server_names_hash_bucket_size 128;"
-
-  if [[ $? -ne 0 ]] ; then
+  if ! unit.contains "$conf_file" "server_names_hash_bucket_size 128;" ; then
     grep 'server_names_hash_bucket_size ' "$conf_file" | sed 's/^/\n    /'
     return 1
   fi
@@ -331,9 +319,7 @@ test.configureBucketSize_Increased() {
 
   configureBucketSize
 
-  unit.contains "$conf_file" "server_names_hash_bucket_size 256;"
-
-  if [[ $? -ne 0 ]] ; then
+  if ! unit.contains "$conf_file" "server_names_hash_bucket_size 256;" ; then
     grep 'server_names_hash_bucket_size ' "$conf_file" | sed 's/^/\n    /'
     return 1
   fi
@@ -342,9 +328,7 @@ test.configureBucketSize_Increased() {
 
   configureBucketSize
 
-  unit.contains "$conf_file" "server_names_hash_bucket_size 256;"
-
-  if [[ $? -ne 0 ]] ; then
+  if ! unit.contains "$conf_file" "server_names_hash_bucket_size 256;" ; then
     grep 'server_names_hash_bucket_size ' "$conf_file" | sed 's/^/\n    /'
     return 1
   fi
@@ -364,9 +348,7 @@ test.configureBucketSize_SedError() {
 
   configureBucketSize
 
-  unit.hasError "(entrypoint) [ERROR] Can't update configuration file $conf_file"
-
-  if [[ $? -ne 0 ]] ; then
+  if ! unit.hasError "(entrypoint) [ERROR] Can't update configuration file $conf_file" ; then
     return 1
   fi
 
@@ -561,9 +543,7 @@ test.configureProcNum_NoCG() {
 
   configureProcNum
 
-  unit.contains "$conf_file" "worker_processes      $system_procs;"
-
-  if [[ $? -ne 0 ]] ; then
+  if ! unit.contains "$conf_file" "worker_processes      $system_procs;" ; then
     grep 'worker_processes ' "$conf_file" | sed 's/^/\n    /'
     return 1
   fi
@@ -572,9 +552,7 @@ test.configureProcNum_NoCG() {
 
   configureProcNum
 
-  unit.contains "$conf_file" "worker_processes      $system_procs;"
-
-  if [[ $? -ne 0 ]] ; then
+  if ! unit.contains "$conf_file" "worker_processes      $system_procs;" ; then
     grep 'worker_processes ' "$conf_file" | sed 's/^/\n    /'
     return 1
   fi
@@ -593,9 +571,7 @@ test.configureProcNum_DisableTuning() {
 
   configureProcNum
 
-  unit.contains "$conf_file" "worker_processes      auto;"
-
-  if [[ $? -ne 0 ]] ; then
+  if ! unit.contains "$conf_file" "worker_processes      auto;" ; then
     grep 'worker_processes ' "$conf_file" | sed 's/^/\n    /'
     return 1
   fi
@@ -604,9 +580,7 @@ test.configureProcNum_DisableTuning() {
 
   configureProcNum
 
-  unit.contains "$conf_file" "worker_processes      auto;"
-
-  if [[ $? -ne 0 ]] ; then
+  if ! unit.contains "$conf_file" "worker_processes      auto;" ; then
     grep 'worker_processes ' "$conf_file" | sed 's/^/\n    /'
     return 1
   fi
@@ -629,9 +603,7 @@ test.configureProcNum_SedError() {
 
   configureProcNum
 
-  unit.hasError "(entrypoint) [ERROR] Can't update configuration file $conf_file"
-
-  if [[ $? -ne 0 ]] ; then
+  if ! unit.hasError "(entrypoint) [ERROR] Can't update configuration file $conf_file" ; then
     return 1
   fi
 
@@ -665,9 +637,7 @@ test.configureProcNumCG1_NoLimits() {
 
   configureProcNum
 
-  unit.contains "$conf_file" "worker_processes      $system_procs;"
-
-  if [[ $? -ne 0 ]] ; then
+  if ! unit.contains "$conf_file" "worker_processes      $system_procs;" ; then
     grep 'worker_processes ' "$conf_file" | sed 's/^/\n    /'
     return 1
   fi
@@ -676,9 +646,7 @@ test.configureProcNumCG1_NoLimits() {
 
   configureProcNum
 
-  unit.contains "$conf_file" "worker_processes      $system_procs;"
-
-  if [[ $? -ne 0 ]] ; then
+  if ! unit.contains "$conf_file" "worker_processes      $system_procs;" ; then
     grep 'worker_processes ' "$conf_file" | sed 's/^/\n    /'
     return 1
   fi
@@ -701,9 +669,7 @@ test.configureProcNumCG1_Custom() {
 
   configureProcNum
 
-  unit.contains "$conf_file" "worker_processes      2;"
-
-  if [[ $? -ne 0 ]] ; then
+  if ! unit.contains "$conf_file" "worker_processes      2;" ; then
     grep 'worker_processes ' "$conf_file" | sed 's/^/\n    /'
     return 1
   fi
@@ -712,9 +678,7 @@ test.configureProcNumCG1_Custom() {
 
   configureProcNum
 
-  unit.contains "$conf_file" "worker_processes      2;"
-
-  if [[ $? -ne 0 ]] ; then
+  if ! unit.contains "$conf_file" "worker_processes      2;" ; then
     grep 'worker_processes ' "$conf_file" | sed 's/^/\n    /'
     return 1
   fi
@@ -740,9 +704,7 @@ test.configureProcNumCG2_NoLimits() {
 
   configureProcNum
 
-  unit.contains "$conf_file" "worker_processes      $system_procs;"
-
-  if [[ $? -ne 0 ]] ; then
+  if ! unit.contains "$conf_file" "worker_processes      $system_procs;" ; then
     grep 'worker_processes ' "$conf_file" | sed 's/^/\n    /'
     return 1
   fi
@@ -751,9 +713,7 @@ test.configureProcNumCG2_NoLimits() {
 
   configureProcNum
 
-  unit.contains "$conf_file" "worker_processes      $system_procs;"
-
-  if [[ $? -ne 0 ]] ; then
+  if ! unit.contains "$conf_file" "worker_processes      $system_procs;" ; then
     grep 'worker_processes ' "$conf_file" | sed 's/^/\n    /'
     return 1
   fi
@@ -775,9 +735,7 @@ test.configureProcNumCG2_Custom() {
 
   configureProcNum
 
-  unit.contains "$conf_file" "worker_processes      2;"
-
-  if [[ $? -ne 0 ]] ; then
+  if ! unit.contains "$conf_file" "worker_processes      2;" ; then
     grep 'worker_processes ' "$conf_file" | sed 's/^/\n    /'
     return 1
   fi
@@ -786,9 +744,7 @@ test.configureProcNumCG2_Custom() {
 
   configureProcNum
 
-  unit.contains "$conf_file" "worker_processes      2;"
-
-  if [[ $? -ne 0 ]] ; then
+  if ! unit.contains "$conf_file" "worker_processes      2;" ; then
     grep 'worker_processes ' "$conf_file" | sed 's/^/\n    /'
     return 1
   fi

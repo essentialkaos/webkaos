@@ -15,18 +15,6 @@ command "-" "Check if docker is installed"
 
 ## Prefetch images ##
 
-command:fetch "docker pull {image_name}:centos7" "Pull CentOS 7 Image"
-  exit 0
-
-+command:fetch "docker pull {image_name}:centos7-unprivileged" "Pull CentOS 7 Unprivileged Image"
-  exit 0
-
-+command:fetch "docker pull {image_name}:ol7" "Pull OracleLinux 7 Image"
-  exit 0
-
-+command:fetch "docker pull {image_name}:ol7-unprivileged" "Pull OracleLinux 7 Unprivileged Image"
-  exit 0
-
 +command:fetch "docker pull {image_name}:ol8" "Pull OracleLinux 8 Image"
   exit 0
 
@@ -41,18 +29,6 @@ command:fetch "docker pull {image_name}:centos7" "Pull CentOS 7 Image"
 
 ## Build images ##
 
-command "docker build --build-arg {repo_tag} -f ../.docker/centos7.docker -t {image_name}:centos7 .." "Build CentOS 7 Image"
-  exit 0 {build_timeout}
-
-+command "docker build --build-arg {repo_tag} -f ../.docker/centos7-unprivileged.docker -t {image_name}:centos7-unprivileged .." "Build CentOS 7 Unprivileged Image"
-  exit 0 {build_timeout}
-
-+command "docker build --build-arg {repo_tag} -f ../.docker/ol7.docker -t {image_name}:ol7 .." "Build OracleLinux 7 Image"
-  exit 0 {build_timeout}
-
-+command "docker build --build-arg {repo_tag} -f ../.docker/ol7-unprivileged.docker -t {image_name}:ol7-unprivileged .." "Build OracleLinux 7 Unprivileged Image"
-  exit 0 {build_timeout}
-
 +command "docker build --build-arg {repo_tag} -f ../.docker/ol8.docker -t {image_name}:ol8 .." "Build OracleLinux 8 Image"
   exit 0 {build_timeout}
 
@@ -64,70 +40,6 @@ command "docker build --build-arg {repo_tag} -f ../.docker/centos7.docker -t {im
 
 +command "docker build --build-arg {repo_tag} -f ../.docker/ol9-unprivileged.docker -t {image_name}:ol9-unprivileged .." "Build OracleLinux 9 Unprivileged Image"
   exit 0 {build_timeout}
-
-## CentOS 7 ##
-
-command "docker run --name webkaos -p {test_port}:80 -d {image_name}:centos7" "Start container"
-  exit 0
-
-+command "-" "Check if server is accessible"
-  wait {start_delay}
-  http-status GET "http://0.0.0.0:{test_port}" 200
-  http-header GET "http://0.0.0.0:{test_port}" server webkaos
-
-+command "docker kill webkaos" "Kill container after test"
-  exit 0
-
-+command "docker rm webkaos" "Remove named container after test"
-  exit 0
-
-## CentOS 7 Unprivileged ##
-
-command "docker run --name webkaos -p {test_port}:8080 -d {image_name}:centos7-unprivileged" "Start container"
-  exit 0
-
-+command "-" "Check if server is accessible"
-  wait {start_delay}
-  http-status GET "http://0.0.0.0:{test_port}" 200
-  http-header GET "http://0.0.0.0:{test_port}" server webkaos
-
-+command "docker kill webkaos" "Kill container after test"
-  exit 0
-
-+command "docker rm webkaos" "Remove named container after test"
-  exit 0
-
-## Oracle Linux 7 ##
-
-command "docker run --name webkaos -p {test_port}:80 -d {image_name}:ol7" "Start container"
-  exit 0
-
-+command "-" "Check if server is accessible"
-  wait {start_delay}
-  http-status GET "http://0.0.0.0:{test_port}" 200
-  http-header GET "http://0.0.0.0:{test_port}" server webkaos
-
-+command "docker kill webkaos" "Kill container after test"
-  exit 0
-
-+command "docker rm webkaos" "Remove named container after test"
-  exit 0
-
-## Oracle Linux 7 Unprivileged ##
-
-command "docker run --name webkaos -p {test_port}:8080 -d {image_name}:ol7-unprivileged" "Start container"
-  exit 0
-
-+command "-" "Check if server is accessible"
-  wait {start_delay}
-  http-status GET "http://0.0.0.0:{test_port}" 200
-  http-header GET "http://0.0.0.0:{test_port}" server webkaos
-
-+command "docker kill webkaos" "Kill container after test"
-  exit 0
-
-+command "docker rm webkaos" "Remove named container after test"
-  exit 0
 
 ## Oracle Linux 8 ##
 

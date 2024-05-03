@@ -24,7 +24,7 @@
 %define service_home   %{_cachedir}/%{service_name}
 
 %define nginx_version       1.26.0
-%define lua_module_ver      0.10.24
+%define lua_module_ver      0.10.26
 %define lua_resty_core_ver  0.1.28
 %define lua_resty_lru_ver   0.13
 %define mh_module_ver       0.34
@@ -93,8 +93,12 @@ Patch5:         boringssl-tls13-support.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  make perl golang
-BuildRequires:  cmake gcc-c++
+BuildRequires:  make perl golang cmake
+%if 0%{?rhel} <= 8
+BuildRequires:  gcc-toolset-11-gcc gcc-toolset-11-gcc-c++ gcc-toolset-11-binutils
+%else
+BuildRequires:  gcc-c++
+%endif
 
 Requires:       initscripts >= 8.36 kaosv >= 2.17
 Requires:       gd libXpm libxslt
@@ -192,6 +196,11 @@ mv lua-nginx-module-%{lua_module_ver}/README.markdown ./LUA-MODULE-README.markdo
 mv lua-resty-core-%{lua_resty_core_ver}/README.markdown ./LUA-RESTY-CORE-README.markdown
 mv lua-resty-lrucache-%{lua_resty_lru_ver}/README.markdown ./LUA-RESTY-LRU-README.markdown
 mv headers-more-nginx-module-%{mh_module_ver}/README.markdown ./HEADERS-MORE-MODULE-README.markdown
+
+%if 0%{?rhel} <= 8
+# Use gcc and gcc-c++ from DevToolSet 11
+export PATH="/opt/rh/gcc-toolset-11/root/usr/bin:$PATH"
+%endif
 
 # LuaJIT2 Build ################################################################
 
@@ -644,6 +653,9 @@ rm -rf %{buildroot}
 - BoringSSL updated to the latest stable version for Chromium
 - Zlib updated to 1.3.1
 - Brotli updated to the latest version
+- LuaJIT updated to 2.1-20240314
+- lua-nginx-module updated to 0.10.26
+- lua-resty-core updated to 0.1.28
 - NAXSI module removed due to discontinued development
 - End of support for CentOS 7
 

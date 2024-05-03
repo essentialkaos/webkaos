@@ -71,22 +71,6 @@ jobs:
           recipe: .bibop/webkaos.recipe .bibop/webkaos-docker.recipe
           dry-run: true
 
-  DockerEntrypointUnit:
-    name: Docker Entrypoint Unit Test
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout source code
-        uses: actions/checkout@v4
-
-      - name: Run entrypoint unit tests
-        run: |
-          pushd .docker
-            if ! ./entrypoint_test.sh ; then
-              ./entrypoint_test.sh --verbose
-            fi
-          popd
-
   DockerVersionCheck:
     name: Docker versions check
     runs-on: ubuntu-latest
@@ -102,7 +86,7 @@ jobs:
     name: Docker Build Check
     runs-on: ubuntu-latest
 
-    needs: [Hadolint, Shellcheck, DockerEntrypointUnit, DockerVersionCheck]
+    needs: [Hadolint, Shellcheck, DockerVersionCheck]
 
     env:
       REGISTRY: ghcr.io

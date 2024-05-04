@@ -5,7 +5,7 @@
 ## Feature list
 
 * Improved default SSL/TLS preferencies
-* [Dynamic TLS Records](https://blog.cloudflare.com/optimizing-tls-over-tcp-to-reduce-latency/) support
+* [Dynamic TLS Records](DYNAMIC-TLS-RECORDS.md) support
 * The latest version of [BoringSSL](https://boringssl.googlesource.com/boringssl/) with some state-of-the-art crypto features
 * TLS 1.3 support (_RFC 8446_)
 * [TCP Fast Open](https://en.wikipedia.org/wiki/TCP_Fast_Open) support

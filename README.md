@@ -18,13 +18,13 @@
 
 ### Installation
 
-#### From ESSENTIAL KAOS Public repository (EL 7/8/9)
+#### From ESSENTIAL KAOS Public repository (EL 8/9)
 
 ```bash
-sudo yum install -y https://pkgs.kaos.st/kaos-repo-latest.el$(grep 'CPE_NAME' /etc/os-release | tr -d '"' | cut -d':' -f5).noarch.rpm
-sudo yum install webkaos
-# install optional modules
-sudo yum install webkaos-module-brotli
+sudo dnf install -y https://pkgs.kaos.st/kaos-repo-latest.el$(grep 'CPE_NAME' /etc/os-release | tr -d '"' | cut -d':' -f5).noarch.rpm
+sudo dnf install webkaos
+# Install optional modules
+sudo dnf install webkaos-module-brotli
 ```
 
 #### Using Docker
@@ -33,18 +33,10 @@ Official webkaos images available on [GitHub Container Registry](https://kaos.sh
 
 Official images:
 
-- `ghcr.io/essentialkaos/webkaos:centos7`
-- `ghcr.io/essentialkaos/webkaos:centos7-unprivileged`
-- `ghcr.io/essentialkaos/webkaos:ol7`
-- `ghcr.io/essentialkaos/webkaos:ol7-unprivileged`
 - `ghcr.io/essentialkaos/webkaos:ol8`
 - `ghcr.io/essentialkaos/webkaos:ol8-unprivileged`
 - `ghcr.io/essentialkaos/webkaos:ol9`
 - `ghcr.io/essentialkaos/webkaos:ol9-unprivileged`
-- `essentialkaos/webkaos:centos7`
-- `essentialkaos/webkaos:centos7-unprivileged`
-- `essentialkaos/webkaos:ol7`
-- `essentialkaos/webkaos:ol7-unprivileged`
 - `essentialkaos/webkaos:ol8`
 - `essentialkaos/webkaos:ol8-unprivileged`
 - `essentialkaos/webkaos:ol9`
@@ -53,15 +45,11 @@ Official images:
 Usage examples:
 
 ```bash
-# Image on CentOS 7
-docker run --name my-webkaos -v /some/content:/usr/share/webkaos/html:ro -p 8080:80 -d essentialkaos/webkaos:centos7
 # Image on OracleLinux 8
 docker run --name my-webkaos -v /some/content:/usr/share/webkaos/html:ro -p 8080:80 -d essentialkaos/webkaos:ol8
 ```
 
 ```bash
-# Unprivileged image on CentOS 7
-docker run --name my-webkaos -v /some/content:/usr/share/webkaos/html:ro -p 8080:8080 -d essentialkaos/webkaos:centos7-unprivileged
 # Unprivileged image on OracleLinux 8
 docker run --name my-webkaos -v /some/content:/usr/share/webkaos/html:ro -p 8080:8080 -d essentialkaos/webkaos:ol8-unprivileged
 ```
@@ -73,14 +61,14 @@ Useful environment variables:
 * `WEBKAOS_DISABLE_BUCKET_TUNE` - Disable automatic `server_names_hash_bucket_size` tuning;
 * `WEBKAOS_DISABLE_TEMPLATES` - Disable automatic templates rendering.
 
-#### Using [rpmbuilder](https://github.com/essentialkaos/rpmbuilder)
+#### Using [rpmbuilder](https://kaos.sh/rpmbuilder)
 
 ```bash
-... install and configure rpmbuilder there
-git clone https://github.com/essentialkaos/webkaos.git
+# install and configure rpmbuilder
+git clone https://kaos.sh/webkaos
 cd webkaos/
-rpmbuilder webkaos.spec -dl SOURCES/
-rpmbuilder webkaos.spec -3 -V -di
+rpmbuilder webkaos.spec -dl SOURCES
+rpmbuilder webkaos.spec -3 -V -I
 ```
 
 ### FAQ

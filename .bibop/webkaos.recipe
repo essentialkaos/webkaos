@@ -1,7 +1,7 @@
-# Bibop recipe for webkaos (EL7/EL8/EL9)
+# Bibop recipe for webkaos (EL8/EL9)
 # See more: https://kaos.sh/bibop
 
-pkg webkaos webkaos-debug webkaos-nginx webkaos-module-brotli webkaos-module-naxsi
+pkg webkaos webkaos-debug webkaos-nginx webkaos-module-brotli
 
 require-root yes
 unsafe-actions yes
@@ -20,7 +20,7 @@ var ssl_dir {prefix_dir}/ssl
 var dh_param {ssl_dir}/dhparam.pem
 var log_dir /var/log/webkaos
 
-var lua_ver 2.1.0-beta3
+var lua_ver 2.1
 var lua_dir /usr/share/webkaos/luajit/share/luajit-{lua_ver}
 
 command "-" "System environment validation"
@@ -186,12 +186,6 @@ command "-" "Check brotli module"
   mode {extra_config_dir}/brotli.conf 644
   mode {modules_dir}/ngx_http_brotli_filter_module.so 755
   mode {modules_dir}/ngx_http_brotli_static_module.so 755
-
-command "-" "Check NAXSI module"
-  exist {prefix_dir}/naxsi_core.rules
-  exist {modules_dir}/ngx_http_naxsi_module.so
-  mode {prefix_dir}/naxsi_core.rules 644
-  mode {modules_dir}/ngx_http_naxsi_module.so 755
 
 command "systemctl start {service_name}" "Start service"
   wait-pid {pid_file} 5

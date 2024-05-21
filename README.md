@@ -4,13 +4,13 @@
 
 ## Feature list
 
-* Improved default SSL/TLS preferencies (_A+ on [SSL Labs](https://www.ssllabs.com/ssltest/analyze.html?d=essentialkaos.com), [Immuni Web](https://www.immuniweb.com/ssl/?id=WHUz0U3v), [Mozilla Observatory](https://observatory.mozilla.org/analyze/essentialkaos.com), [CryptCheck](https://tls.imirhil.fr/https/essentialkaos.com) and [Security Headers](https://securityheaders.com/?q=essentialkaos.com&followRedirects=on)_)
-* [Dynamic TLS Records](https://blog.cloudflare.com/optimizing-tls-over-tcp-to-reduce-latency/) support
+* Improved default SSL/TLS preferencies
+* [Dynamic TLS Records](DYNAMIC-TLS-RECORDS.md) support
 * The latest version of [BoringSSL](https://boringssl.googlesource.com/boringssl/) with some state-of-the-art crypto features
 * TLS 1.3 support (_RFC 8446_)
 * [TCP Fast Open](https://en.wikipedia.org/wiki/TCP_Fast_Open) support
 * [Lua](https://github.com/openresty/lua-nginx-module) and [Headers More](https://github.com/openresty/headers-more-nginx-module) modules from the box
-* [Brotli](https://github.com/eustas/ngx_brotli) and [NAXSI](https://github.com/nbs-system/naxsi) as dynamic modules
+* [Brotli](https://github.com/eustas/ngx_brotli) as dynamic module
 * Improved SysV script
 * Well-looking error pages
 * Improved design of index pages
@@ -18,13 +18,13 @@
 
 ### Installation
 
-#### From ESSENTIAL KAOS Public repository (EL 7/8/9)
+#### From ESSENTIAL KAOS Public repository (EL 8/9)
 
 ```bash
-sudo yum install -y https://pkgs.kaos.st/kaos-repo-latest.el$(grep 'CPE_NAME' /etc/os-release | tr -d '"' | cut -d':' -f5).noarch.rpm
-sudo yum install webkaos
-# install optional modules
-sudo yum install webkaos-module-brotli webkaos-module-naxsi
+sudo dnf install -y https://pkgs.kaos.st/kaos-repo-latest.el$(grep 'CPE_NAME' /etc/os-release | tr -d '"' | cut -d':' -f5).noarch.rpm
+sudo dnf install webkaos
+# Install optional modules
+sudo dnf install webkaos-module-brotli
 ```
 
 #### Using Docker
@@ -33,18 +33,10 @@ Official webkaos images available on [GitHub Container Registry](https://kaos.sh
 
 Official images:
 
-- `ghcr.io/essentialkaos/webkaos:centos7`
-- `ghcr.io/essentialkaos/webkaos:centos7-unprivileged`
-- `ghcr.io/essentialkaos/webkaos:ol7`
-- `ghcr.io/essentialkaos/webkaos:ol7-unprivileged`
 - `ghcr.io/essentialkaos/webkaos:ol8`
 - `ghcr.io/essentialkaos/webkaos:ol8-unprivileged`
 - `ghcr.io/essentialkaos/webkaos:ol9`
 - `ghcr.io/essentialkaos/webkaos:ol9-unprivileged`
-- `essentialkaos/webkaos:centos7`
-- `essentialkaos/webkaos:centos7-unprivileged`
-- `essentialkaos/webkaos:ol7`
-- `essentialkaos/webkaos:ol7-unprivileged`
 - `essentialkaos/webkaos:ol8`
 - `essentialkaos/webkaos:ol8-unprivileged`
 - `essentialkaos/webkaos:ol9`
@@ -53,15 +45,11 @@ Official images:
 Usage examples:
 
 ```bash
-# Image on CentOS 7
-docker run --name my-webkaos -v /some/content:/usr/share/webkaos/html:ro -p 8080:80 -d essentialkaos/webkaos:centos7
 # Image on OracleLinux 8
 docker run --name my-webkaos -v /some/content:/usr/share/webkaos/html:ro -p 8080:80 -d essentialkaos/webkaos:ol8
 ```
 
 ```bash
-# Unprivileged image on CentOS 7
-docker run --name my-webkaos -v /some/content:/usr/share/webkaos/html:ro -p 8080:8080 -d essentialkaos/webkaos:centos7-unprivileged
 # Unprivileged image on OracleLinux 8
 docker run --name my-webkaos -v /some/content:/usr/share/webkaos/html:ro -p 8080:8080 -d essentialkaos/webkaos:ol8-unprivileged
 ```
@@ -73,14 +61,14 @@ Useful environment variables:
 * `WEBKAOS_DISABLE_BUCKET_TUNE` - Disable automatic `server_names_hash_bucket_size` tuning;
 * `WEBKAOS_DISABLE_TEMPLATES` - Disable automatic templates rendering.
 
-#### Using [rpmbuilder](https://github.com/essentialkaos/rpmbuilder)
+#### Using [rpmbuilder](https://kaos.sh/rpmbuilder)
 
 ```bash
-... install and configure rpmbuilder there
-git clone https://github.com/essentialkaos/webkaos.git
+# install and configure rpmbuilder
+git clone https://kaos.sh/webkaos
 cd webkaos/
-rpmbuilder webkaos.spec -dl SOURCES/
-rpmbuilder webkaos.spec -3 -V -di
+rpmbuilder webkaos.spec -dl SOURCES
+rpmbuilder webkaos.spec -3 -V -I
 ```
 
 ### FAQ

@@ -33,7 +33,7 @@
 %define luajit_ver          2.1-20240314
 %define luajit_raw_ver      2.1
 %define brotli_ngx_commit   a71f9312c2deb28875acc7bacfdd5695a111aa53
-%define brotli_commit       ed738e842d2fbdf2d6459e39267a633c4a9b2f5d
+%define brotli_commit       fe754f3459f4fd60d41aae7e87b5053b2ab3a7a3
 
 # 1. Open https://chromiumdash.appspot.com/releases?platform=Linux and note the latest stable version.
 # 2. Open https://chromium.googlesource.com/chromium/src/+/refs/tags/<version>/DEPS and note <boringssl_revision>.
@@ -44,7 +44,7 @@
 Summary:        Superb high performance web server
 Name:           webkaos
 Version:        %{nginx_version}
-Release:        0%{?dist}
+Release:        1%{?dist}
 License:        2-clause BSD-like license
 Group:          System Environment/Daemons
 URL:            https://kaos.sh/webkaos
@@ -147,7 +147,7 @@ Links for nginx compatibility.
 
 Summary:   Module for Brotli compression
 Version:   0.1.6
-Release:   0%{?dist}
+Release:   1%{?dist}
 
 Group:     System Environment/Daemons
 Requires:  %{name} = %{nginx_version}
@@ -648,6 +648,10 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Fri May 31 2024 Anton Novojilov <andy@essentialkaos.com> - 1.26.0-1
+- Brotli updated to the latest commit to fix a bug that caused workers to
+  shut down
+
 * Fri May 03 2024 Anton Novojilov <andy@essentialkaos.com> - 1.26.0-0
 - Nginx updated to 1.26.0
 - BoringSSL updated to the latest stable version for Chromium

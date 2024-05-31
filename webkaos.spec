@@ -649,8 +649,8 @@ rm -rf %{buildroot}
 
 %changelog
 * Fri May 31 2024 Anton Novojilov <andy@essentialkaos.com> - 1.26.0-1
-- Brotli updated to the latest commit to fix a bug that was causing workers
-  to fail
+- Brotli updated to the latest commit to fix a bug that caused workers to
+  shut down
 
 * Fri May 03 2024 Anton Novojilov <andy@essentialkaos.com> - 1.26.0-0
 - Nginx updated to 1.26.0

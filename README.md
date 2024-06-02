@@ -10,7 +10,6 @@
 * TLS 1.3 support (_RFC 8446_)
 * [TCP Fast Open](https://en.wikipedia.org/wiki/TCP_Fast_Open) support
 * [Lua](https://github.com/openresty/lua-nginx-module) and [Headers More](https://github.com/openresty/headers-more-nginx-module) modules from the box
-* [Brotli](https://github.com/eustas/ngx_brotli) as dynamic module
 * Improved SysV script
 * Well-looking error pages
 * Improved design of index pages
@@ -24,7 +23,7 @@
 sudo dnf install -y https://pkgs.kaos.st/kaos-repo-latest.el$(grep 'CPE_NAME' /etc/os-release | tr -d '"' | cut -d':' -f5).noarch.rpm
 sudo dnf install webkaos
 # Install optional modules
-sudo dnf install webkaos-module-brotli
+sudo dnf install
 ```
 
 #### Using Docker

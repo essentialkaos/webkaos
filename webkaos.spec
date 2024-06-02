@@ -32,8 +32,6 @@
 %define zlib_ver            1.3.1
 %define luajit_ver          2.1-20240314
 %define luajit_raw_ver      2.1
-%define brotli_ngx_commit   a71f9312c2deb28875acc7bacfdd5695a111aa53
-%define brotli_commit       fe754f3459f4fd60d41aae7e87b5053b2ab3a7a3
 
 # 1. Open https://chromiumdash.appspot.com/releases?platform=Linux and note the latest stable version.
 # 2. Open https://chromium.googlesource.com/chromium/src/+/refs/tags/<version>/DEPS and note <boringssl_revision>.
@@ -44,7 +42,7 @@
 Summary:        Superb high performance web server
 Name:           webkaos
 Version:        %{nginx_version}
-Release:        1%{?dist}
+Release:        2%{?dist}
 License:        2-clause BSD-like license
 Group:          System Environment/Daemons
 URL:            https://kaos.sh/webkaos
@@ -63,7 +61,6 @@ Source20:       ssl.conf
 Source21:       ssl-wildcard.conf
 Source22:       common.conf
 Source23:       bots.conf
-Source24:       brotli.conf
 Source25:       cloudflare-ips.conf
 
 Source30:       %{name}-index.html
@@ -76,8 +73,6 @@ Source52:       https://github.com/openresty/headers-more-nginx-module/archive/v
 Source53:       https://downloads.sourceforge.net/project/pcre/pcre/%{pcre_ver}/pcre-%{pcre_ver}.tar.gz
 Source54:       https://zlib.net/zlib-%{zlib_ver}.tar.gz
 Source55:       https://github.com/openresty/luajit2/archive/v%{luajit_ver}.tar.gz
-Source56:       https://github.com/google/ngx_brotli/archive/%{brotli_ngx_commit}.tar.gz
-Source57:       https://github.com/google/brotli/archive/%{brotli_commit}.tar.gz
 Source59:       https://github.com/openresty/lua-resty-core/archive/v%{lua_resty_core_ver}.tar.gz
 Source60:       https://github.com/openresty/lua-resty-lrucache/archive/v%{lua_resty_lru_ver}.tar.gz
 
@@ -143,20 +138,6 @@ Links for nginx compatibility.
 
 ################################################################################
 
-%package module-brotli
-
-Summary:   Module for Brotli compression
-Version:   0.1.6
-Release:   1%{?dist}
-
-Group:     System Environment/Daemons
-Requires:  %{name} = %{nginx_version}
-
-%description module-brotli
-Module for Brotli compression.
-
-################################################################################
-
 %prep
 %{crc_check}
 
@@ -170,8 +151,6 @@ tar xzvf %{SOURCE52}
 tar xzvf %{SOURCE53}
 tar xzvf %{SOURCE54}
 tar xzvf %{SOURCE55}
-tar xzvf %{SOURCE56}
-tar xzvf %{SOURCE57}
 tar xzvf %{SOURCE59}
 tar xzvf %{SOURCE60}
 
@@ -232,22 +211,6 @@ popd
 
 cp boringssl/build/crypto/libcrypto.a boringssl/build/ssl/libssl.a boringssl/.openssl/lib
 
-# Brotli Build #################################################################
-
-pushd ngx_brotli-%{brotli_ngx_commit}
-  rm -rf deps/brotli
-  mv ../brotli-%{brotli_commit} deps/brotli
-
-  mkdir deps/brotli/out && pushd deps/brotli/out
-    cmake3 -DCMAKE_BUILD_TYPE=Release \
-           -DBUILD_SHARED_LIBS=OFF \
-           -DCMAKE_C_FLAGS="-Ofast -m64 -march=native -mtune=native -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections" \
-           -DCMAKE_CXX_FLAGS="-Ofast -m64 -march=native -mtune=native -flto -funroll-loops -ffunction-sections -fdata-sections -Wl,--gc-sections" \
-           -DCMAKE_INSTALL_PREFIX=./installed ..
-    cmake3 --build . --config Release --target brotlienc
-  popd
-popd
-
 ################################################################################
 
 # perfecto:ignore
@@ -306,38 +269,6 @@ popd
 touch boringssl/.openssl/include/openssl/ssl.h
 
 %{__make} %{?_smp_mflags}
-
-# perfecto:ignore
-./configure \
-    --prefix=%{_sysconfdir}/%{name} \
-    --sbin-path=%{_sbindir}/%{name} \
-    --modules-path=%{_libdir}/%{name}/modules \
-    --conf-path=%{_sysconfdir}/%{name}/%{name}.conf \
-    --error-log-path=%{_logdir}/%{name}/error.log \
-    --http-log-path=%{_logdir}/%{name}/access.log \
-    --pid-path=%{_rundir}/%{name}.pid \
-    --lock-path=%{_rundir}/%{name}.lock \
-    --http-client-body-temp-path=%{service_home}/client_temp \
-    --http-proxy-temp-path=%{service_home}/proxy_temp \
-    --http-fastcgi-temp-path=%{service_home}/fastcgi_temp \
-    --http-uwsgi-temp-path=%{service_home}/uwsgi_temp \
-    --http-scgi-temp-path=%{service_home}/scgi_temp \
-    --user=%{service_user} \
-    --group=%{service_group} \
-    --with-zlib=zlib-%{zlib_ver} \
-    --with-pcre-jit \
-    --with-pcre=pcre-%{pcre_ver} \
-    --with-openssl=boringssl \
-    --add-dynamic-module=ngx_brotli-%{brotli_ngx_commit} \
-    --with-cc-opt="-I ../boringssl/.openssl/include/" \
-    --with-ld-opt="-L ../boringssl/.openssl/lib -L ../luajit2-%{luajit_ver}/lib -ldl -lstdc++" \
-    --with-compat \
-    $*
-
-# Fix "Error 127" during build with BoringSSL
-touch boringssl/.openssl/include/openssl/ssl.h
-
-%{__make} modules
 
 mv %{_builddir}/nginx-%{nginx_version}/objs/nginx \
         %{_builddir}/nginx-%{nginx_version}/objs/%{name}.debug
@@ -504,14 +435,6 @@ cp -rp lua-resty-lrucache-%{lua_resty_lru_ver}/lib/resty/* \
 
 find %{buildroot}%{_datadir}/%{name}/luajit/share/luajit-%{luajit_raw_ver}/ -name '*.md' -delete
 
-# Modules installation
-cp -rp %{_builddir}/nginx-%{nginx_version}/objs/*.so \
-       %{buildroot}%{_datadir}/%{name}/modules/
-
-# Modules configs installation
-install -pm 644 %{SOURCE24} \
-                %{buildroot}%{_sysconfdir}/%{name}/xtra/
-
 # Create links and scripts for compatibility with nginx
 install -pm 755 %{SOURCE8} %{buildroot}%{_sbindir}/nginx
 
@@ -639,15 +562,12 @@ rm -rf %{buildroot}
 %{_unitdir}/nginx.service
 %{_unitdir}/nginx-debug.service
 
-%files module-brotli
-%defattr(-,root,root)
-%config(noreplace) %{_sysconfdir}/%{name}/xtra/brotli.conf
-%{_datadir}/%{name}/modules/ngx_http_brotli_filter_module.so
-%{_datadir}/%{name}/modules/ngx_http_brotli_static_module.so
-
 ################################################################################
 
 %changelog
+* Sun Jun 02 2024 Anton Novojilov <andy@essentialkaos.com> - 1.26.0-2
+- ngx_brotli module removed due to serious problems and lack of support
+
 * Fri May 31 2024 Anton Novojilov <andy@essentialkaos.com> - 1.26.0-1
 - Brotli updated to the latest commit to fix a bug that caused workers to
   shut down

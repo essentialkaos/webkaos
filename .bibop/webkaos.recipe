@@ -1,7 +1,7 @@
 # Bibop recipe for webkaos (EL8/EL9)
 # See more: https://kaos.sh/bibop
 
-pkg webkaos webkaos-debug webkaos-nginx webkaos-module-brotli
+pkg webkaos webkaos-debug webkaos-nginx
 
 require-root yes
 unsafe-actions yes
@@ -13,8 +13,6 @@ var prefix_dir /etc/webkaos
 var config {prefix_dir}/webkaos.conf
 var extra_config_dir {prefix_dir}/xtra
 var binary /usr/sbin/webkaos
-var modules_config {prefix_dir}/modules.conf
-var modules_dir /usr/share/webkaos/modules
 var pid_file /var/run/webkaos.pid
 var ssl_dir {prefix_dir}/ssl
 var dh_param {ssl_dir}/dhparam.pem
@@ -152,10 +150,6 @@ command "nginx -t" "Validate default config using nginx wrapper"
 
 command "-" "Original configuration backup"
   backup {config}
-  backup {modules_config}
-
-command "-" "Add modules configuration"
-  copy modules.conf {modules_config}
 
 command "-" "Replace original configuration"
   copy webkaos.conf {config}
@@ -178,14 +172,6 @@ command "-" "Clear old log files"
   touch {log_dir}/error.log
   truncate {log_dir}/access.log
   truncate {log_dir}/error.log
-
-command "-" "Check brotli module"
-  exist {extra_config_dir}/brotli.conf
-  exist {modules_dir}/ngx_http_brotli_filter_module.so
-  exist {modules_dir}/ngx_http_brotli_static_module.so
-  mode {extra_config_dir}/brotli.conf 644
-  mode {modules_dir}/ngx_http_brotli_filter_module.so 755
-  mode {modules_dir}/ngx_http_brotli_static_module.so 755
 
 command "systemctl start {service_name}" "Start service"
   wait-pid {pid_file} 5
@@ -252,21 +238,19 @@ command "systemctl start {service_name}-debug" "Start debug version of service"
   service-works {service_name}-debug
 
 command "-" "Make HTTP requests"
-  http-set-header Accept-Encoding "gzip, deflate, br"
+  http-set-header Accept-Encoding "gzip, deflate"
   http-status GET "http://127.0.0.1" 200
   http-header GET "http://127.0.0.1" server webkaos
   http-header GET "http://127.0.0.1/mh" server bibop
-  http-header GET "http://127.0.0.1" Content-Encoding br
   http-contains GET "http://127.0.0.1/lua" "LUA MODULE WORKS"
   !empty {log_dir}/access.log
   truncate {log_dir}/access.log
 
 command "-" "Make HTTPS requests"
-  http-set-header Accept-Encoding "gzip, deflate, br"
+  http-set-header Accept-Encoding "gzip, deflate"
   http-status GET "https://127.0.0.1" 200
   http-header GET "https://127.0.0.1" server webkaos
   http-header GET "https://127.0.0.1/mh" server bibop
-  http-header GET "https://127.0.0.1" Content-Encoding br
   http-contains GET "https://127.0.0.1/lua" "LUA MODULE WORKS"
   !empty {log_dir}/access.log
   truncate {log_dir}/access.log
@@ -279,7 +263,6 @@ command "systemctl stop {service_name}-debug" "Stop debug version of service"
 
 command:teardown "-" "Configuration restore"
   backup-restore {config}
-  backup-restore {modules_config}
 
 command:teardown "-" "DH param cleanup"
   remove {dh_param}

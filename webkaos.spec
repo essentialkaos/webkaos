@@ -23,7 +23,7 @@
 %define service_name   %{name}
 %define service_home   %{_cachedir}/%{service_name}
 
-%define nginx_version       1.26.0
+%define nginx_version       1.26.1
 %define lua_module_ver      0.10.26
 %define lua_resty_core_ver  0.1.28
 %define lua_resty_lru_ver   0.13
@@ -42,7 +42,7 @@
 Summary:        Superb high performance web server
 Name:           webkaos
 Version:        %{nginx_version}
-Release:        2%{?dist}
+Release:        0%{?dist}
 License:        2-clause BSD-like license
 Group:          System Environment/Daemons
 URL:            https://kaos.sh/webkaos
@@ -565,6 +565,9 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Fri Jun 14 2024 Anton Novojilov <andy@essentialkaos.com> - 1.26.1-0
+- Nginx updated to 1.26.1
+
 * Sun Jun 02 2024 Anton Novojilov <andy@essentialkaos.com> - 1.26.0-2
 - ngx_brotli module removed due to serious problems and lack of support
 

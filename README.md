@@ -1,4 +1,4 @@
-<p align="center"><a href="#readme"><img src="https://gh.kaos.st/webkaos.svg"/></a></p>
+<p align="center"><a href="#readme"><img src=".github/images/card.svg"/></a></p>
 
 `webkaos` is a web-server based on the latest version of [Nginx](http://nginx.org).
 
@@ -22,8 +22,6 @@
 ```bash
 sudo dnf install -y https://pkgs.kaos.st/kaos-repo-latest.el$(grep 'CPE_NAME' /etc/os-release | tr -d '"' | cut -d':' -f5).noarch.rpm
 sudo dnf install webkaos
-# Install optional modules
-sudo dnf install
 ```
 
 #### Using Docker

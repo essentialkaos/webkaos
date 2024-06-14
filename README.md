@@ -22,8 +22,6 @@
 ```bash
 sudo dnf install -y https://pkgs.kaos.st/kaos-repo-latest.el$(grep 'CPE_NAME' /etc/os-release | tr -d '"' | cut -d':' -f5).noarch.rpm
 sudo dnf install webkaos
-# Install optional modules
-sudo dnf install
 ```
 
 #### Using Docker

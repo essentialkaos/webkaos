@@ -24,7 +24,7 @@
 %define service_home   %{_cachedir}/%{service_name}
 
 %define nginx_version       1.26.2
-%define lua_module_ver      0.10.26
+%define lua_module_ver      0.10.27
 %define lua_resty_core_ver  0.1.29
 %define lua_resty_lru_ver   0.14
 %define mh_module_ver       0.37
@@ -568,6 +568,7 @@ rm -rf %{buildroot}
 * Thu Aug 15 2024 Anton Novojilov <andy@essentialkaos.com> - 1.26.2-0
 - Nginx updated to 1.26.2 with fixes for CVE-2024-7347
 - More Headers module updated to 0.37
+- lua-nginx-module updated to 0.10.27
 - lua-resty-lru updated to 0.14
 - lua-resty-core updated to 0.1.29
 

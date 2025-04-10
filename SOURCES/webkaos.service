@@ -5,7 +5,7 @@ After=network-online.target remote-fs.target nss-lookup.target
 Wants=network-online.target
  
 [Service]
-PIDFile=/var/run/webkaos.pid
+PIDFile=/run/webkaos.pid
 ExecStart=/etc/init.d/webkaos start
 ExecReload=/etc/init.d/webkaos reload
 ExecStop=/etc/init.d/webkaos stop

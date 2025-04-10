@@ -23,19 +23,19 @@
 %define service_name   %{name}
 %define service_home   %{_cachedir}/%{service_name}
 
-%define nginx_version       1.26.2
-%define lua_module_ver      0.10.27
-%define lua_resty_core_ver  0.1.29
-%define lua_resty_lru_ver   0.14
-%define mh_module_ver       0.37
+%define nginx_version       1.26.3
+%define lua_module_ver      0.10.28
+%define lua_resty_core_ver  0.1.31
+%define lua_resty_lru_ver   0.15
+%define mh_module_ver       0.38
 %define pcre_ver            8.45
 %define zlib_ver            1.3.1
-%define luajit_ver          2.1-20240314
+%define luajit_ver          2.1-20250117
 %define luajit_raw_ver      2.1
 
 # 1. Open https://chromiumdash.appspot.com/releases?platform=Linux and note the latest stable version.
 # 2. Open https://chromium.googlesource.com/chromium/src/+/refs/tags/<version>/DEPS and note <boringssl_revision>.
-%define boring_commit  4fa4804c8ab4521079af62dba5260a99c34b8a29
+%define boring_commit  673e61fc215b178a90c0e67858bbf162c8158993
 
 ################################################################################
 
@@ -84,7 +84,6 @@ Patch1:         mime.patch
 Patch2:         %{name}-dynamic-tls-records.patch
                 # https://github.com/ajhaydock/BoringNginx/blob/master/patches
 Patch3:         boringssl.patch
-Patch5:         boringssl-tls13-support.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -141,7 +140,7 @@ Links for nginx compatibility.
 %prep
 %{crc_check}
 
-%setup -qn nginx-%{nginx_version}
+%autosetup -N -n nginx-%{nginx_version}
 
 mkdir boringssl
 
@@ -154,14 +153,7 @@ tar xzvf %{SOURCE55}
 tar xzvf %{SOURCE59}
 tar xzvf %{SOURCE60}
 
-%patch0 -p1
-%patch1 -p1
-%patch2 -p1
-%patch3 -p1
-
-pushd boringssl
-%patch5 -p1
-popd
+%autopatch -p1
 
 %build
 
@@ -565,6 +557,15 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Thu Apr 10 2025 Anton Novojilov <andy@essentialkaos.com> - 1.26.3-0
+- Nginx updated to 1.26.3 with fixes for CVE-2025-23419
+- More Headers module updated to 0.38
+- lua-nginx-module updated to 0.10.28
+- lua-resty-lru updated to 0.15
+- lua-resty-core updated to 0.1.31
+- LuaJIT updated to 2.1-20250117
+- BoringSSL updated to the latest stable version for Chromium
+
 * Thu Aug 15 2024 Anton Novojilov <andy@essentialkaos.com> - 1.26.2-0
 - Nginx updated to 1.26.2 with fixes for CVE-2024-7347
 - More Headers module updated to 0.37

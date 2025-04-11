@@ -1,6 +1,6 @@
-diff --color -urN nginx-1.26.2-orig/auto/lib/openssl/make nginx-1.26.2/auto/lib/openssl/make
---- nginx-1.26.2-orig/auto/lib/openssl/make	2024-08-12 17:28:31.000000000 +0300
-+++ nginx-1.26.2/auto/lib/openssl/make	2024-08-15 15:03:06.835407722 +0300
+diff --color -urN nginx-1.26.3-orig/auto/lib/openssl/make nginx-1.26.3/auto/lib/openssl/make
+--- nginx-1.26.3-orig/auto/lib/openssl/make	2025-02-05 14:07:30.000000000 +0300
++++ nginx-1.26.3/auto/lib/openssl/make	2025-04-10 17:04:22.795141017 +0300
 @@ -58,18 +58,18 @@
              /*) ngx_prefix="$OPENSSL/.openssl" ;;
              *)  ngx_prefix="$PWD/$OPENSSL/.openssl" ;;
@@ -24,9 +24,9 @@ diff --color -urN nginx-1.26.2-orig/auto/lib/openssl/make nginx-1.26.2/auto/lib/
      ;;
  
  esac
-diff --color -urN nginx-1.26.2-orig/src/core/nginx.c nginx-1.26.2/src/core/nginx.c
---- nginx-1.26.2-orig/src/core/nginx.c	2024-08-12 17:28:31.000000000 +0300
-+++ nginx-1.26.2/src/core/nginx.c	2024-08-15 15:03:06.842407844 +0300
+diff --color -urN nginx-1.26.3-orig/src/core/nginx.c nginx-1.26.3/src/core/nginx.c
+--- nginx-1.26.3-orig/src/core/nginx.c	2025-02-05 14:07:30.000000000 +0300
++++ nginx-1.26.3/src/core/nginx.c	2025-04-10 17:04:22.807141369 +0300
 @@ -391,12 +391,12 @@
  static void
  ngx_show_version_info(void)
@@ -43,13 +43,13 @@ diff --color -urN nginx-1.26.2-orig/src/core/nginx.c nginx-1.26.2/src/core/nginx
                            NGX_LINEFEED NGX_LINEFEED
              "Options:" NGX_LINEFEED
              "  -?,-h         : this help" NGX_LINEFEED
-diff --color -urN nginx-1.26.2-orig/src/core/nginx.h nginx-1.26.2/src/core/nginx.h
---- nginx-1.26.2-orig/src/core/nginx.h	2024-08-12 17:28:31.000000000 +0300
-+++ nginx-1.26.2/src/core/nginx.h	2024-08-15 15:03:32.000000000 +0300
+diff --color -urN nginx-1.26.3-orig/src/core/nginx.h nginx-1.26.3/src/core/nginx.h
+--- nginx-1.26.3-orig/src/core/nginx.h	2025-02-05 14:07:30.000000000 +0300
++++ nginx-1.26.3/src/core/nginx.h	2025-04-10 17:05:12.000000000 +0300
 @@ -11,7 +11,7 @@
  
- #define nginx_version      1026002
- #define NGINX_VERSION      "1.26.2"
+ #define nginx_version      1026003
+ #define NGINX_VERSION      "1.26.3"
 -#define NGINX_VER          "nginx/" NGINX_VERSION
 +#define NGINX_VER          "webkaos/" NGINX_VERSION
  
@@ -64,9 +64,9 @@ diff --color -urN nginx-1.26.2-orig/src/core/nginx.h nginx-1.26.2/src/core/nginx
  #define NGX_OLDPID_EXT     ".oldbin"
  
  
-diff --color -urN nginx-1.26.2-orig/src/core/ngx_log.c nginx-1.26.2/src/core/ngx_log.c
---- nginx-1.26.2-orig/src/core/ngx_log.c	2024-08-12 17:28:31.000000000 +0300
-+++ nginx-1.26.2/src/core/ngx_log.c	2024-08-15 15:03:06.854408052 +0300
+diff --color -urN nginx-1.26.3-orig/src/core/ngx_log.c nginx-1.26.3/src/core/ngx_log.c
+--- nginx-1.26.3-orig/src/core/ngx_log.c	2025-02-05 14:07:30.000000000 +0300
++++ nginx-1.26.3/src/core/ngx_log.c	2025-04-10 17:04:22.819141721 +0300
 @@ -202,9 +202,9 @@
          return;
      }
@@ -97,9 +97,9 @@ diff --color -urN nginx-1.26.2-orig/src/core/ngx_log.c nginx-1.26.2/src/core/ngx
          return NGX_CONF_ERROR;
  #endif
  
-diff --color -urN nginx-1.26.2-orig/src/http/modules/ngx_http_autoindex_module.c nginx-1.26.2/src/http/modules/ngx_http_autoindex_module.c
---- nginx-1.26.2-orig/src/http/modules/ngx_http_autoindex_module.c	2024-08-12 17:28:31.000000000 +0300
-+++ nginx-1.26.2/src/http/modules/ngx_http_autoindex_module.c	2024-08-15 15:03:06.863408209 +0300
+diff --color -urN nginx-1.26.3-orig/src/http/modules/ngx_http_autoindex_module.c nginx-1.26.3/src/http/modules/ngx_http_autoindex_module.c
+--- nginx-1.26.3-orig/src/http/modules/ngx_http_autoindex_module.c	2025-02-05 14:07:30.000000000 +0300
++++ nginx-1.26.3/src/http/modules/ngx_http_autoindex_module.c	2025-04-10 17:04:22.835142190 +0300
 @@ -449,9 +449,11 @@
      ;
  
@@ -175,9 +175,9 @@ diff --color -urN nginx-1.26.2-orig/src/http/modules/ngx_http_autoindex_module.c
                                tm.ngx_tm_mday,
                                months[tm.ngx_tm_mon - 1],
                                tm.ngx_tm_year,
-diff --color -urN nginx-1.26.2-orig/src/http/ngx_http_header_filter_module.c nginx-1.26.2/src/http/ngx_http_header_filter_module.c
---- nginx-1.26.2-orig/src/http/ngx_http_header_filter_module.c	2024-08-12 17:28:31.000000000 +0300
-+++ nginx-1.26.2/src/http/ngx_http_header_filter_module.c	2024-08-15 15:03:06.869408314 +0300
+diff --color -urN nginx-1.26.3-orig/src/http/ngx_http_header_filter_module.c nginx-1.26.3/src/http/ngx_http_header_filter_module.c
+--- nginx-1.26.3-orig/src/http/ngx_http_header_filter_module.c	2025-02-05 14:07:30.000000000 +0300
++++ nginx-1.26.3/src/http/ngx_http_header_filter_module.c	2025-04-10 17:04:22.843142425 +0300
 @@ -46,7 +46,7 @@
  };
  
@@ -228,9 +228,9 @@ diff --color -urN nginx-1.26.2-orig/src/http/ngx_http_header_filter_module.c ngi
  #define NGX_HTTP_OFF_5XX   (NGX_HTTP_LAST_4XX - 400 + NGX_HTTP_OFF_4XX)
  
      ngx_string("500 Internal Server Error"),
-diff --color -urN nginx-1.26.2-orig/src/http/ngx_http_special_response.c nginx-1.26.2/src/http/ngx_http_special_response.c
---- nginx-1.26.2-orig/src/http/ngx_http_special_response.c	2024-08-12 17:28:31.000000000 +0300
-+++ nginx-1.26.2/src/http/ngx_http_special_response.c	2024-08-15 15:03:06.875408418 +0300
+diff --color -urN nginx-1.26.3-orig/src/http/ngx_http_special_response.c nginx-1.26.3/src/http/ngx_http_special_response.c
+--- nginx-1.26.3-orig/src/http/ngx_http_special_response.c	2025-02-05 14:07:30.000000000 +0300
++++ nginx-1.26.3/src/http/ngx_http_special_response.c	2025-04-10 17:04:22.849142600 +0300
 @@ -19,21 +19,21 @@
  
  
@@ -703,9 +703,9 @@ diff --color -urN nginx-1.26.2-orig/src/http/ngx_http_special_response.c nginx-1
  #define NGX_HTTP_OFF_5XX   (NGX_HTTP_LAST_4XX - 400 + NGX_HTTP_OFF_4XX)
  
      ngx_string(ngx_http_error_494_page), /* 494, request header too large */
-diff --color -urN nginx-1.26.2-orig/src/http/v2/ngx_http_v2_filter_module.c nginx-1.26.2/src/http/v2/ngx_http_v2_filter_module.c
---- nginx-1.26.2-orig/src/http/v2/ngx_http_v2_filter_module.c	2024-08-12 17:28:31.000000000 +0300
-+++ nginx-1.26.2/src/http/v2/ngx_http_v2_filter_module.c	2024-08-15 15:03:06.882408540 +0300
+diff --color -urN nginx-1.26.3-orig/src/http/v2/ngx_http_v2_filter_module.c nginx-1.26.3/src/http/v2/ngx_http_v2_filter_module.c
+--- nginx-1.26.3-orig/src/http/v2/ngx_http_v2_filter_module.c	2025-02-05 14:07:30.000000000 +0300
++++ nginx-1.26.3/src/http/v2/ngx_http_v2_filter_module.c	2025-04-10 17:04:22.858142864 +0300
 @@ -115,7 +115,7 @@
      ngx_http_core_srv_conf_t  *cscf;
      u_char                     addr[NGX_SOCKADDR_STRLEN];
@@ -724,9 +724,9 @@ diff --color -urN nginx-1.26.2-orig/src/http/v2/ngx_http_v2_filter_module.c ngin
          }
  
          *pos++ = ngx_http_v2_inc_indexed(NGX_HTTP_V2_SERVER_INDEX);
-diff --color -urN nginx-1.26.2-orig/src/os/unix/ngx_setproctitle.c nginx-1.26.2/src/os/unix/ngx_setproctitle.c
---- nginx-1.26.2-orig/src/os/unix/ngx_setproctitle.c	2024-08-12 17:28:31.000000000 +0300
-+++ nginx-1.26.2/src/os/unix/ngx_setproctitle.c	2024-08-15 15:03:06.889408662 +0300
+diff --color -urN nginx-1.26.3-orig/src/os/unix/ngx_setproctitle.c nginx-1.26.3/src/os/unix/ngx_setproctitle.c
+--- nginx-1.26.3-orig/src/os/unix/ngx_setproctitle.c	2025-02-05 14:07:30.000000000 +0300
++++ nginx-1.26.3/src/os/unix/ngx_setproctitle.c	2025-04-10 17:04:22.871143245 +0300
 @@ -89,7 +89,7 @@
  
      ngx_os_argv[1] = NULL;

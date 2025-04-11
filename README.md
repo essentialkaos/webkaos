@@ -1,8 +1,8 @@
 <p align="center"><a href="#readme"><img src=".github/images/card.svg"/></a></p>
 
-<br/>
-
 <p align="center"><a href="#feature-list">Feature list</a> • <a href="#installation">Installation</a> • <a href="#faq">FAQ</a> • <a href="#contributing">Contributing</a> • <a href="#license">License</a></p>
+
+<br/>
 
 `webkaos` is a web-server based on the latest version of [Nginx](http://nginx.org).
 

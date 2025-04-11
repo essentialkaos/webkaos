@@ -1,8 +1,12 @@
 <p align="center"><a href="#readme"><img src=".github/images/card.svg"/></a></p>
 
+<br/>
+
+<p align="center"><a href="#feature-list">Feature list</a> • <a href="#installation">Installation</a> • <a href="#faq">FAQ</a> • <a href="#contributing">Contributing</a> • <a href="#license">License</a></p>
+
 `webkaos` is a web-server based on the latest version of [Nginx](http://nginx.org).
 
-## Feature list
+### Feature list
 
 * Improved default SSL/TLS preferencies
 * [Dynamic TLS Records](DYNAMIC-TLS-RECORDS.md) support
@@ -84,6 +88,10 @@ rpmbuilder webkaos.spec -3 -V -I
 
 **Q:** **_Can you provide Alpine-based Docker images?_**<br/>
 **A:** No. Using RPM packages simplify their support for us. There is a complex process of building and testing packages with different tools (_[rpmbuilder](https://kaos.sh/rpmbuilder), rpmlint, [perfecto](https://kaos.sh/perfecto), [bibop](https://kaos.sh/bibop), [shellcheck](https://github.com/koalaman/shellcheck)_) and we can't provide the same level of quality without them. Also, it is tough to write and maintain Dockerfiles with a large number of build actions and stages.
+
+### Contributing
+
+Before contributing to this project please read our [Contributing Guidelines](https://github.com/essentialkaos/.github/blob/master/CONTRIBUTING.md).
 
 ### License
 

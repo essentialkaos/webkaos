@@ -14,7 +14,7 @@ LABEL org.opencontainers.image.title="WEBKAOS" \
       org.opencontainers.image.url="https://kaos.sh/webkaos" \
       org.opencontainers.image.source="https://github.com/essentialkaos/webkaos"
 
-ARG WEBKAOS_VER=1.26.3
+ARG WEBKAOS_VER=1.28.0
 ARG REPOSITORY=kaos-release
 
 # hadolint ignore=DL3031,DL3041

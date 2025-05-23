@@ -23,7 +23,7 @@
 %define service_name   %{name}
 %define service_home   %{_cachedir}/%{service_name}
 
-%define nginx_version       1.26.3
+%define nginx_version       1.28.0
 %define lua_module_ver      0.10.28
 %define lua_resty_core_ver  0.1.31
 %define lua_resty_lru_ver   0.15
@@ -35,7 +35,7 @@
 
 # 1. Open https://chromiumdash.appspot.com/releases?platform=Linux and note the latest stable version.
 # 2. Open https://chromium.googlesource.com/chromium/src/+/refs/tags/<version>/DEPS and note <boringssl_revision>.
-%define boring_commit  673e61fc215b178a90c0e67858bbf162c8158993
+%define boring_commit  a9993612faac4866bc33ca8ff37bfd0659af1c48
 
 ################################################################################
 
@@ -161,12 +161,12 @@ tar xzvf %{SOURCE60}
 mv CHANGES    NGINX-CHANGES
 mv CHANGES.ru NGINX-CHANGES.ru
 mv LICENSE    NGINX-LICENSE
-mv README     NGINX-README
+mv README.md  NGINX-README.md
 
-mv lua-nginx-module-%{lua_module_ver}/README.markdown ./LUA-MODULE-README.markdown
-mv lua-resty-core-%{lua_resty_core_ver}/README.markdown ./LUA-RESTY-CORE-README.markdown
-mv lua-resty-lrucache-%{lua_resty_lru_ver}/README.markdown ./LUA-RESTY-LRU-README.markdown
-mv headers-more-nginx-module-%{mh_module_ver}/README.markdown ./HEADERS-MORE-MODULE-README.markdown
+mv lua-nginx-module-%{lua_module_ver}/README.markdown ./LUA-MODULE-README.md
+mv lua-resty-core-%{lua_resty_core_ver}/README.markdown ./LUA-RESTY-CORE-README.md
+mv lua-resty-lrucache-%{lua_resty_lru_ver}/README.markdown ./LUA-RESTY-LRU-README.md
+mv headers-more-nginx-module-%{mh_module_ver}/README.markdown ./HEADERS-MORE-MODULE-README.md
 
 %if 0%{?rhel} <= 8
 # Use gcc and gcc-c++ from DevToolSet 11
@@ -490,8 +490,8 @@ rm -rf %{buildroot}
 
 %files
 %defattr(-,root,root)
-%doc NGINX-CHANGES NGINX-CHANGES.ru NGINX-LICENSE NGINX-README
-%doc *-README.markdown
+%doc NGINX-CHANGES NGINX-CHANGES.ru NGINX-LICENSE
+%doc *-README.md
 
 %{_sbindir}/%{name}
 
@@ -557,6 +557,10 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Fri May 16 2025 Anton Novojilov <andy@essentialkaos.com> - 1.28.0-0
+- Nginx updated to 1.28.0
+- BoringSSL updated to the latest stable version for Chromium
+
 * Thu Apr 10 2025 Anton Novojilov <andy@essentialkaos.com> - 1.26.3-0
 - Nginx updated to 1.26.3 with fixes for CVE-2025-23419
 - More Headers module updated to 0.38

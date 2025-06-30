@@ -42,7 +42,7 @@
 Summary:        Superb high performance web server
 Name:           webkaos
 Version:        %{nginx_version}
-Release:        0%{?dist}
+Release:        1%{?dist}
 License:        2-clause BSD-like license
 Group:          System Environment/Daemons
 URL:            https://kaos.sh/webkaos
@@ -87,7 +87,7 @@ Patch3:         boringssl.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
-BuildRequires:  make perl golang cmake
+BuildRequires:  make perl golang cmake GeoIP-devel
 %if 0%{?rhel} <= 8
 BuildRequires:  gcc-toolset-11-gcc gcc-toolset-11-gcc-c++ gcc-toolset-11-binutils
 %else
@@ -95,7 +95,7 @@ BuildRequires:  gcc-c++
 %endif
 
 Requires:       initscripts >= 8.36 kaosv >= 2.17
-Requires:       gd libXpm libxslt
+Requires:       gd libXpm libxslt GeoIP
 
 Requires:       systemd
 Requires(pre):  shadow-utils
@@ -238,6 +238,7 @@ cp boringssl/build/crypto/libcrypto.a boringssl/build/ssl/libssl.a boringssl/.op
     --with-http_secure_link_module \
     --with-http_stub_status_module \
     --with-http_auth_request_module \
+    --with-http_geoip_module \
     --with-stream \
     --with-stream_ssl_module \
     --with-stream_ssl_preread_module \
@@ -297,6 +298,7 @@ mv %{_builddir}/nginx-%{nginx_version}/objs/nginx \
     --with-http_secure_link_module \
     --with-http_stub_status_module \
     --with-http_auth_request_module \
+    --with-http_geoip_module \
     --with-stream \
     --with-stream_ssl_module \
     --with-stream_ssl_preread_module \
@@ -557,6 +559,9 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Thu Jun 26 2025 Anton Novojilov <andy@essentialkaos.com> - 1.28.0-1
+- Added ngx_http_geoip_module module build
+
 * Fri May 16 2025 Anton Novojilov <andy@essentialkaos.com> - 1.28.0-0
 - Nginx updated to 1.28.0
 - BoringSSL updated to the latest stable version for Chromium

@@ -38,6 +38,27 @@ diff --color -urN nginx-1.28.1-orig/src/core/nginx.c nginx-1.28.1/src/core/nginx
                            NGX_LINEFEED NGX_LINEFEED
              "Options:" NGX_LINEFEED
              "  -?,-h         : this help" NGX_LINEFEED
+diff --color -urN nginx-1.28.1-orig/src/core/nginx.h nginx-1.28.1/src/core/nginx.h
+--- nginx-1.28.1-orig/src/core/nginx.h	2025-12-23 21:40:33.000000000 +0300
++++ nginx-1.28.1/src/core/nginx.h	2026-01-14 17:09:50.000000000 +0300
+@@ -11,7 +11,7 @@
+ 
+ #define nginx_version      1028001
+ #define NGINX_VERSION      "1.28.1"
+-#define NGINX_VER          "nginx/" NGINX_VERSION
++#define NGINX_VER          "webkaos/" NGINX_VERSION
+ 
+ #ifdef NGX_BUILD
+ #define NGINX_VER_BUILD    NGINX_VER " (" NGX_BUILD ")"
+@@ -19,7 +19,7 @@
+ #define NGINX_VER_BUILD    NGINX_VER
+ #endif
+ 
+-#define NGINX_VAR          "NGINX"
++#define NGINX_VAR          "WEBKAOS"
+ #define NGX_OLDPID_EXT     ".oldbin"
+ 
+ 
 diff --color -urN nginx-1.28.1-orig/src/core/ngx_log.c nginx-1.28.1/src/core/ngx_log.c
 --- nginx-1.28.1-orig/src/core/ngx_log.c	2025-12-23 21:40:33.000000000 +0300
 +++ nginx-1.28.1/src/core/ngx_log.c	2026-01-14 14:34:20.668221970 +0300

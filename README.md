@@ -21,7 +21,7 @@
 
 ### Installation
 
-#### From ESSENTIAL KAOS Public repository (EL 8/9)
+#### From ESSENTIAL KAOS Public repository (EL 8/9/10)
 
 ```bash
 sudo dnf install -y https://pkgs.kaos.st/kaos-repo-latest.el$(grep 'CPE_NAME' /etc/os-release | tr -d '"' | cut -d':' -f5).noarch.rpm
@@ -38,21 +38,25 @@ Official images:
 - `ghcr.io/essentialkaos/webkaos:ol8-unprivileged`
 - `ghcr.io/essentialkaos/webkaos:ol9`
 - `ghcr.io/essentialkaos/webkaos:ol9-unprivileged`
+- `ghcr.io/essentialkaos/webkaos:ol10`
+- `ghcr.io/essentialkaos/webkaos:ol10-unprivileged`
 - `essentialkaos/webkaos:ol8`
 - `essentialkaos/webkaos:ol8-unprivileged`
 - `essentialkaos/webkaos:ol9`
 - `essentialkaos/webkaos:ol9-unprivileged`
+- `essentialkaos/webkaos:ol10`
+- `essentialkaos/webkaos:ol10-unprivileged`
 
 Usage examples:
 
 ```bash
-# Image on OracleLinux 8
-docker run --name my-webkaos -v /some/content:/usr/share/webkaos/html:ro -p 8080:80 -d essentialkaos/webkaos:ol8
+# Image on OracleLinux 9
+docker run --name my-webkaos -v /some/content:/usr/share/webkaos/html:ro -p 8080:80 -d essentialkaos/webkaos:ol9
 ```
 
 ```bash
-# Unprivileged image on OracleLinux 8
-docker run --name my-webkaos -v /some/content:/usr/share/webkaos/html:ro -p 8080:8080 -d essentialkaos/webkaos:ol8-unprivileged
+# Unprivileged image on OracleLinux 9
+docker run --name my-webkaos -v /some/content:/usr/share/webkaos/html:ro -p 8080:8080 -d essentialkaos/webkaos:ol9-unprivileged
 ```
 
 Useful environment variables:
@@ -69,7 +73,7 @@ Useful environment variables:
 git clone https://kaos.sh/webkaos
 cd webkaos/
 rpmbuilder webkaos.spec -dl SOURCES
-rpmbuilder webkaos.spec -3 -V -I
+rpmbuilder webkaos.spec -V -I
 ```
 
 ### FAQ

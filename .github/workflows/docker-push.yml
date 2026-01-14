@@ -28,11 +28,11 @@ jobs:
 
     strategy:
       matrix:
-        image: [ 'ol8', 'ol8-unprivileged', 'ol9', 'ol9-unprivileged' ]
+        image: [ 'ol8', 'ol8-unprivileged', 'ol9', 'ol9-unprivileged', 'ol10', 'ol10-unprivileged' ]
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
 

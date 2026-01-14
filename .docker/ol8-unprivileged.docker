@@ -14,7 +14,7 @@ LABEL org.opencontainers.image.title="WEBKAOS (Unprivileged)" \
       org.opencontainers.image.url="https://kaos.sh/webkaos" \
       org.opencontainers.image.source="https://github.com/essentialkaos/webkaos"
 
-ARG WEBKAOS_VER=1.28.0
+ARG WEBKAOS_VER=1.28.1
 ARG REPOSITORY=kaos-release
 
 ARG UID=1001

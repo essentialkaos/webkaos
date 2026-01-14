@@ -2,12 +2,12 @@
 
 ARG REGISTRY="docker.io"
 
-## WEBKAOS IMAGE ###############################################################
+## WEBKAOS UNPRIVILEGED IMAGE ##################################################
 
-FROM ${REGISTRY}/essentialkaos/oraclelinux:8-slim
+FROM ${REGISTRY}/essentialkaos/oraclelinux:10-slim
 
-LABEL org.opencontainers.image.title="WEBKAOS" \
-      org.opencontainers.image.description="WEBKAOS Image on OracleLinux 8" \
+LABEL org.opencontainers.image.title="WEBKAOS (Unprivileged)" \
+      org.opencontainers.image.description="WEBKAOS Image on OracleLinux 10" \
       org.opencontainers.image.vendor="ESSENTIAL KAOS" \
       org.opencontainers.image.authors="Anton Novojilov" \
       org.opencontainers.image.licenses="Apache-2.0" \
@@ -17,23 +17,32 @@ LABEL org.opencontainers.image.title="WEBKAOS" \
 ARG WEBKAOS_VER=1.28.1
 ARG REPOSITORY=kaos-release
 
+ARG UID=1001
+ARG GID=1001
+
 # hadolint ignore=DL3031,DL3041
-RUN rpm -ivh https://pkgs.kaos.st/kaos-repo-latest.el8.noarch.rpm && \
+RUN rpm -ivh https://pkgs.kaos.st/kaos-repo-latest.el10.noarch.rpm && \
     microdnf -y install --enablerepo=${REPOSITORY} webkaos-${WEBKAOS_VER} gettext && \
     microdnf clean all && \
     rm -rf /var/cache/dnf /var/log/dnf.* && \
     rm -rf /tmp/* && \
     rm -rf /var/tmp/* && \
+    usermod -u $UID webkaos && \
+    groupmod -g $GID webkaos && \
+    mkdir /var/run/webkaos && \
+    chown -R $UID:$GID /etc/webkaos /var/run/webkaos /var/log/webkaos && \
     ln -sf /dev/stdout /var/log/webkaos/access.log && \
     ln -sf /dev/stderr /var/log/webkaos/error.log && \
     mkdir /etc/webkaos/templates
 
-COPY SOURCES/webkaos-docker.conf /etc/webkaos/webkaos.conf
+COPY --chown=$UID:$GID SOURCES/webkaos-docker-unprivileged.conf /etc/webkaos/webkaos.conf
 COPY .docker/entrypoint.sh /
 
 ENTRYPOINT ["/entrypoint.sh"]
 
-EXPOSE 80
+EXPOSE 8080
+
+USER $UID
 
 STOPSIGNAL SIGTERM
 

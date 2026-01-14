@@ -23,26 +23,26 @@
 %define service_name   %{name}
 %define service_home   %{_cachedir}/%{service_name}
 
-%define nginx_version       1.28.0
-%define lua_module_ver      0.10.28
-%define lua_resty_core_ver  0.1.31
+%define nginx_version       1.28.1
+%define lua_module_ver      0.10.29
+%define lua_resty_core_ver  0.1.32
 %define lua_resty_lru_ver   0.15
-%define mh_module_ver       0.38
-%define pcre_ver            8.45
+%define mh_module_ver       0.39
+%define pcre_ver            10.47
 %define zlib_ver            1.3.1
-%define luajit_ver          2.1-20250117
+%define luajit_ver          2.1-20250826
 %define luajit_raw_ver      2.1
 
 # 1. Open https://chromiumdash.appspot.com/releases?platform=Linux and note the latest stable version.
 # 2. Open https://chromium.googlesource.com/chromium/src/+/refs/tags/<version>/DEPS and note <boringssl_revision>.
-%define boring_commit  a9993612faac4866bc33ca8ff37bfd0659af1c48
+%define boring_commit  58da9b0d721fd807279f4e3898741c92cf43bdbd
 
 ################################################################################
 
 Summary:        Superb high performance web server
 Name:           webkaos
 Version:        %{nginx_version}
-Release:        1%{?dist}
+Release:        0%{?dist}
 License:        2-clause BSD-like license
 Group:          System Environment/Daemons
 URL:            https://kaos.sh/webkaos
@@ -70,7 +70,7 @@ Source32:       default.crt
 Source50:       https://github.com/openresty/lua-nginx-module/archive/v%{lua_module_ver}.tar.gz
 Source51:       https://boringssl.googlesource.com/boringssl/+archive/%{boring_commit}.tar.gz
 Source52:       https://github.com/openresty/headers-more-nginx-module/archive/v%{mh_module_ver}.tar.gz
-Source53:       https://downloads.sourceforge.net/project/pcre/pcre/%{pcre_ver}/pcre-%{pcre_ver}.tar.gz
+Source53:       https://github.com/PCRE2Project/pcre2/releases/download/pcre2-%{pcre_ver}/pcre2-%{pcre_ver}.tar.gz
 Source54:       https://zlib.net/zlib-%{zlib_ver}.tar.gz
 Source55:       https://github.com/openresty/luajit2/archive/v%{luajit_ver}.tar.gz
 Source59:       https://github.com/openresty/lua-resty-core/archive/v%{lua_resty_core_ver}.tar.gz
@@ -92,6 +92,10 @@ BuildRequires:  make perl golang cmake GeoIP-devel
 BuildRequires:  gcc-toolset-11-gcc gcc-toolset-11-gcc-c++ gcc-toolset-11-binutils
 %else
 BuildRequires:  gcc-c++
+%endif
+
+%if 0%{?rhel} == 10
+BuildRequires:  zlib-ng-compat-devel
 %endif
 
 Requires:       initscripts >= 8.36 kaosv >= 2.17
@@ -191,7 +195,10 @@ export LUAJIT_INC="$LUAJIT2_DIR/build%{_datadir}/%{name}/luajit/include/luajit-2
 mkdir boringssl/build
 
 pushd boringssl/build &> /dev/null
-  cmake3 -DCMAKE_EXE_LINKER_FLAGS="-Wl,--no-as-needed -ldl -lstdc++" ../
+  cmake3 -DBUILD_TESTING=OFF \
+         -DCMAKE_POSITION_INDEPENDENT_CODE=ON \
+         -DCMAKE_EXE_LINKER_FLAGS="-Wl,--no-as-needed -ldl -lstdc++" \
+         ../
   %{__make} %{?_smp_mflags}
 popd
 
@@ -201,7 +208,7 @@ pushd boringssl/.openssl &> /dev/null
   ln -s ../include
 popd
 
-cp boringssl/build/crypto/libcrypto.a boringssl/build/ssl/libssl.a boringssl/.openssl/lib
+cp boringssl/build/libcrypto.a boringssl/build/libssl.a boringssl/.openssl/lib
 
 ################################################################################
 
@@ -242,14 +249,16 @@ cp boringssl/build/crypto/libcrypto.a boringssl/build/ssl/libssl.a boringssl/.op
     --with-stream \
     --with-stream_ssl_module \
     --with-stream_ssl_preread_module \
+    --with-stream_geoip_module \
     --with-mail \
     --with-mail_ssl_module \
     --with-file-aio \
-    --with-ipv6 \
     --with-debug \
+%if 0%{?rhel} != 10
     --with-zlib=zlib-%{zlib_ver} \
+%endif
     --with-pcre-jit \
-    --with-pcre=pcre-%{pcre_ver} \
+    --with-pcre=pcre2-%{pcre_ver} \
     --with-openssl=boringssl \
     --add-module=lua-nginx-module-%{lua_module_ver} \
     --add-module=headers-more-nginx-module-%{mh_module_ver} \
@@ -302,13 +311,15 @@ mv %{_builddir}/nginx-%{nginx_version}/objs/nginx \
     --with-stream \
     --with-stream_ssl_module \
     --with-stream_ssl_preread_module \
+    --with-stream_geoip_module \
     --with-mail \
     --with-mail_ssl_module \
     --with-file-aio \
-    --with-ipv6 \
+%if 0%{?rhel} != 10
     --with-zlib=zlib-%{zlib_ver} \
+%endif
     --with-pcre-jit \
-    --with-pcre=pcre-%{pcre_ver} \
+    --with-pcre=pcre2-%{pcre_ver} \
     --with-openssl=boringssl \
     --add-module=lua-nginx-module-%{lua_module_ver} \
     --add-module=headers-more-nginx-module-%{mh_module_ver} \
@@ -559,6 +570,16 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Wed Jan 14 2026 Anton Novojilov <andy@essentialkaos.com> - 1.28.1-0
+- Nginx updated to 1.28.1 with fixes for CVE-2025-53859
+- More Headers module updated to 0.39
+- lua-nginx-module updated to 0.10.29
+- lua-resty-core updated to 0.1.32
+- LuaJIT updated to 2.1-20250826
+- Added stream_geoip_module module build
+- Migrated to PCRE 2
+- BoringSSL updated to the latest stable version for Chromium
+
 * Thu Jun 26 2025 Anton Novojilov <andy@essentialkaos.com> - 1.28.0-1
 - Added ngx_http_geoip_module module build
 

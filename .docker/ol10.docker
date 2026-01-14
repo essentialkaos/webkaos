@@ -4,10 +4,10 @@ ARG REGISTRY="docker.io"
 
 ## WEBKAOS IMAGE ###############################################################
 
-FROM ${REGISTRY}/essentialkaos/oraclelinux:8-slim
+FROM ${REGISTRY}/essentialkaos/oraclelinux:10-slim
 
 LABEL org.opencontainers.image.title="WEBKAOS" \
-      org.opencontainers.image.description="WEBKAOS Image on OracleLinux 8" \
+      org.opencontainers.image.description="WEBKAOS Image on OracleLinux 10" \
       org.opencontainers.image.vendor="ESSENTIAL KAOS" \
       org.opencontainers.image.authors="Anton Novojilov" \
       org.opencontainers.image.licenses="Apache-2.0" \
@@ -18,7 +18,7 @@ ARG WEBKAOS_VER=1.28.1
 ARG REPOSITORY=kaos-release
 
 # hadolint ignore=DL3031,DL3041
-RUN rpm -ivh https://pkgs.kaos.st/kaos-repo-latest.el8.noarch.rpm && \
+RUN rpm -ivh https://pkgs.kaos.st/kaos-repo-latest.el10.noarch.rpm && \
     microdnf -y install --enablerepo=${REPOSITORY} webkaos-${WEBKAOS_VER} gettext && \
     microdnf clean all && \
     rm -rf /var/cache/dnf /var/log/dnf.* && \

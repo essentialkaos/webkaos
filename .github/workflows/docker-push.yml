@@ -19,7 +19,7 @@ permissions:
 
 env:
   IMAGE_NAME: ${{ github.repository }}
-  LATEST_IMAGE: ol8
+  LATEST_IMAGE: ol9
 
 jobs:
   Docker:

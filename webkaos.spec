@@ -23,7 +23,7 @@
 %define service_name   %{name}
 %define service_home   %{_cachedir}/%{service_name}
 
-%define nginx_version       1.28.1
+%define nginx_version       1.28.2
 %define lua_module_ver      0.10.29
 %define lua_resty_core_ver  0.1.32
 %define lua_resty_lru_ver   0.15
@@ -570,6 +570,9 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Thu Feb 05 2026 Anton Novojilov <andy@essentialkaos.com> - 1.28.2-0
+- Nginx updated to 1.28.1 with fixes for CVE-2026-1642
+
 * Wed Jan 14 2026 Anton Novojilov <andy@essentialkaos.com> - 1.28.1-0
 - Nginx updated to 1.28.1 with fixes for CVE-2025-53859
 - More Headers module updated to 0.39

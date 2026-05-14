@@ -23,19 +23,19 @@
 %define service_name   %{name}
 %define service_home   %{_cachedir}/%{service_name}
 
-%define nginx_version       1.28.2
+%define nginx_version       1.28.3
 %define lua_module_ver      0.10.29
 %define lua_resty_core_ver  0.1.32
 %define lua_resty_lru_ver   0.15
 %define mh_module_ver       0.39
 %define pcre_ver            10.47
-%define zlib_ver            1.3.1
+%define zlib_ver            1.3.2
 %define luajit_ver          2.1-20250826
 %define luajit_raw_ver      2.1
 
 # 1. Open https://chromiumdash.appspot.com/releases?platform=Linux and note the latest stable version.
 # 2. Open https://chromium.googlesource.com/chromium/src/+/refs/tags/<version>/DEPS and note <boringssl_revision>.
-%define boring_commit  58da9b0d721fd807279f4e3898741c92cf43bdbd
+%define boring_commit  d8be2b4a71155bf82da092ef543176351eeb59ff
 
 ################################################################################
 
@@ -570,8 +570,13 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Thu Feb 05 2026 Anton Novojilov <andy@essentialkaos.com> - 1.28.3-0
+- Nginx updated to 1.28.3
+- zlib updated to 1.3.2
+- BoringSSL updated to the latest stable version for Chromium
+
 * Thu Feb 05 2026 Anton Novojilov <andy@essentialkaos.com> - 1.28.2-0
-- Nginx updated to 1.28.1 with fixes for CVE-2026-1642
+- Nginx updated to 1.28.2 with fixes for CVE-2026-1642
 
 * Wed Jan 14 2026 Anton Novojilov <andy@essentialkaos.com> - 1.28.1-0
 - Nginx updated to 1.28.1 with fixes for CVE-2025-53859

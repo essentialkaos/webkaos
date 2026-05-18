@@ -42,7 +42,7 @@
 Summary:        Superb high performance web server
 Name:           webkaos
 Version:        %{nginx_version}
-Release:        0%{?dist}
+Release:        1%{?dist}
 License:        2-clause BSD-like license
 Group:          System Environment/Daemons
 URL:            https://kaos.sh/webkaos
@@ -84,6 +84,12 @@ Patch1:         mime.patch
 Patch2:         %{name}-dynamic-tls-records.patch
                 # https://github.com/ajhaydock/BoringNginx/blob/master/patches
 Patch3:         boringssl.patch
+
+Source10:       CVE-2026-40460.quic_migration.patch
+Source11:       CVE-2026-40701.ssl_ocsp.patch
+Source12:       CVE-2026-42934.charset_filter.patch
+Source13:       CVE-2026-42945.rewrite_script.patch
+Source14:       CVE-2026-42946.scgi_uwsgi_status.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -570,6 +576,13 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Mon May 18 2026 Anton Novojilov <andy@essentialkaos.com> - 1.28.3-1
+- Patched CVE-2026-40460
+- Patched CVE-2026-40701
+- Patched CVE-2026-42934
+- Patched CVE-2026-42945
+- Patched CVE-2026-42946
+
 * Thu Feb 05 2026 Anton Novojilov <andy@essentialkaos.com> - 1.28.3-0
 - Nginx updated to 1.28.3
 - zlib updated to 1.3.2

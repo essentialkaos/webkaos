@@ -1,6 +1,6 @@
-diff --color -urN nginx-1.28.3-orig/auto/lib/pcre/make nginx-1.28.3/auto/lib/pcre/make
---- nginx-1.28.3-orig/auto/lib/pcre/make	2026-03-24 21:33:23.000000000 +0300
-+++ nginx-1.28.3/auto/lib/pcre/make	2026-05-14 10:04:01.605515018 +0300
+diff --color -urN nginx-1.30.4-orig/auto/lib/pcre/make nginx-1.30.4/auto/lib/pcre/make
+--- nginx-1.30.4-orig/auto/lib/pcre/make	2026-07-15 20:20:38.000000000 +0300
++++ nginx-1.30.4/auto/lib/pcre/make	2026-08-31 13:43:26.641375924 +0300
 @@ -91,7 +91,7 @@
  $PCRE/Makefile:	$NGX_MAKEFILE
  	cd $PCRE \\
@@ -19,9 +19,9 @@ diff --color -urN nginx-1.28.3-orig/auto/lib/pcre/make nginx-1.28.3/auto/lib/pcr
  	./configure --disable-shared $PCRE_CONF_OPT
  
  $PCRE/.libs/libpcre.a:	$PCRE/Makefile
-diff --color -urN nginx-1.28.3-orig/src/core/nginx.c nginx-1.28.3/src/core/nginx.c
---- nginx-1.28.3-orig/src/core/nginx.c	2026-03-24 21:33:23.000000000 +0300
-+++ nginx-1.28.3/src/core/nginx.c	2026-05-14 10:04:01.611514979 +0300
+diff --color -urN nginx-1.30.4-orig/src/core/nginx.c nginx-1.30.4/src/core/nginx.c
+--- nginx-1.30.4-orig/src/core/nginx.c	2026-07-15 20:20:38.000000000 +0300
++++ nginx-1.30.4/src/core/nginx.c	2026-08-31 13:43:26.649376173 +0300
 @@ -391,12 +391,12 @@
  static void
  ngx_show_version_info(void)
@@ -38,13 +38,13 @@ diff --color -urN nginx-1.28.3-orig/src/core/nginx.c nginx-1.28.3/src/core/nginx
                            NGX_LINEFEED NGX_LINEFEED
              "Options:" NGX_LINEFEED
              "  -?,-h         : this help" NGX_LINEFEED
-diff --color -urN nginx-1.28.3-orig/src/core/nginx.h nginx-1.28.3/src/core/nginx.h
---- nginx-1.28.3-orig/src/core/nginx.h	2026-03-24 21:33:23.000000000 +0300
-+++ nginx-1.28.3/src/core/nginx.h	2026-05-14 10:04:20.000000000 +0300
+diff --color -urN nginx-1.30.4-orig/src/core/nginx.h nginx-1.30.4/src/core/nginx.h
+--- nginx-1.30.4-orig/src/core/nginx.h	2026-07-15 20:20:38.000000000 +0300
++++ nginx-1.30.4/src/core/nginx.h	2026-09-01 18:05:48.000000000 +0300
 @@ -11,7 +11,7 @@
  
- #define nginx_version      1028003
- #define NGINX_VERSION      "1.28.3"
+ #define nginx_version      1030004
+ #define NGINX_VERSION      "1.30.4"
 -#define NGINX_VER          "nginx/" NGINX_VERSION
 +#define NGINX_VER          "webkaos/" NGINX_VERSION
  
@@ -59,9 +59,9 @@ diff --color -urN nginx-1.28.3-orig/src/core/nginx.h nginx-1.28.3/src/core/nginx
  #define NGX_OLDPID_EXT     ".oldbin"
  
  
-diff --color -urN nginx-1.28.3-orig/src/core/ngx_log.c nginx-1.28.3/src/core/ngx_log.c
---- nginx-1.28.3-orig/src/core/ngx_log.c	2026-03-24 21:33:23.000000000 +0300
-+++ nginx-1.28.3/src/core/ngx_log.c	2026-05-14 10:04:01.622514908 +0300
+diff --color -urN nginx-1.30.4-orig/src/core/ngx_log.c nginx-1.30.4/src/core/ngx_log.c
+--- nginx-1.30.4-orig/src/core/ngx_log.c	2026-07-15 20:20:38.000000000 +0300
++++ nginx-1.30.4/src/core/ngx_log.c	2026-08-31 13:43:26.661376545 +0300
 @@ -202,9 +202,9 @@
          return;
      }
@@ -92,9 +92,9 @@ diff --color -urN nginx-1.28.3-orig/src/core/ngx_log.c nginx-1.28.3/src/core/ngx
          return NGX_CONF_ERROR;
  #endif
  
-diff --color -urN nginx-1.28.3-orig/src/http/modules/ngx_http_autoindex_module.c nginx-1.28.3/src/http/modules/ngx_http_autoindex_module.c
---- nginx-1.28.3-orig/src/http/modules/ngx_http_autoindex_module.c	2026-03-24 21:33:23.000000000 +0300
-+++ nginx-1.28.3/src/http/modules/ngx_http_autoindex_module.c	2026-05-14 10:04:01.628514869 +0300
+diff --color -urN nginx-1.30.4-orig/src/http/modules/ngx_http_autoindex_module.c nginx-1.30.4/src/http/modules/ngx_http_autoindex_module.c
+--- nginx-1.30.4-orig/src/http/modules/ngx_http_autoindex_module.c	2026-07-15 20:20:38.000000000 +0300
++++ nginx-1.30.4/src/http/modules/ngx_http_autoindex_module.c	2026-08-31 13:43:26.669376794 +0300
 @@ -449,9 +449,11 @@
      ;
  
@@ -170,10 +170,10 @@ diff --color -urN nginx-1.28.3-orig/src/http/modules/ngx_http_autoindex_module.c
                                tm.ngx_tm_mday,
                                months[tm.ngx_tm_mon - 1],
                                tm.ngx_tm_year,
-diff --color -urN nginx-1.28.3-orig/src/http/ngx_http_header_filter_module.c nginx-1.28.3/src/http/ngx_http_header_filter_module.c
---- nginx-1.28.3-orig/src/http/ngx_http_header_filter_module.c	2026-03-24 21:33:23.000000000 +0300
-+++ nginx-1.28.3/src/http/ngx_http_header_filter_module.c	2026-05-14 10:04:01.635514824 +0300
-@@ -46,7 +46,7 @@
+diff --color -urN nginx-1.30.4-orig/src/http/ngx_http_header_filter_module.c nginx-1.30.4/src/http/ngx_http_header_filter_module.c
+--- nginx-1.30.4-orig/src/http/ngx_http_header_filter_module.c	2026-07-15 20:20:38.000000000 +0300
++++ nginx-1.30.4/src/http/ngx_http_header_filter_module.c	2026-09-01 18:22:31.000000000 +0300
+@@ -47,7 +47,7 @@
  };
  
  
@@ -182,7 +182,7 @@ diff --color -urN nginx-1.28.3-orig/src/http/ngx_http_header_filter_module.c ngi
  static u_char ngx_http_server_full_string[] = "Server: " NGINX_VER CRLF;
  static u_char ngx_http_server_build_string[] = "Server: " NGINX_VER_BUILD CRLF;
  
-@@ -98,7 +98,7 @@
+@@ -102,7 +102,7 @@
      ngx_string("415 Unsupported Media Type"),
      ngx_string("416 Requested Range Not Satisfiable"),
      ngx_null_string,  /* "417 Expectation Failed" */
@@ -191,7 +191,7 @@ diff --color -urN nginx-1.28.3-orig/src/http/ngx_http_header_filter_module.c ngi
      ngx_null_string,  /* "419 unused" */
      ngx_null_string,  /* "420 unused" */
      ngx_string("421 Misdirected Request"),
-@@ -110,8 +110,30 @@
+@@ -114,8 +114,30 @@
      ngx_null_string,  /* "427 unused" */
      ngx_null_string,  /* "428 Precondition Required" */
      ngx_string("429 Too Many Requests"),
@@ -223,9 +223,9 @@ diff --color -urN nginx-1.28.3-orig/src/http/ngx_http_header_filter_module.c ngi
  #define NGX_HTTP_OFF_5XX   (NGX_HTTP_LAST_4XX - 400 + NGX_HTTP_OFF_4XX)
  
      ngx_string("500 Internal Server Error"),
-diff --color -urN nginx-1.28.3-orig/src/http/ngx_http_special_response.c nginx-1.28.3/src/http/ngx_http_special_response.c
---- nginx-1.28.3-orig/src/http/ngx_http_special_response.c	2026-03-24 21:33:23.000000000 +0300
-+++ nginx-1.28.3/src/http/ngx_http_special_response.c	2026-05-14 10:04:01.642514778 +0300
+diff --color -urN nginx-1.30.4-orig/src/http/ngx_http_special_response.c nginx-1.30.4/src/http/ngx_http_special_response.c
+--- nginx-1.30.4-orig/src/http/ngx_http_special_response.c	2026-07-15 20:20:38.000000000 +0300
++++ nginx-1.30.4/src/http/ngx_http_special_response.c	2026-09-01 23:40:48.000000000 +0300
 @@ -19,21 +19,21 @@
  
  
@@ -251,7 +251,7 @@ diff --color -urN nginx-1.28.3-orig/src/http/ngx_http_special_response.c nginx-1
  "</body>" CRLF
  "</html>" CRLF
  ;
-@@ -59,281 +59,329 @@
+@@ -59,289 +59,338 @@
  
  static char ngx_http_error_301_page[] =
  "<html>" CRLF
@@ -382,6 +382,17 @@ diff --color -urN nginx-1.28.3-orig/src/http/ngx_http_special_response.c nginx-1
  "<body>" CRLF
 -"<center><h1>406 Not Acceptable</h1></center>" CRLF
 +"<div><h1>406 Not Acceptable</h1>" CRLF
+ ;
+ 
+ 
+ static char ngx_http_error_407_page[] =
+ "<html>" CRLF
+-"<head><title>407 Proxy Authentication Required</title></head>" CRLF
++"<head><title>407 Proxy Authentication Required</title>" CRLF
++"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}@media(prefers-color-scheme:dark){html,body{background-color:#222;color:#555}h1,h3{color:#EEE}}</style></head>" CRLF
+ "<body>" CRLF
+-"<center><h1>407 Proxy Authentication Required</h1></center>" CRLF
++"<div><h1>407 Proxy Authentication Required</h1>" CRLF
  ;
  
  
@@ -528,13 +539,13 @@ diff --color -urN nginx-1.28.3-orig/src/http/ngx_http_special_response.c nginx-1
  "<html>" CRLF
 -"<head><title>400 Request Header Or Cookie Too Large</title></head>"
 -CRLF
-+"<head><title>400 Bad Request</title>" CRLF
++"<head><title>400 Request Header Or Cookie Too Large</title>" CRLF
 +"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}@media(prefers-color-scheme:dark){html,body{background-color:#222;color:#555}h1,h3{color:#EEE}}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>400 Bad Request</h1></center>" CRLF
 -"<center>Request Header Or Cookie Too Large</center>" CRLF
 +"<div><h1>400 Bad Request</h1>" CRLF
-+"<h3>Request header or cookie too large</h3>" CRLF
++"<h3>Request Header Or Cookie Too Large</h3>" CRLF
  ;
  
  
@@ -542,7 +553,7 @@ diff --color -urN nginx-1.28.3-orig/src/http/ngx_http_special_response.c nginx-1
  "<html>" CRLF
 -"<head><title>400 The SSL certificate error</title></head>"
 -CRLF
-+"<head><title>400 Bad Request</title>" CRLF
++"<head><title>400 The SSL certificate error</title>" CRLF
 +"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}@media(prefers-color-scheme:dark){html,body{background-color:#222;color:#555}h1,h3{color:#EEE}}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>400 Bad Request</h1></center>" CRLF
@@ -556,7 +567,7 @@ diff --color -urN nginx-1.28.3-orig/src/http/ngx_http_special_response.c nginx-1
  "<html>" CRLF
 -"<head><title>400 No required SSL certificate was sent</title></head>"
 -CRLF
-+"<head><title>400 Bad Request</title>" CRLF
++"<head><title>400 No required SSL certificate was sent</title>" CRLF
 +"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}@media(prefers-color-scheme:dark){html,body{background-color:#222;color:#555}h1,h3{color:#EEE}}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>400 Bad Request</h1></center>" CRLF
@@ -570,7 +581,7 @@ diff --color -urN nginx-1.28.3-orig/src/http/ngx_http_special_response.c nginx-1
  "<html>" CRLF
 -"<head><title>400 The plain HTTP request was sent to HTTPS port</title></head>"
 -CRLF
-+"<head><title>400 Bad Request</title>" CRLF
++"<head><title>400 The plain HTTP request was sent to HTTPS port</title>" CRLF
 +"<style>html,body{background-color:#EEE;color:#AAA;font:200 1em/1em -apple-system,BlinkMacSystemFont,'Segoe UI Light','Open Sans Light','Open Sans','Segoe UI','Helvetica Neue',Helvetica,Trebuchet,sans-serif;height:100%;margin:0;text-align:center}body:after{content:'';display:inline-block;height:100%;vertical-align:middle}div{display:inline-block}h1,h3{color:#333;font-weight:200}@media(prefers-color-scheme:dark){html,body{background-color:#222;color:#555}h1,h3{color:#EEE}}</style></head>" CRLF
  "<body>" CRLF
 -"<center><h1>400 Bad Request</h1></center>" CRLF
@@ -657,7 +668,7 @@ diff --color -urN nginx-1.28.3-orig/src/http/ngx_http_special_response.c nginx-1
  ;
  
  
-@@ -375,7 +423,7 @@
+@@ -383,7 +432,7 @@
      ngx_string(ngx_http_error_415_page),
      ngx_string(ngx_http_error_416_page),
      ngx_null_string,                     /* 417 */
@@ -666,7 +677,7 @@ diff --color -urN nginx-1.28.3-orig/src/http/ngx_http_special_response.c nginx-1
      ngx_null_string,                     /* 419 */
      ngx_null_string,                     /* 420 */
      ngx_string(ngx_http_error_421_page),
-@@ -387,8 +435,30 @@
+@@ -395,8 +444,30 @@
      ngx_null_string,                     /* 427 */
      ngx_null_string,                     /* 428 */
      ngx_string(ngx_http_error_429_page),
@@ -698,10 +709,10 @@ diff --color -urN nginx-1.28.3-orig/src/http/ngx_http_special_response.c nginx-1
  #define NGX_HTTP_OFF_5XX   (NGX_HTTP_LAST_4XX - 400 + NGX_HTTP_OFF_4XX)
  
      ngx_string(ngx_http_error_494_page), /* 494, request header too large */
-diff --color -urN nginx-1.28.3-orig/src/http/v2/ngx_http_v2_filter_module.c nginx-1.28.3/src/http/v2/ngx_http_v2_filter_module.c
---- nginx-1.28.3-orig/src/http/v2/ngx_http_v2_filter_module.c	2026-03-24 21:33:23.000000000 +0300
-+++ nginx-1.28.3/src/http/v2/ngx_http_v2_filter_module.c	2026-05-14 10:04:01.649514733 +0300
-@@ -115,7 +115,7 @@
+diff --color -urN nginx-1.30.4-orig/src/http/v2/ngx_http_v2_filter_module.c nginx-1.30.4/src/http/v2/ngx_http_v2_filter_module.c
+--- nginx-1.30.4-orig/src/http/v2/ngx_http_v2_filter_module.c	2026-07-15 20:20:38.000000000 +0300
++++ nginx-1.30.4/src/http/v2/ngx_http_v2_filter_module.c	2026-09-01 18:19:32.000000000 +0300
+@@ -120,7 +120,7 @@
      ngx_http_core_srv_conf_t  *cscf;
      u_char                     addr[NGX_SOCKADDR_STRLEN];
  
@@ -710,7 +721,7 @@ diff --color -urN nginx-1.28.3-orig/src/http/v2/ngx_http_v2_filter_module.c ngin
  #if (NGX_HTTP_GZIP)
      static const u_char accept_encoding[12] = {
          0x8b, 0x84, 0x84, 0x2d, 0x69, 0x5b, 0x05, 0x44, 0x3c, 0x86, 0xaa, 0x6f
-@@ -436,7 +436,7 @@
+@@ -441,7 +441,7 @@
  
          } else {
              ngx_log_debug0(NGX_LOG_DEBUG_HTTP, fc->log, 0,
@@ -719,10 +730,10 @@ diff --color -urN nginx-1.28.3-orig/src/http/v2/ngx_http_v2_filter_module.c ngin
          }
  
          *pos++ = ngx_http_v2_inc_indexed(NGX_HTTP_V2_SERVER_INDEX);
-diff --color -urN nginx-1.28.3-orig/src/http/v3/ngx_http_v3_filter_module.c nginx-1.28.3/src/http/v3/ngx_http_v3_filter_module.c
---- nginx-1.28.3-orig/src/http/v3/ngx_http_v3_filter_module.c	2026-03-24 21:33:23.000000000 +0300
-+++ nginx-1.28.3/src/http/v3/ngx_http_v3_filter_module.c	2026-05-14 10:04:01.656514688 +0300
-@@ -166,7 +166,7 @@
+diff --color -urN nginx-1.30.4-orig/src/http/v3/ngx_http_v3_filter_module.c nginx-1.30.4/src/http/v3/ngx_http_v3_filter_module.c
+--- nginx-1.30.4-orig/src/http/v3/ngx_http_v3_filter_module.c	2026-07-15 20:20:38.000000000 +0300
++++ nginx-1.30.4/src/http/v3/ngx_http_v3_filter_module.c	2026-09-01 18:20:13.000000000 +0300
+@@ -169,7 +169,7 @@
              n = sizeof(NGINX_VER_BUILD) - 1;
  
          } else {
@@ -731,7 +742,7 @@ diff --color -urN nginx-1.28.3-orig/src/http/v3/ngx_http_v3_filter_module.c ngin
          }
  
          len += ngx_http_v3_encode_field_lri(NULL, 0,
-@@ -349,8 +349,8 @@
+@@ -352,8 +352,8 @@
              n = sizeof(NGINX_VER_BUILD) - 1;
  
          } else {
@@ -742,9 +753,9 @@ diff --color -urN nginx-1.28.3-orig/src/http/v3/ngx_http_v3_filter_module.c ngin
          }
  
          ngx_log_debug2(NGX_LOG_DEBUG_HTTP, c->log, 0,
-diff --color -urN nginx-1.28.3-orig/src/os/unix/ngx_setproctitle.c nginx-1.28.3/src/os/unix/ngx_setproctitle.c
---- nginx-1.28.3-orig/src/os/unix/ngx_setproctitle.c	2026-03-24 21:33:23.000000000 +0300
-+++ nginx-1.28.3/src/os/unix/ngx_setproctitle.c	2026-05-14 10:04:01.662514649 +0300
+diff --color -urN nginx-1.30.4-orig/src/os/unix/ngx_setproctitle.c nginx-1.30.4/src/os/unix/ngx_setproctitle.c
+--- nginx-1.30.4-orig/src/os/unix/ngx_setproctitle.c	2026-07-15 20:20:38.000000000 +0300
++++ nginx-1.30.4/src/os/unix/ngx_setproctitle.c	2026-08-31 13:43:26.698377694 +0300
 @@ -89,7 +89,7 @@
  
      ngx_os_argv[1] = NULL;

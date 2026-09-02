@@ -23,11 +23,11 @@
 %define service_name   %{name}
 %define service_home   %{_cachedir}/%{service_name}
 
-%define nginx_version       1.28.3
-%define lua_module_ver      0.10.29
-%define lua_resty_core_ver  0.1.32
+%define nginx_version       1.30.4
+%define lua_module_ver      0.10.31
+%define lua_resty_core_ver  0.1.34rc3
 %define lua_resty_lru_ver   0.15
-%define mh_module_ver       0.39
+%define mh_module_ver       0.40
 %define pcre_ver            10.47
 %define zlib_ver            1.3.2
 %define luajit_ver          2.1-20250826
@@ -35,14 +35,14 @@
 
 # 1. Open https://chromiumdash.appspot.com/releases?platform=Linux and note the latest stable version.
 # 2. Open https://chromium.googlesource.com/chromium/src/+/refs/tags/<version>/DEPS and note <boringssl_revision>.
-%define boring_commit  d8be2b4a71155bf82da092ef543176351eeb59ff
+%define boring_commit  572a4c68475d284b34675f45ddbb9c158ef3c2ae
 
 ################################################################################
 
 Summary:        Superb high performance web server
 Name:           webkaos
 Version:        %{nginx_version}
-Release:        2%{?dist}
+Release:        0%{?dist}
 License:        2-clause BSD-like license
 Group:          System Environment/Daemons
 URL:            https://kaos.sh/webkaos
@@ -84,14 +84,6 @@ Patch1:         mime.patch
 Patch2:         %{name}-dynamic-tls-records.patch
                 # https://github.com/ajhaydock/BoringNginx/blob/master/patches
 Patch3:         boringssl.patch
-
-Source10:       CVE-2026-40460.patch
-Source11:       CVE-2026-40701.patch
-Source12:       CVE-2026-42934.patch
-Source13:       CVE-2026-42945.patch
-Source14:       CVE-2026-42946.patch
-Source15:       CVE-2026-48142.patch
-Source16:       CVE-2026-42055.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -578,6 +570,13 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Mon Aug 31 2026 Anton Novojilov <andy@essentialkaos.com> - 1.30.4-0
+- Nginx updated to 1.30.4
+- More Headers module updated to 0.40
+- lua-resty-core updated to 0.1.34rc3
+- lua-nginx-module updated to 0.10.30
+- BoringSSL updated to the latest stable version for Chromium
+
 * Thu Jun 18 2026 Anton Novojilov <andy@essentialkaos.com> - 1.28.3-2
 - Patched CVE-2026-48142
 - Patched CVE-2026-42055

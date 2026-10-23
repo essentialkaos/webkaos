@@ -23,19 +23,19 @@
 %define service_name   %{name}
 %define service_home   %{_cachedir}/%{service_name}
 
-%define nginx_version       1.30.4
-%define lua_module_ver      0.10.31
-%define lua_resty_core_ver  0.1.34rc3
+%define nginx_version       1.30.6
+%define lua_module_ver      0.10.32rc7
+%define lua_resty_core_ver  0.1.35rc2
 %define lua_resty_lru_ver   0.15
 %define mh_module_ver       0.40
-%define pcre_ver            10.47
+%define pcre_ver            10.49
 %define zlib_ver            1.3.2
 %define luajit_ver          2.1-20250826
 %define luajit_raw_ver      2.1
 
 # 1. Open https://chromiumdash.appspot.com/releases?platform=Linux and note the latest stable version.
 # 2. Open https://chromium.googlesource.com/chromium/src/+/refs/tags/<version>/DEPS and note <boringssl_revision>.
-%define boring_commit  572a4c68475d284b34675f45ddbb9c158ef3c2ae
+%define boring_commit  2ea3200c3a3ec176613ab7a0b9a4ffc6db846120
 
 ################################################################################
 
@@ -570,6 +570,13 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Fri Oct 23 2026 Anton Novojilov <andy@essentialkaos.com> - 1.30.6-0
+- Nginx updated to 1.30.6
+- PCRE updated to 10.49
+- lua-nginx-module updated to 0.10.32rc7
+- lua-resty-core updated to 0.1.35rc2
+- BoringSSL updated to the latest stable version for Chromium
+
 * Mon Aug 31 2026 Anton Novojilov <andy@essentialkaos.com> - 1.30.4-0
 - Nginx updated to 1.30.4
 - More Headers module updated to 0.40

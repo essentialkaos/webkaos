@@ -23,7 +23,7 @@
 %define service_name   %{name}
 %define service_home   %{_cachedir}/%{service_name}
 
-%define nginx_version       1.30.6
+%define nginx_version       1.30.7
 %define lua_module_ver      0.10.32rc7
 %define lua_resty_core_ver  0.1.35rc2
 %define lua_resty_lru_ver   0.15
@@ -570,6 +570,11 @@ rm -rf %{buildroot}
 ################################################################################
 
 %changelog
+* Wed Nov 18 2026 Anton Novojilov <andy@essentialkaos.com> - 1.30.7-0
+- Nginx updated to 1.30.7 with fixes for CVE-2026-123634, CVE-2026-123007,
+  CVE-2026-121810, CVE-2026-123633, CVE-2026-118899, CVE-2026-113425,
+  CVE-2026-120993, CVE-2026-125283, CVE-2026-120967, CVE-2026-123640
+
 * Fri Oct 23 2026 Anton Novojilov <andy@essentialkaos.com> - 1.30.6-0
 - Nginx updated to 1.30.6
 - PCRE updated to 10.49

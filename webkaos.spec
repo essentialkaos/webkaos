@@ -29,13 +29,13 @@
 %define lua_resty_lru_ver   0.15
 %define mh_module_ver       0.40
 %define pcre_ver            10.49
-%define zlib_ver            1.3.2
+%define zlib_ver            1.4
 %define luajit_ver          2.1-20250826
 %define luajit_raw_ver      2.1
 
 # 1. Open https://chromiumdash.appspot.com/releases?platform=Linux and note the latest stable version.
 # 2. Open https://chromium.googlesource.com/chromium/src/+/refs/tags/<version>/DEPS and note <boringssl_revision>.
-%define boring_commit  2ea3200c3a3ec176613ab7a0b9a4ffc6db846120
+%define boring_commit  ea9f3a34c3977144c45d272be81842fd891a0bdb
 
 ################################################################################
 
@@ -574,6 +574,8 @@ rm -rf %{buildroot}
 - Nginx updated to 1.30.7 with fixes for CVE-2026-123634, CVE-2026-123007,
   CVE-2026-121810, CVE-2026-123633, CVE-2026-118899, CVE-2026-113425,
   CVE-2026-120993, CVE-2026-125283, CVE-2026-120967, CVE-2026-123640
+- Zlib updated to 1.4
+- BoringSSL updated to the latest stable version for Chromium
 
 * Fri Oct 23 2026 Anton Novojilov <andy@essentialkaos.com> - 1.30.6-0
 - Nginx updated to 1.30.6
